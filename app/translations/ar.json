@@ -1,0 +1,6 @@
+{
+  "app.components.Auth.header":"",
+  "boilerplate.containers.NotFoundPage.header": "الصفحة غير متوفرة.",
+  "app.components.NotFoundPage.header":"الصفجة غير متوفرة",
+  "app.components.NotFoundPage.description":"المسار الذي تبحث عنه غير موجود لربما تمت ازالته"
+}

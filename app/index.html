@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ar" dir="rtl" >
+  <head>
+    <!-- The first thing in any HTML file should be the charset -->
+    <meta charset="utf-8">
+    <!-- Make the page mobile compatible -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Allow installing the app to the homescreen -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Offline Point Of Sale</title>
+    <style type="text/css">
+      body {
+        background: #f5f5f5;
+      }
+
+      .spinner-container {
+        width: 60px;
+        height: 60px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0px;
+        right: 0;
+        margin: auto;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+
+        position: relative;
+        margin: auto;
+      }
+
+      .double-bounce1, .double-bounce2 {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: rgb(30, 136, 229);
+        opacity: 0.6;
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+        animation: sk-bounce 2.0s infinite ease-in-out;
+      }
+
+      .double-bounce2 {
+        -webkit-animation-delay: -1.0s;
+        animation-delay: -1.0s;
+      }
+
+      @-webkit-keyframes sk-bounce {
+        0%, 100% { -webkit-transform: scale(0.0) }
+        50% { -webkit-transform: scale(1.0) }
+      }
+
+      @keyframes sk-bounce {
+        0%, 100% {
+          transform: scale(0.0);
+          -webkit-transform: scale(0.0);
+        } 50% {
+          transform: scale(1.0);
+          -webkit-transform: scale(1.0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Display a message if JS has been disabled on the browser. -->
+    <noscript>If you're seeing this message, that means <strong>JavaScript has been disabled on your browser</strong>, please <strong>enable JS</strong> to make this app work.</noscript>
+
+    <!-- The app hooks into this div -->
+    <div id="app">
+      <div class="spinner-container">
+        <div class="spinner">
+          <div class="double-bounce1"></div>
+          <div class="double-bounce2"></div>
+        </div>
+      </div>
+    </div>
+    <!-- A lot of magic happens in this file. HtmlWebpackPlugin automatically includes all assets (e.g. bundle.js, main.css) with the correct HTML tags, which is why they are missing in this HTML file. Don't add any assets here! (Check out the webpack config files in internals/webpack for details) -->
+  </body>
+</html>
