@@ -12,7 +12,6 @@ injectGlobal`
   }
 
   body{
-    overflow-y: hidden !important;
   }
   html[dir="rtl"] .material-icons {
     -moz-transform: scaleX(-1);
@@ -453,7 +452,6 @@ injectGlobal`
   }
 
   .main-container {
-    min-height: 1000px !important;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
   }
 
