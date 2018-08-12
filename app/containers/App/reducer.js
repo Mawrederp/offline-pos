@@ -7,7 +7,7 @@ const initialState = fromJS({
     email: 'demo@test.com',
     imgUrl: 'http://www.material-ui.com/images/ok-128.jpg',
   },
-  box: { open: true },
+  box: { open: false },
   authenticationErrorMessage: '',
   registrationErrorMessage: '',
   menus: [],
@@ -16,7 +16,7 @@ const initialState = fromJS({
   selectedMenuItem: null,
   selectedOpenedMenuIndex: 0,
   selectedOpenedMenuItem: null,
-  userIsAuthenticated: true,
+  userIsAuthenticated: false,
   currentTheme: 'grayTheme', // darkTheme, lightTheme, blueTheme, grayTheme, darkBlueTheme
   openSettingDrawer: false,
   showTabs: true,
