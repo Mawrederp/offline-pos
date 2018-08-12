@@ -1,6 +1,6 @@
 /*
  *
- * MultiCheckout reducer
+ * HistoryManager reducer
  *
  */
 
@@ -11,7 +11,7 @@ import {
 
 const initialState = fromJS({});
 
-function multiCheckoutReducer(state = initialState, action) {
+function historyManagerReducer(state = initialState, action) {
   switch (action.type) {
     case DEFAULT_ACTION:
       return state;
@@ -20,4 +20,4 @@ function multiCheckoutReducer(state = initialState, action) {
   }
 }
 
-export default multiCheckoutReducer;
+export default historyManagerReducer;

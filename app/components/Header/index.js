@@ -46,6 +46,8 @@ class Header extends React.Component {
       this.props.actions.openSettingsDrawer();
     }
   }
+
+  
   render() {
     const { styles, handleChangeRequestNavDrawer, appStore } = this.props;
     const style = Styles(appStore.isBoxedLayout, this.state.currentTheme);

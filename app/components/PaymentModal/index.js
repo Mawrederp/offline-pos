@@ -19,6 +19,7 @@ import typography from 'material-ui/styles/typography';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
+import InvoiceReport from '../InvoiceReport';
 import ButtonSet from '../ButtonSet';
 import messages from './messages';
 import data from '../../data';
@@ -94,7 +95,7 @@ class PaymentModal extends React.Component {
         label="انهاء"
         primary
         keyboardFocused
-        onClick={() => this.props.handleClose(true)}
+        onClick={() => window.print() && this.props.handleClose(true)}
       />,
     ];
 
@@ -226,7 +227,7 @@ class PaymentModal extends React.Component {
           </div>
         </Dialog>
 
-
+        <InvoiceReport />
       </div >
     );
   }

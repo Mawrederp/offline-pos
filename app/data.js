@@ -4,11 +4,12 @@ import { orange600, cyan600, purple600, red300 } from 'material-ui/styles/colors
 
 const data = {
   menus: [
-    { id: 'dashboard', text: 'الرئيسية', icon: <FontIcon className="material-icons">assessment</FontIcon>, url: '/', index: 0 },
-    { id: 'checkout', text: 'تخليص الحسابات', icon: <FontIcon className="material-icons">assessment</FontIcon>, url: '/checkout', index: 0 },
+    { id: 'dashboard', text: 'الرئيسية', icon: <FontIcon className="material-icons">home</FontIcon>, url: '/', index: 0 },
+    { id: 'checkout', text: 'تخليص الحسابات', icon: <FontIcon className="material-icons">payment</FontIcon>, url: '/checkout', index: 0 },
     // { id: 'openRegistry', text: 'فتح الصندوق', icon: <FontIcon className="material-icons">assessment</FontIcon>, url: '/open-registry', index: 0 },
     // { id: 'closeRegistry', text: 'اغلاق الصندوق', icon: <FontIcon className="material-icons">assessment</FontIcon>, url: '/close-registry', index: 0 },
-    { id: 'productsManagement', text: 'ادارة الاصناف', icon: <FontIcon className="material-icons">assessment</FontIcon>, url: '/products-management', index: 0 },
+    { id: 'productsManagement', text: 'ادارة الاصناف', icon: <FontIcon className="material-icons">store</FontIcon>, url: '/products-management', index: 0 },
+    { id: 'historyManager', text: 'التاريخ', icon: <FontIcon className="material-icons">history</FontIcon>, url: '/products-management', index: 0 },
   ],
   dashBoardPage: {
     recentProducts: [

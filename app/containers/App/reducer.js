@@ -7,7 +7,7 @@ const initialState = fromJS({
     email: 'demo@test.com',
     imgUrl: 'http://www.material-ui.com/images/ok-128.jpg',
   },
-  box: { open: false },
+  box: { open: true },
   authenticationErrorMessage: '',
   registrationErrorMessage: '',
   menus: [],
@@ -16,7 +16,7 @@ const initialState = fromJS({
   selectedMenuItem: null,
   selectedOpenedMenuIndex: 0,
   selectedOpenedMenuItem: null,
-  userIsAuthenticated: false,
+  userIsAuthenticated: true,
   currentTheme: 'grayTheme', // darkTheme, lightTheme, blueTheme, grayTheme, darkBlueTheme
   openSettingDrawer: false,
   showTabs: true,
@@ -103,7 +103,6 @@ function appReducer(state = initialState, action) {
         .set('authenticationErrorMessage', '');
     // End of Authentication process
     case ActionTypes.OPEN_BOX:
-      console.log(action, state)
       return state.set('box', { open: true });
     case ActionTypes.LOAD_MENU_SUCCESS:
       {

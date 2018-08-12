@@ -51,8 +51,8 @@ function CartList({ data, style, noScroll }) {
       {data.map((item) =>
         <div key={item.title}>
           <ListItem
-            leftCheckbox={<NoPrint><Checkbox /></NoPrint>}
-            rightIconButton={<NoPrint><rightIconMenu /></NoPrint>}
+            leftCheckbox={<Checkbox />}
+            rightIconButton={<rightIconMenu />}
             style={{ paddingTop: 19 }}
           >
             <Subheader style={{ lineHeight: '12px' }} className={'row text-center'}>

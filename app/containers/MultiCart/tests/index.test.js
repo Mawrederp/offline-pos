@@ -1,9 +1,9 @@
 // import React from 'react';
 // import { shallow } from 'enzyme';
 
-// import { MultiCheckout } from '../index';
+// import { MultiCart } from '../index';
 
-describe('<MultiCheckout />', () => {
+describe('<MultiCart />', () => {
   it('Expect to have unit tests specified', () => {
     expect(true).toEqual(false);
   });

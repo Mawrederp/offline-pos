@@ -10,16 +10,21 @@ import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
-import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
+import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 import Badge from 'material-ui/Badge';
-import { grey400, cyan500, green500, red300, yellow500 } from 'material-ui/styles/colors';
+import IconButton from 'material-ui/IconButton';
+import ActionGrade from 'material-ui/svg-icons/action/grade';
+import { cyan500, green500, red300, white } from 'material-ui/styles/colors';
 import Chip from 'material-ui/Chip';
 import Avatar from 'material-ui/Avatar';
 import FontIcon from 'material-ui/FontIcon';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+
 import makeSelectCheckout from './selectors';
 import messages from './messages';
 import Data from '../../data';
-import Cart from '../../components/Cart';
+import MultiCart from '../MultiCart';
 import CheckoutBench from '../../components/CheckoutBench';
 import PageBase from '../../components/PageBase';
 import PaymentModal from '../../components/PaymentModal';
@@ -67,19 +72,32 @@ export class Checkout extends React.PureComponent { // eslint-disable-line react
             { name: 'description', content: 'Description of Checkout' },
           ]}
         />
-        {/* <Paper style={{ marginBottom: 20 }}>
-          <div className="row" >
-            this is a paper
-          </div>
-        </Paper> */}
+
 
         <div className="row" id={this.state.id}>
           <Toolbar style={{ height: '6vh' }} className="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-5">
             <ToolbarGroup firstChild>
-              <Chip              >
+              <Chip onClick={() => { }}>
                 <Avatar src="http://i.pravatar.cc/100" />
                 current customer
+                <IconButton
+                  style={{
+                    height: 'auto',
+                    width: 'auto',
+                    padding: 0,
+                    verticalAlign: 'middle',
+                    right: '-4px',
+
+                  }} tooltip="bottom-right" tooltipPosition="bottom-right">
+                  <FontIcon className={'material-icons'}>expand_more</FontIcon>
+                </IconButton>
               </Chip>
+              <Avatar
+                size={32}
+                style={{ backgroundColor: green500, cursor: 'pointer' }}
+              >
+                <ContentAdd color={white} />
+              </Avatar>
             </ToolbarGroup>
             <ToolbarGroup >
               <Chip>
@@ -109,7 +127,7 @@ export class Checkout extends React.PureComponent { // eslint-disable-line react
 
           </Toolbar>
           <div className="col-xs-5 col-sm-5 col-md-5 col-lg-5 m-b-15 ">
-            <Cart data={Data.dashBoardPage.recentProducts} payment={this.openPaymentModal} />
+            <MultiCart products={Data.dashBoardPage.recentProducts} openPaymentModal={this.openPaymentModal} />
           </div>
           <div className="col-xs-7 col-sm-7 col-md-7 col-lg-7 m-b-15 ">
             <CheckoutBench data={Data.products} />
@@ -123,7 +141,6 @@ export class Checkout extends React.PureComponent { // eslint-disable-line react
 }
 
 Checkout.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   id: PropTypes.string,
 };
 

@@ -6,21 +6,14 @@ import Paper from 'material-ui/Paper';
 import FontIcon from 'material-ui/FontIcon';
 
 import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
-import { cyan600, white, black } from 'material-ui/styles/colors';
+import { white, black } from 'material-ui/styles/colors';
 import typography from 'material-ui/styles/typography';
 import AutoComplete from 'material-ui/AutoComplete';
 import ButtonSet from '../ButtonSet';
 import CartList from '../CartList';
 
-const Cart = ({ data, payment }) => {
+const Cart = ({ data, payment, subHeader }) => {
   const styles = {
-    subheader: {
-      fontSize: 24,
-      fontWeight: typography.fontWeightLight,
-      backgroundColor: cyan600,
-      color: white,
-      lineHeight: '34px',
-    },
     clearHeader: {
       fontSize: 16,
       fontWeight: typography.fontWeightMiddle,
@@ -70,7 +63,7 @@ const Cart = ({ data, payment }) => {
   const cashIcon = <FontIcon className="material-icons">money</FontIcon>;
   return (
     <Paper style={styles.container} className="cart">
-      <Subheader style={styles.subheader}>قائمة المشتريات</Subheader>
+      {subHeader}
       <AutoComplete
         hintText="يمكنك البحث باستخدام احرف او كلمات"
         dataSource={colors}
@@ -115,7 +108,6 @@ const Cart = ({ data, payment }) => {
       </Paper>
       <Paper zDepth={1}>
         <BottomNavigation style={{ height: '9vh' }} selectedIndex={0}>
-
           <BottomNavigationItem
             label="الدفع"
             icon={cashIcon}
@@ -131,6 +123,7 @@ const Cart = ({ data, payment }) => {
 Cart.propTypes = {
   data: PropTypes.array,
   payment: PropTypes.func,
+  subHeader: PropTypes.any,
 
 };
 

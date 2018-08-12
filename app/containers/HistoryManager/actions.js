@@ -1,6 +1,6 @@
 /*
  *
- * MultiCheckout actions
+ * HistoryManager actions
  *
  */
 

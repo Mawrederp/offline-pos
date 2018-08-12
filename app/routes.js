@@ -98,6 +98,26 @@ export default function createRoutes(store) {
           .catch(errorLoading);
       },
     }, {
+      path: 'history-manager',
+      name: 'historyManager',
+      getComponent(nextState, cb) {
+        const importModules = Promise.all([
+          import('containers/HistoryManager/reducer'),
+          import('containers/HistoryManager/sagas'),
+          import('containers/HistoryManager'),
+        ]);
+
+        const renderRoute = loadModule(cb);
+
+        importModules.then(([reducer, sagas, component]) => {
+          injectReducer('historyManager', reducer.default);
+          injectSagas(sagas.default);
+          renderRoute(component);
+        });
+
+        importModules.catch(errorLoading);
+      },
+    }, {
       path: '*',
       name: 'notfound',
       getComponent(nextState, cb) {
