@@ -22,7 +22,7 @@ import 'flexboxgrid/css/flexboxgrid.css';
 
 // Import root app
 import App from 'containers/App';
-
+import * as locale from './config/localization';
 // Import selector for `syncHistoryWithStore`
 import { makeSelectLocationState } from 'containers/App/selectors';
 
@@ -47,8 +47,10 @@ import './global-styles';
 // Import routes
 import createRoutes from './routes';
 
+
 // Import app saga
 import sagas from './containers/App/sagas';
+import posSagas from './containers/Registry/sagas';
 
 // Observe loading of Open Sans (to remove open sans, remove the <link> tag in
 // the index.html file and this observer)
@@ -67,7 +69,6 @@ openSansObserver.load().then(() => {
 // e.g. `const browserHistory = useRouterHistory(createBrowserHistory)();`
 const initialState = {};
 const store = configureStore(initialState, browserHistory);
-
 // Sync history and store, as the react-router-redux reducer
 // is under the non-default key ("routing"), selectLocationState
 // must be provided for resolving how to retrieve the "route" in the state
@@ -84,7 +85,7 @@ const rootRoute = {
 
 // Inject default app sagas
 sagas.map(store.runSaga);
-
+posSagas.map(store.runSaga);
 const render = (messages) => {
   ReactDOM.render(
     <Provider store={store}>

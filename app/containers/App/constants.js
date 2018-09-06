@@ -10,12 +10,20 @@
  */
 
 export const DEFAULT_LOCALE = 'ar';
+export const SET_RTL = 'app/SET_RTL';
 export const LOAD_MENU = 'app/LOAD_MENU';
 export const LOAD_MENU_SUCCESS = 'app/LOAD_MENU_SUCCESS';
 export const LOAD_MENU_FAILED = 'app/LOAD_MENU_FAILED';
 export const OPEN_VIEW = 'app/OPEN_VIEW';
 export const CLOSE_VIEW = 'app/CLOSE_VIEW';
 export const SELECT_MENU_ITEM = 'app/SELECT_MENU_ITEM';
+export const CHANGE_LOCALE = 'app/LanguageToggle/CHANGE_LOCALE';
+export const ALTER_USER = 'app/LanguageToggle/ALTER_USER';
+export const SET_LOCALE = 'app/LanguageToggle/SET_LOCALE';
+export const SET_POS_STATE = 'app/Regsitry/SET_POS_STATE';
+export const GET_REGISTRY_STATE = 'app/Regsitry/GET_REGISTRY_STATE';
+export const GET_REGISTRY_LOADED = 'app/Regsitry/GET_REGISTRY_LOADED';
+export const REGISTRY_STATE_MODIFIED = 'app/Regsitry/REGISTRY_STATE_MODIFIED';
 
 export const SIGN_IN = 'app/SIGN_IN';
 export const SIGN_IN_FACEBOOK = 'app/SIGN_IN_FACEBOOK';
@@ -27,6 +35,8 @@ export const RESET_PASSWORD_FAILED = 'app/RESET_PASSWORD_FAILED';
 export const AUTHENTICATED = 'app/AUTHENTICATED';
 export const AUTHENTICATION_FAILED = 'app/AUTHENTICATION_FAILED';
 export const CLEAR_AUTHENTICATION_MESSAGE = 'app/CLEAR_AUTHENTICATION_MESSAGE';
+export const LOAD_AUTH_STATE = 'app/LOAD_AUTH_STATE';
+
 export const SIGN_OUT = 'app/SIGN_OUT';
 
 export const OPEN_BOX = 'app/OPEN_BOX';

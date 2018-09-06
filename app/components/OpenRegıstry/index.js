@@ -1,8 +1,8 @@
 /**
-*
-* OpenRegıstry
-*
-*/
+ *
+ * OpenRegıstry
+ *
+ */
 
 // import styled from 'styled-components';
 import React from 'react';
@@ -23,26 +23,58 @@ import OpenRegistryReport from '../OpenRegistryReport';
 class OpenRegıstry extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
     super(props);
+    console.log(props);
     this.state = {
       finished: false,
       stepIndex: 0,
+      formOutcome: null,
+      receipts: props.box.receipts ? props.box.receipts : 0,
+      cash: props.box.cash ? props.box.receipts : 0,
     };
     this.handleNext = this.handleNext.bind(this);
     this.getStepContent = this.getStepContent.bind(this);
     this.handlePrev = this.handlePrev.bind(this);
+    this.handleForm = this.handleForm.bind(this);
+    this.receiptsChanged = this.receiptsChanged.bind(this);
+    this.cashChanged = this.cashChanged.bind(this);
   }
 
- 
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <ReportForm />;
+        return (<ReportForm
+          box={this.props.box}
+          receiptsChanged={this.receiptsChanged}
+          cashChanged={this.cashChanged}
+          user={this.props.user}
+        />);
       case 1:
-        return <OpenRegistryReport />;
+        return (<OpenRegistryReport
+          box={this.props.box}
+          user={this.props.user}
+          cash={this.state.cash}
+          receipts={this.state.receipts}
+        />);
       default:
         return 'You\'re a long way from home sonny jim!';
     }
   }
+
+  receiptsChanged(e, newValue) {
+    console.log(newValue, 'receipts changed', e);
+    this.setState({ receipts: newValue });
+  }
+
+  cashChanged(e, newValue) {
+    console.log(newValue, 'cash changed', e);
+
+    this.setState({ cash: newValue });
+  }
+
+  handleForm(e) {
+    this.props.manageRegistry({ receipts: this.state.receipts, cash: this.state.cash, open: !this.props.box.open });
+  }
+
   handleNext = () => {
     const { stepIndex } = this.state;
     this.setState({
@@ -59,8 +91,8 @@ class OpenRegıstry extends React.Component { // eslint-disable-line react/prefe
   };
 
   render() {
-    const { finished, stepIndex } = this.state;
-    const { openBox } = this.props;
+    const { stepIndex } = this.state;
+    const { manageRegistry } = this.props;
     const contentStyle = { margin: '0 16px' };
 
     return (
@@ -75,35 +107,24 @@ class OpenRegıstry extends React.Component { // eslint-disable-line react/prefe
 
         </Stepper>
         <div style={contentStyle}>
-          {finished ? (
-            <p>
-              <RaisedButton
-                label={'اعادة ضبط الصندووق'}
-                primary
-                onClick={(event) => {
-                  event.preventDefault();
-                  this.setState({ stepIndex: 0, finished: false });
-                }}
-              />
-            </p>
-          ) : (
-              <div>
-                <p>{this.getStepContent(stepIndex)}</p>
-                <div style={{ marginTop: 12 }}>
-                  <FlatButton
-                    label="الى الخلف"
-                    disabled={stepIndex === 0}
-                    onClick={this.handlePrev}
-                    style={{ marginRight: 12 }}
-                  />
-                  <RaisedButton
-                    label={stepIndex === 1 ? 'طباعة و الذهاب الى الصفحة الرئيسية' : 'التالي'}
-                    primary
-                    onClick={stepIndex === 1 ? openBox : this.handleNext}
-                  />
-                </div>
+          {(
+            <div>
+              <div>{this.getStepContent(stepIndex)}</div>
+              <div style={{ marginTop: 12 }}>
+                <FlatButton
+                  label="الى الخلف"
+                  disabled={stepIndex === 0}
+                  onClick={this.handlePrev}
+                  style={{ marginRight: 12 }}
+                />
+                <RaisedButton
+                  label={stepIndex === 1 ? 'طباعة و الذهاب الى الصفحة الرئيسية' : 'التالي'}
+                  primary
+                  onClick={stepIndex === 1 ? this.handleForm : this.handleNext}
+                />
               </div>
-            )}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -112,7 +133,9 @@ class OpenRegıstry extends React.Component { // eslint-disable-line react/prefe
 }
 
 OpenRegıstry.propTypes = {
-  openBox: PropTypes.func,
+  manageRegistry: PropTypes.func,
+  box: PropTypes.any,
+  user: PropTypes.object,
 };
 
 export default OpenRegıstry;

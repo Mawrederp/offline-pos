@@ -1,20 +1,20 @@
 import { createSelector } from 'reselect';
+import { Map } from 'immutable';
 
 /**
  * Direct selector to the languageToggle state domain
  */
-const selectLanguage = () => (state) => state.get('language');
-
+const selectLanguage = () => (state) => (state.get('language').mergeDeep({ user: state.get('global').get('user') }));
 /**
  * Select the language locale
  */
 
-const selectLocale = () => createSelector(
+const makeSelectLocale = () => createSelector(
   selectLanguage(),
-  (languageState) => languageState.get('locale')
+  (languageState) => languageState
 );
 
 export {
   selectLanguage,
-  selectLocale,
+  makeSelectLocale,
 };

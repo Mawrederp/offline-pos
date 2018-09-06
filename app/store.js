@@ -6,7 +6,11 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { fromJS } from 'immutable';
 import { routerMiddleware } from 'react-router-redux';
 import createSagaMiddleware from 'redux-saga';
+// import PouchDB from 'pouchdb-browser';
 import createReducer from './reducers';
+
+// Global sagas
+
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -22,6 +26,10 @@ export default function configureStore(initialState = {}, history) {
   const enhancers = [
     applyMiddleware(...middlewares),
   ];
+  // const pouch = new PouchDB('app');
+  // const auth = new PouchDB('auth');
+  // pouch.replicate.to('http://127.0.0.1:5984/tenent1_app', { live: true });
+  // auth.replicate.to('http://127.0.0.1:5984/pos_app/auth');
 
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
   /* eslint-disable no-underscore-dangle */
@@ -39,7 +47,9 @@ export default function configureStore(initialState = {}, history) {
   );
 
   // Extensions
+
   store.runSaga = sagaMiddleware.run;
+
   store.asyncReducers = {}; // Async reducer registry
 
   // Make reducers hot reloadable, see http://mxs.is/googmo

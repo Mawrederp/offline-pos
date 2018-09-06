@@ -11,12 +11,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { IntlProvider } from 'react-intl';
-import { selectLocale } from './selectors';
+import { makeSelectLocale } from './selectors';
 
 export class LanguageProvider extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   render() {
     return (
-      <IntlProvider locale={this.props.locale} key={this.props.locale} messages={this.props.messages[this.props.locale]}>
+      <IntlProvider
+        locale={this.props.locale.locale} key={this.props.locale.locale}
+        messages={this.props.messages[this.props.locale.locale]}
+      >
         {React.Children.only(this.props.children)}
       </IntlProvider>
     );
@@ -24,16 +27,17 @@ export class LanguageProvider extends React.PureComponent { // eslint-disable-li
 }
 
 LanguageProvider.propTypes = {
-  locale: PropTypes.string,
+  locale: PropTypes.object,
   messages: PropTypes.object,
   children: PropTypes.element.isRequired,
 };
 
 
 const mapStateToProps = createSelector(
-  selectLocale(),
+  makeSelectLocale(),
   (locale) => ({ locale })
-);
+)
+;
 
 function mapDispatchToProps(dispatch) {
   return {

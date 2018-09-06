@@ -6,20 +6,25 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { createStructuredSelector } from 'reselect';
-import { makeSelectGlobal } from '../App/selectors';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {createStructuredSelector} from 'reselect';
+import {makeSelectGlobal} from '../App/selectors';
 import * as appActions from '../../containers/App/actions';
 import OpenRegistry from '../../components/OpenRegıstry';
+
 export class RegistryOperator extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
     super(props);
+    console.log(props)
+    this.state = {
+      isClosing: props.appStore.box.open,
+    };
     this.openBox = this.openBox.bind(this);
   }
+
   openBox() {
     // validations goes here
-      console.log('haha')
     const payload = {
       open: true,
       time: Date.now(),
@@ -27,6 +32,7 @@ export class RegistryOperator extends React.Component { // eslint-disable-line r
 
     this.props.actions.openBox(payload);
   }
+
   render() {
     return (
       <OpenRegistry openBox={this.openBox} />
@@ -36,11 +42,13 @@ export class RegistryOperator extends React.Component { // eslint-disable-line r
 
 RegistryOperator.propTypes = {
   actions: PropTypes.any,
+  appStore: PropTypes.any,
 };
 
 const mapStateToProps = createStructuredSelector({
   appStore: makeSelectGlobal(),
 });
+
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(appActions, dispatch),

@@ -11,7 +11,7 @@ import LeftDrawer from '../../components/LeftDrawer';
 import * as appActions from './actions';
 import { makeSelectGlobal } from './selectors';
 import Auth from '../Auth';
-import RegistryOperator from '../RegistryOperator';
+import Registry from '../Registry';
 import Theme from '../../config/theme';
 import Styles from './styles';
 import { updateContentDimensions, getCurrentTheme } from './appUtils';
@@ -46,6 +46,8 @@ class App extends React.Component {
     this.setState({ navDrawerOpen: width === LARGE });
 
     // dispatch this action to load the menu
+    this.props.actions.loadAuthState();
+    this.props.actions.getRegistryState();
     this.props.actions.loadMenu();
   }
 
@@ -110,9 +112,20 @@ class App extends React.Component {
       </div>);
     } else if (this.props.appStore.userIsAuthenticated) {
       if (!this.props.appStore.box.open) {
-        return (<RegistryOperator />);
+        return (
+          <div
+            className={this.props.appStore.currentTheme + (this.props.appStore.isBoxedLayout ? ' layout-boxed' : ' layout-fluid')}
+          >
+            <Header
+              styles={styles.header}
+              handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer}
+            />
+            <Registry />
+          </div>);
       }
-      return (<div className={this.props.appStore.currentTheme + (this.props.appStore.isBoxedLayout ? ' layout-boxed' : ' layout-fluid')}>
+      return (<div
+        className={this.props.appStore.currentTheme + (this.props.appStore.isBoxedLayout ? ' layout-boxed' : ' layout-fluid')}
+      >
         <Header
           styles={styles.header}
           handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer}
@@ -150,8 +163,9 @@ class App extends React.Component {
   }
 
   render() {
+    console.log(this.props);
     return (
-      <MuiThemeProvider muiTheme={getCurrentTheme(this.props.appStore.currentTheme)}>
+      <MuiThemeProvider muiTheme={getCurrentTheme(this.props.appStore.currentTheme, this.props.appStore.isRtl)}>
         {this.renderPages()}
       </MuiThemeProvider>
     );

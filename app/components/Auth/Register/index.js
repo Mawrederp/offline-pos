@@ -16,8 +16,20 @@ class Register extends React.PureComponent { // eslint-disable-line react/prefer
                 مستخدم جديد
               </div>
               <div style={styles.logoSmallContainer}>
-                <img src="http://adminwebtemplates.com/logo-small.png" alt="Fortress Admin Templat" />
+                <img
+                  style={{ width: 295, height: 54 }}
+                  src="http://via.placeholder.com/295x54" alt="Offline Point Of Sale"
+                />
               </div>
+              {
+                this.props.errorMessage ? (
+                  <div>
+                    <p style={styles.errorMessage}>
+                      * {this.props.errorMessage}
+                    </p>
+                  </div>
+                ) : null
+              }
             </div>
             <hr />
             <form>
@@ -85,6 +97,8 @@ Register.propTypes = {
   onConfirmPasswordChange: PropTypes.func.isRequired,
   onGoBack: PropTypes.func.isRequired,
   onRegister: PropTypes.func.isRequired,
+  errorMessage: PropTypes.string.isRequired,
+
 };
 
 export default Register;

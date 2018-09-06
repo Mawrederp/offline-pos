@@ -76,6 +76,17 @@ export function register(payload) {
   };
 }
 
+export function getRegistryState() {
+  return { type: ActionTypes.GET_REGISTRY_STATE };
+}
+
+export function setRtl(payload) {
+  return {
+    type: ActionTypes.SET_RTL,
+    payload,
+  };
+}
+
 export function resetPassword(payload) {
   return {
     type: ActionTypes.RESET_PASSWORD,
@@ -88,6 +99,13 @@ export function signOut() {
     type: ActionTypes.SIGN_OUT,
   };
 }
+
+export function loadAuthState() {
+  return {
+    type: ActionTypes.LOAD_AUTH_STATE,
+  };
+}
+
 export function openBox(payload) {
   return {
     type: ActionTypes.OPEN_BOX,

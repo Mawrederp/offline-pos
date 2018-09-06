@@ -1,5 +1,4 @@
-import { takeLatest } from 'redux-saga';
-import { call, put } from 'redux-saga/effects';
+import { call, put, takeLatest, all } from 'redux-saga/effects';
 import mockMenuApi from '../../api/mockMenuApi';
 import {
   SIGN_IN,
@@ -14,7 +13,13 @@ import {
   LOAD_MENU_SUCCESS,
   LOAD_MENU_FAILED,
   REGISTRATION_FAILED,
+  LOAD_AUTH_STATE,
+  SIGN_OUT,
+  CHANGE_LOCALE,
+  ALTER_USER,
+  SET_LOCALE,
 } from './constants';
+import AuthApi from '../../api/AuthApi';
 
 // worker Saga: will be fired on LOAD_MENU actions
 export function* fetchMenu(action) {
@@ -35,36 +40,60 @@ export function* appSaga() {
   yield takeLatest(LOAD_MENU, fetchMenu);
 }
 
-export function* fetchSignIn(action) {
+export function* fetchAuthState() {
   try {
-    // here you can call your API in order to authenticate the user
-    if (action.payload.email === 'demo@test.com' &&
-      action.payload.password === 'demo') {
-      yield put({ type: AUTHENTICATED,
-        user: {
-          name: 'John Smith',
-          email: action.payload.email,
-          imgUrl: 'http://www.material-ui.com/images/ok-128.jpg',
-        },
-      });
-    } else if (action.payload.email === 'demo2@test.com' &&
-      action.payload.password === 'demo2') {
-      yield put({ type: AUTHENTICATED,
-        user: {
-          name: 'Jane Doe',
-          email: action.payload.email,
-          imgUrl: 'http://www.material-ui.com/images/uxceo-128.jpg',
-        },
+    const authState = yield AuthApi.getAuthState();
+    const user = yield AuthApi.fetchUserById(authState.user);
+    if (authState.value && user) {
+      const effects = [put({
+        type: AUTHENTICATED,
+        user,
+      })];
+
+      if (user.locale) {
+        effects.push(put({
+          type: SET_LOCALE,
+          locale: user.locale,
+        }));
+      }
+      yield all(effects);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export function* authSaga() {
+  yield takeLatest(LOAD_AUTH_STATE, fetchAuthState);
+}
+
+export function* fetchSignIn(action) {
+  console.log(action);
+  try {
+    const user = yield AuthApi.attemptLogin(action.payload);
+    console.log('login', user);
+    if (!user) {
+      yield put({
+        type: AUTHENTICATION_FAILED,
+        message: 'خطأ في كلمة المرور او اسم المستخدم',
       });
     } else {
       yield put({
-        type: AUTHENTICATION_FAILED,
-        message: 'Wrong user or password, please try again.',
+        type: AUTHENTICATED,
+        user,
       });
     }
   } catch (e) {
     yield put({ type: AUTHENTICATION_FAILED, message: e.message });
   }
+}
+
+export function* fetchSignOut() {
+  AuthApi.signOutCleanUp();
+}
+
+export function* signOut() {
+  yield takeLatest(SIGN_OUT, fetchSignOut);
 }
 
 export function* signIn() {
@@ -74,7 +103,8 @@ export function* signIn() {
 export function* fetchSignInFacebook(action) {
   try {
     // here you can call your API in order to authenticate the user, for this demo just authenticate an user
-    yield put({ type: AUTHENTICATED,
+    yield put({
+      type: AUTHENTICATED,
       user: {
         name: 'John Smith',
         email: action.payload.email,
@@ -93,7 +123,8 @@ export function* signInFacebook() {
 export function* fetchSignInGoogle(action) {
   try {
     // here you can call your API in order to authenticate the user, for this demo just authenticate an user
-    yield put({ type: AUTHENTICATED,
+    yield put({
+      type: AUTHENTICATED,
       user: {
         name: 'John Smith',
         email: action.payload.email,
@@ -112,13 +143,16 @@ export function* signInGoogle() {
 export function* fetchRegister(action) {
   try {
     // here you can call your API in order to register an user, for this demo just authenticate an user
-    yield put({ type: AUTHENTICATED,
-      user: {
-        name: 'John Smith',
-        email: action.payload.email,
-        imgUrl: 'http://www.material-ui.com/images/ok-128.jpg',
-      },
-    });
+    const user = yield AuthApi.addUser(action.payload);
+    if (!user.error) {
+      yield put({
+        type: AUTHENTICATED,
+        user: {
+          ...user,
+          imgUrl: 'http://www.material-ui.com/images/ok-128.jpg',
+        },
+      });
+    }
   } catch (e) {
     yield put({ type: REGISTRATION_FAILED, message: e.message });
   }
@@ -131,7 +165,8 @@ export function* register() {
 export function* fetchResetPassword(action) {
   try {
     // here you can call your API in order to reset the password, for this demo just authenticate an user
-    yield put({ type: AUTHENTICATED,
+    yield put({
+      type: AUTHENTICATED,
       user: {
         name: 'John Smith',
         email: action.payload.email,
@@ -147,6 +182,19 @@ export function* resetPassword() {
   yield takeLatest(RESET_PASSWORD, fetchResetPassword);
 }
 
+export function* setLocalSaga(action) {
+  // payload is immutable
+  const { user, locale } = action.locale.toJS();
+  const response = yield AuthApi.setUserLocale(user, locale);
+
+  yield put({ type: ALTER_USER, user: { ...user, ...{ _rev: response.rev } } });
+}
+
+export function* changeLocal() {
+  yield takeLatest(CHANGE_LOCALE, setLocalSaga);
+}
+
+
 // All sagas to be loaded
 export default [
   appSaga,
@@ -155,4 +203,7 @@ export default [
   signInGoogle,
   register,
   resetPassword,
+  fetchAuthState,
+  signOut,
+  changeLocal,
 ];

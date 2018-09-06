@@ -11,6 +11,7 @@ import Toggle from 'material-ui/Toggle';
 import { createStructuredSelector } from 'reselect';
 import * as appActions from '../../containers/App/actions';
 import { makeSelectGlobal } from '../../containers/App/selectors';
+import LocaleToggle from '../../containers/LocaleToggle';
 
 class Settings extends React.Component {
   constructor(props) {
@@ -29,18 +30,11 @@ class Settings extends React.Component {
 
   componentDidMount() {
     // Remove this conditional code if you don't want the settings drawer to display at load
-    if (!this.props.isMobileBrowser) {
-      setTimeout(() => {
-        if (this.props.location.pathname === '/') {
-          this.props.actions.openSettingsDrawer();
-        }
-      }, 3000);
-    }
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.pathname !== '/' &&
-    !this.state.closeSettingDrawnerOnce) {
+      !this.state.closeSettingDrawnerOnce) {
       this.setState({
         closeSettingDrawnerOnce: true,
       });
@@ -168,6 +162,12 @@ class Settings extends React.Component {
           toggled={this.props.appStore.isBoxedLayout}
           onToggle={this.layoutChanged}
         />
+        <h2
+          style={styles.headerItem}
+        >
+          language
+        </h2>
+        <LocaleToggle />
       </Drawer>
     );
   }

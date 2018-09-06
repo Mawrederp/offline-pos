@@ -141,13 +141,16 @@ class LeftDrawer extends React.Component {
         </div>
         <Toolbar style={styles.headerItem} className={'drawer-toolbar'}>
           <ToolbarGroup style={styles.selectedMenuListItem} lastChild>
-            <IconButton iconStyle={styles.iconButton} style={styles.menuButton}>
-              <FontIcon color={ this.state.currentTheme.appBarMenuButtonColor} className="material-icons">
-                {this.props.appStore.box.open ? 'lock_open' : 'lock'}
+            <IconButton
+              iconStyle={styles.iconButton} onClick={() => browserHistory.push('/close-registry')}
+              style={styles.menuButton}
+            >
+              <FontIcon color={this.state.currentTheme.appBarMenuButtonColor} className="material-icons">
+                {this.props.appStore.box.open ? 'lock' : 'lock_open'}
               </FontIcon>
             </IconButton>
           </ToolbarGroup>
-          <ToolbarGroup ></ToolbarGroup>
+          <ToolbarGroup></ToolbarGroup>
         </Toolbar>
         {
           this.props.appStore.showOpenViews ? (
@@ -177,6 +180,7 @@ LeftDrawer.propTypes = {
   appStore: PropTypes.any,
   location: PropTypes.any,
   isMobileBrowser: PropTypes.bool,
+  router: PropTypes.any,
 };
 
 const mapStateToProps = createStructuredSelector({

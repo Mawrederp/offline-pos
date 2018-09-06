@@ -21,10 +21,12 @@ addLocaleData(arLocaleData);
 
 export const appLocales = [
   'en',
-  'de',
   'ar',
 ];
-
+export const appLocalesLabels = [
+  'english',
+  'العربية',
+];
 export const formatTranslationMessages = (locale, messages) => {
   const defaultFormattedMessages = locale !== DEFAULT_LOCALE
     ? formatTranslationMessages(DEFAULT_LOCALE, enTranslationMessages)

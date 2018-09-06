@@ -16,7 +16,7 @@ const updateContentDimensions = () => {
   body.style.overflowY = 'auto';
 };
 
-const getCurrentTheme = (currentTheme) => {
+const getCurrentTheme = (currentTheme, rtl = true) => {
   let muiTheme;
   switch (currentTheme) {
     case 'lightTheme':
@@ -35,7 +35,12 @@ const getCurrentTheme = (currentTheme) => {
       muiTheme = ThemeDefault;
       break;
   }
-  return muiTheme;
+  return {
+    ...muiTheme,
+    ...{
+      isRtl: rtl,
+    },
+  };
 };
 
 export {

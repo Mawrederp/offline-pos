@@ -27,7 +27,6 @@ const ButtonSet = ({ buttons, name, pressHandler, className }) => {
           hoverColor={'none'}
           label={label}
           key={label}
-          onTouchTap={() => pressHandler(label)}
         />
       ))}
     </div>

@@ -63,6 +63,12 @@ class AuthPage extends React.Component { // eslint-disable-line react/prefer-sta
         errorMessage: newProps.appStore.authenticationErrorMessage,
       });
     }
+    if (newProps.appStore.registrationErrorMessage !==
+      this.props.appStore.registrationErrorMessage) {
+      this.setState({
+        errorMessage: newProps.appStore.registrationErrorMessage,
+      });
+    }
   }
 
   signIn() {
@@ -227,6 +233,7 @@ class AuthPage extends React.Component { // eslint-disable-line react/prefer-sta
                   onConfirmPasswordChange={this.registerConfirmPasswordChanged}
                   onRegister={this.register}
                   onGoBack={this.showLogin}
+                  errorMessage={this.state.errorMessage}
                 />
               </div>
             ) : (

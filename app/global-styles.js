@@ -10,7 +10,10 @@ injectGlobal`
     font-family: 'Roboto', sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-
+  input[type="number"],input.num-input{
+    direction: ltr !important;
+  }
+  
   body{
   }
   html[dir="rtl"] .material-icons {

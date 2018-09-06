@@ -1,11 +1,12 @@
 /**
-*
-* ReportForm
-*
-*/
+ *
+ * ReportForm
+ *
+ */
 
 import React from 'react';
 // import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 import { Paper, Subheader, TextField, Avatar, Chip } from 'material-ui';
 import { cyan600, white, black, cyan300 } from 'material-ui/styles/colors';
@@ -17,6 +18,7 @@ import ButtonSet from '../ButtonSet';
 
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
+
 const styles = {
   subheader: {
     fontSize: 24,
@@ -31,7 +33,6 @@ const styles = {
     backgroundColor: white,
     color: black,
     lineHeight: '25px',
-
   },
   itemPropHeader: {
     padding: 0,
@@ -52,18 +53,22 @@ const sideButtons = [
   ['+10'],
   ['+20'],
   ['+50'],
-  [<FontIcon className="material-icons" >backspace</FontIcon>],
+  [<FontIcon className="material-icons">backspace</FontIcon>],
 ];
+
 class ReportForm extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+
   render() {
+    const { cash, receipts } = this.props.box;
+    const user = this.props.user;
     return (
       <Paper>
 
         <Subheader style={{ padding: 15 }}>
           <Chip style={{ margin: 'auto' }}>
             <Avatar src="http://i.pravatar.cc/100" />
-            اكرم محمد عبد الرحمن
-              </Chip>
+            {user.fullName}
+          </Chip>
         </Subheader>
         <Divider />
         <div className={'col-sm-12 col-md-12 col-lg-12'}>
@@ -73,7 +78,10 @@ class ReportForm extends React.PureComponent { // eslint-disable-line react/pref
             hintText={'اجمالي قيمة الفواتير'}
             floatingLabelText={'اجمالي قيمة الفواتير'}
             autoComplete={'off'}
-            defaultValue="2.33"
+            defaultValue={receipts || 0}
+            onChange={this.props.receiptsChanged}
+            type={'number'}
+            step={0.01}
           />
         </div>
         <div className={'col-sm-12 col-md-12 col-lg-12'}>
@@ -83,9 +91,11 @@ class ReportForm extends React.PureComponent { // eslint-disable-line react/pref
             autoComplete={'off'}
             hintText={'اجمالي النقود'}
             floatingLabelText={'اجمالي النقود'}
-
             className={'text-center'}
-            defaultValue="2.55"
+            type={'number'}
+            defaultValue={cash || 0}
+            onChange={this.props.cashChanged}
+            step={0.01}
           />
         </div>
         <div className="buttons col-md-12 col-sm-12 col-lg-12">
@@ -106,7 +116,10 @@ class ReportForm extends React.PureComponent { // eslint-disable-line react/pref
 }
 
 ReportForm.propTypes = {
-
+  box: PropTypes.any,
+  receiptsChanged: PropTypes.func,
+  cashChanged: PropTypes.func,
+  user: PropTypes.object,
 };
 
 export default ReportForm;

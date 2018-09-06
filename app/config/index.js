@@ -1,1 +1,3 @@
-export const delayLoadingComponentTime = 500;
+export const delayLoadingComponentTime = 0;
+
+

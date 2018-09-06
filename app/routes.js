@@ -65,7 +65,7 @@ export default function createRoutes(store) {
       path: '/close-registry',
       name: 'closeRegistry',
       getComponent(location, cb) {
-        import('components/CloseRegistry')
+        import('containers/Registry')
           .then(loadModule(cb))
           .catch(errorLoading);
       },
@@ -116,6 +116,14 @@ export default function createRoutes(store) {
         });
 
         importModules.catch(errorLoading);
+      },
+    }, {
+      path: '/close-registry',
+      name: 'registry',
+      getComponent(location, cb) {
+        import('containers/Registry')
+          .then(loadModule(cb))
+          .catch(errorLoading);
       },
     }, {
       path: '*',
