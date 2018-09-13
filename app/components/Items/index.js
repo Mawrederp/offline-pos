@@ -25,6 +25,7 @@ import messages from './messages';
 
 import PageBase from '../PageBase';
 
+const noImage = require('../../assets/no-image.gif');
 const styles = {
   subheader: {
     fontSize: 24,
@@ -82,13 +83,10 @@ class Items extends React.PureComponent { // eslint-disable-line react/prefer-st
   };
 
   render() {
-    const { openEditModal } = this.props;
+    const { openEditModal, products } = this.props;
     return (
-      <PageBase
-        noWrapContent
-        className={'items'}
-        style={{ padding: '0px !important' }}
-      >
+      <Paper style={{ width: '100%' }}>
+
         <Subheader style={styles.subheader}>المنتجات</Subheader>
         <AutoComplete
           hintText="يمكنك البحث باستخدام احرف او كلمات"
@@ -106,24 +104,29 @@ class Items extends React.PureComponent { // eslint-disable-line react/prefer-st
             cellHeight={180}
             style={{ width: '100%' }}
             className={'col-md-12 col-lg-12 col-sm-12 '}
-            cols={7}
+            cols={Object.keys(products).length > 4 ? 7 : undefined}
             spacing={2}
           >
-            {this.props.data.map((tile, idx) => (
+            {Object.keys(products).map((key, idx) => (
               <GridTile
-                key={tile.guid}
-                title={tile.company}
+                key={key}
+                title={products[key].name}
                 className={'items-tile'}
-                subtitle={<ItemSubTitle unitPrice={tile.price} quantity={tile.index} discount={`${tile.index}%`} />}
-                actionIcon={<IconButton onClick={(event) => openEditModal(tile.guid, event)}><FontIcon className={'material-icons'} color={white}>more_vert</FontIcon></IconButton>}
+                subtitle={<ItemSubTitle unitPrice={products[key].price} quantity={products[key].quantity} discount={`${products[key].discount}%`} />}
+                actionIcon={
+                  <div>
+                    <IconButton onClick={(event) => openEditModal(products[key], event)}><FontIcon className={'material-icons'} color={white}>edit</FontIcon></IconButton>
+                    <IconButton onClick={() => this.props.removeProduct(products[key])}><FontIcon className={'material-icons'} color={white}>delete</FontIcon></IconButton>
+                  </div>
+                }
               >
 
-                <img src={`${tile.img}?ver=${idx}`} role="presentation" />
+                <img src={`${products[key].img && products[key].img.size ? URL.createObjectURL(products[key].img) : noImage}`} role="presentation" />
               </GridTile>
             ))}
           </GridList>
         </div>
-      </PageBase >
+      </Paper>
     );
   }
 }
@@ -131,6 +134,8 @@ class Items extends React.PureComponent { // eslint-disable-line react/prefer-st
 Items.propTypes = {
   data: PropTypes.array,
   openEditModal: PropTypes.func,
+  products: PropTypes.any,
+  removeProduct: PropTypes.func,
 };
 
 ItemSubTitle.propTypes = {

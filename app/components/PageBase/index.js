@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
@@ -46,26 +46,26 @@ class PageBase extends React.Component {
     );
 
     return (
-      <div>
+      <Fragment>
         <span style={globalStyles.navigation}>{navigation}</span>
 
         {noWrapContent ? (
-          <div>
+          <Fragment>
             {content}
-          </div>
+          </Fragment>
         ) : (
-            <Paper style={globalStyles.paper}>
-              <h3 style={globalStyles.title}>{title}</h3>
+          <Paper style={globalStyles.paper}>
+            <h3 style={globalStyles.title}>{title}</h3>
 
-              <Divider />
+            <Divider />
 
-              {content}
+            {content}
 
-              <div style={globalStyles.clear} />
+            <div style={globalStyles.clear} />
 
-            </Paper>
+          </Paper>
           )}
-      </div>
+      </Fragment>
     );
   }
 }

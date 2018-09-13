@@ -7,6 +7,9 @@ const themeDarkBlue = getMuiTheme({
     height: 57,
     color: '#2b3643',
   },
+  Chip: {
+    backgroundColor: '#eee',
+  },
   drawer: {
     width: 230,
     color: '#364150',

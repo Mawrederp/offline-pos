@@ -7,6 +7,12 @@
 import React from 'react';
 // import styled from 'styled-components';
 import PropTypes from 'prop-types';
+
+import { Paper, Subheader, FlatButton, TextField, AutoComplete, Toggle } from 'material-ui';
+import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+// pick utils
+import moment from 'moment';
+import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import {
   Table,
   TableBody,
@@ -16,15 +22,10 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import { DateTimePicker } from 'material-ui-pickers';
-
+import DateTimeLabel from '../DateTimeLabel';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
-import { Paper, Subheader, FlatButton, TextField, AutoComplete, Toggle } from 'material-ui';
-import DateTimeLabel from '../DateTimeLabel';
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
-// pick utils
-import MomentUtils from 'material-ui-pickers/utils/moment-utils';
-const Fragment = React.Fragment;
+
 const styles = {
   uploadButton: {
     verticalAlign: 'middle',
@@ -57,11 +58,14 @@ class ProductForm extends React.PureComponent { // eslint-disable-line react/pre
       selectedStartDateTime: new Date('2018-01-01T00:00:00.000Z'),
       selectedEndDateTime: new Date('2018-01-01T00:00:00.000Z'),
       clearedDate: null,
-      discountIsTimed: false,
+      imageUpload: false,
+      discountIsTimed: props.product.discountFrom,
     };
+
     this.handleUpdateInput = this.handleUpdateInput.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.discountTimeToggle = this.discountTimeToggle.bind(this);
+    this.uploadImageToggle = this.uploadImageToggle.bind(this);
   }
   handleDateChange = (date, start) => {
     this.setState({ [start ? 'selectedStartDateTime' : 'selectedEndDateTime']: date });
@@ -83,8 +87,23 @@ class ProductForm extends React.PureComponent { // eslint-disable-line react/pre
   discountTimeToggle = (event, toggled) => {
     this.setState({ discountIsTimed: toggled });
   }
+
+  uploadImageToggle = (event, toggled) => {
+    this.setState({ imageUpload: toggled });
+  }
+
+  handleSubmit(evt, sth, another) {
+    evt.preventDefault();
+    const data = new FormData(document.getElementById('products-form'));
+    const dataObj = {};
+
+    data.forEach((value, key) => {
+      dataObj[key] = value;
+    });
+  }
   render() {
     const { selectedStartDateTime, selectedEndDateTime, clearedDate } = this.state;
+    const { product } = this.props;
     return (
       <MuiPickersUtilsProvider utils={MomentUtils}>
 
@@ -100,45 +119,48 @@ class ProductForm extends React.PureComponent { // eslint-disable-line react/pre
             </TableHeader>
             <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={false}>
               <TableRow>
-                <TableHeaderColumn><TextField floatingLabelText={'اسم المنتج'} /></TableHeaderColumn>
-                <TableHeaderColumn><TextField floatingLabelText={'سعر الوحدة'} type={'number'} /></TableHeaderColumn>
+                <TableHeaderColumn><TextField defaultValue={product.name} name={'name'} floatingLabelText={'اسم المنتج'} /></TableHeaderColumn>
+                <TableHeaderColumn><TextField defaultValue={product.price} name={'price'} floatingLabelText={'سعر الوحدة'} type={'number'} /></TableHeaderColumn>
               </TableRow>
               <TableRow>
                 <TableHeaderColumn>
-                  <AutoComplete
-                    hintText="يمكنك البحث باستخدام احرف او كلمات"
-                    dataSource={colors}
-                    onUpdateInput={this.handleUpdateInput}
-                    floatingLabelText="المورد "
-                    filter={AutoComplete.fuzzyFilter}
-                    fullWidth
-                    openOnFocus
-
-                  />
+                  <TextField defaultValue={product.supplier} name={'supplier'} floatingLabelText={'المورد'} />
+                  {/* <AutoComplete*/}
+                  {/* hintText="يمكنك البحث باستخدام احرف او كلمات"*/}
+                  {/* dataSource={colors}*/}
+                  {/* onUpdateInput={this.handleUpdateInput}*/}
+                  {/* floatingLabelText="المورد "*/}
+                  {/* filter={AutoComplete.fuzzyFilter}*/}
+                  {/* fullWidth*/}
+                  {/* name={'supplier'}*/}
+                  {/* openOnFocus*/}
+                  {/* />*/}
                 </TableHeaderColumn>
-                <TableHeaderColumn><TextField floatingLabelText={'رقم التبويب'} type={'number'} /></TableHeaderColumn>
+                <TableHeaderColumn><TextField defaultValue={product.barcode} name={'barcode'} floatingLabelText={'رقم الباركود'} type={'number'} /></TableHeaderColumn>
               </TableRow>
               <TableRow>
                 <TableHeaderColumn>
-                  <AutoComplete
-                    hintText="يمكنك البحث باستخدام احرف او كلمات"
-                    dataSource={colors}
-                    onUpdateInput={this.handleUpdateInput}
-                    floatingLabelText="الضريبة "
-                    filter={AutoComplete.fuzzyFilter}
-                    fullWidth
-                    openOnFocus
-
-                  />
+                  <TextField defaultValue={product.tax} name={'tax'} floatingLabelText={'الضريبة'} type={'number'} />
+                  {/* <AutoComplete*/}
+                  {/* hintText="يمكنك البحث باستخدام احرف او كلمات"*/}
+                  {/* dataSource={colors}*/}
+                  {/* onUpdateInput={this.handleUpdateInput}*/}
+                  {/* floatingLabelText="الضريبة "*/}
+                  {/* filter={AutoComplete.fuzzyFilter}*/}
+                  {/* fullWidth*/}
+                  {/* openOnFocus*/}
+                  {/* name={'tax'}*/}
+                  {/* />*/}
                 </TableHeaderColumn>
-                <TableHeaderColumn><TextField floatingLabelText={'الكمية'} type={'number'} /></TableHeaderColumn>
+                <TableHeaderColumn><TextField defaultValue={product.quantity} name={'quantity'} floatingLabelText={'الكمية'} type={'number'} /></TableHeaderColumn>
               </TableRow>
               <TableRow>
-                <TableHeaderColumn><TextField floatingLabelText={'الخصم'} /></TableHeaderColumn>
+                <TableHeaderColumn><TextField defaultValue={product.discount} name={'discount'} floatingLabelText={'الخصم'} type={'number'} step={0.1} /></TableHeaderColumn>
                 <TableHeaderColumn>
                   <Toggle
                     label="خصم مؤقت"
                     style={{ width: '75%' }}
+                    defaultToggled={!!this.state.discountIsTimed}
                     onToggle={this.discountTimeToggle}
                   />
                 </TableHeaderColumn>
@@ -149,11 +171,13 @@ class ProductForm extends React.PureComponent { // eslint-disable-line react/pre
                 <TableHeaderColumn>
 
                   <div className={'picker'} >
+                    {this.state.discountIsTimed ? <input name={'discountFrom'} defaultValue={product.discountFrom || undefined} value={this.state.selectedStartDateTime} type={'hidden'} /> : ''}
+
                     <DateTimePicker
                       keyboard
                       label={'من'}
-                      disabled={this.state.discountIsTimed}
-                      onError={console.log}
+                      disabled={!this.state.discountIsTimed}
+                      onError={(err)=>err}
                       minDate={new Date('2018-01-01T00:00')}
                       value={selectedStartDateTime}
                       onChange={(date) => this.handleDateChange(date, true)}
@@ -166,11 +190,12 @@ class ProductForm extends React.PureComponent { // eslint-disable-line react/pre
                 <TableHeaderColumn>
 
                   <div className="picker ">
+                    {this.state.discountIsTimed ? <input name={'discountTo'} defaultValue={product.discountTo || undefined} value={this.state.selectedEndDateTime} type={'hidden'} /> : ''}
                     <DateTimePicker
                       keyboard
                       label="الى"
-                      disabled={this.state.discountIsTimed}
-                      onError={console.log}
+                      disabled={!this.state.discountIsTimed}
+                      onError={(err)=>err}
                       minDate={new Date('2018-01-01T00:00')}
                       value={selectedEndDateTime}
                       onChange={this.handleDateChange}
@@ -189,9 +214,21 @@ class ProductForm extends React.PureComponent { // eslint-disable-line react/pre
                     labelPosition="before"
                     style={styles.uploadButton}
                     containerElement="label"
+
                   >
-                    <input type="file" style={styles.uploadInput} />
+                    <input
+                      disabled={!this.state.imageUpload}
+                      name={'img'} id={'product-image-file'} type="file" style={styles.uploadInput}
+                    />
                   </FlatButton>
+                </TableRowColumn>
+                <TableRowColumn>
+                  <Toggle
+                    label="خصم مؤقت"
+                    style={{ width: '75%' }}
+                    defaultToggled={!!this.state.imageUpload}
+                    onToggle={this.uploadImageToggle}
+                  />
                 </TableRowColumn>
               </TableRow>
             </TableBody>
@@ -205,6 +242,8 @@ class ProductForm extends React.PureComponent { // eslint-disable-line react/pre
 
 ProductForm.propTypes = {
   id: PropTypes.string,
+  setProduct: PropTypes.func,
+  product: PropTypes.any,
 };
 
 export default ProductForm;

@@ -1,11 +1,13 @@
 /**
-*
-* MultiVariantForm
-*
-*/
+ *
+ * MultiVariantForm
+ *
+ */
 
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { fromJS, Map } from 'immutable';
+
 import { DateTimePicker } from 'material-ui-pickers';
 import ChipInput from 'material-ui-chip-input';
 import {
@@ -17,23 +19,31 @@ import {
   TableFooter,
   TableRowColumn,
 } from 'material-ui/Table';
-import { Paper, Subheader, FlatButton, RaisedButton, TextField, AutoComplete, IconButton, ToolbarGroup, Chip } from 'material-ui';
+import {
+  Paper,
+  Subheader,
+  FlatButton,
+  RaisedButton,
+  TextField,
+  AutoComplete,
+  IconButton,
+  ToolbarGroup,
+  Chip,
+} from 'material-ui';
 import FontIcon from 'material-ui/FontIcon';
-import { red500, green500, fullWhite } from 'material-ui/styles/colors';
+import { red500, green500, blue300, fullWhite } from 'material-ui/styles/colors';
+import Divider from 'material-ui/Divider';
+import { GridList, GridTile } from 'material-ui/GridList';
+import { List, ListItem, makeSelectable } from 'material-ui/List';
 
 import DateTimeLabel from '../DateTimeLabel';
-import { GridList, GridTile } from 'material-ui/GridList';
 // import styled from 'styled-components';
-import StarBorder from 'material-ui/svg-icons/toggle/star-border';
-import { List, ListItem } from 'material-ui/List';
 
-import { FormattedMessage } from 'react-intl';
 import messages from './messages';
-import { Toolbar } from '../../../node_modules/@material-ui/core';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import Divider from 'material-ui/Divider';
+import VariantsInput from './VariantsInput';
+import SelectableList from './SelectableList';
 
+const noImage = require('../../assets/no-image.gif');
 const colors = [
   'احمر',
   'اصفر',
@@ -48,6 +58,9 @@ const styles = {
   uploadButton: {
     verticalAlign: 'middle',
   },
+  selectedChip: {
+    backgroundColor: blue300,
+  },
   uploadInput: {
     cursor: 'pointer',
     position: 'absolute',
@@ -59,6 +72,7 @@ const styles = {
     opacity: 0,
   },
 };
+
 class MultiVariantForm extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
 
   constructor(props) {
@@ -66,34 +80,158 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
     this.state = {
       selectedStartDateTime: new Date('2018-01-01T00:00:00.000Z'),
       selectedEndDateTime: new Date('2018-01-01T00:00:00.000Z'),
-      chips: ['js'],
-      chipData: [
-        { key: 0, label: '200 جرام' },
-        { key: 1, label: '150 جرام' },
-        { key: 2, label: '100 جرام' },
-      ],
+      rules: {},
+      variants: props.existing.variants || {},
+      variantsProps: props.existing.variantsProps || {},
+      selectedVariant: '',
+      selectedProps: {},
+      selectedVariantRow: null,
+      // will cause uncessarry renders @todo should not be here .
+      discount: '0.0',
+      quantity: 0,
+      price: '0.0',
+      barcode: '-',
     };
     this.handleUpdateInput = this.handleUpdateInput.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleRequestDelete = this.handleRequestDelete.bind(this);
-    this.renderChip = this.renderChip.bind(this);
+    this.setNewVariant = this.setNewVariant.bind(this);
+    this.removeVariant = this.removeVariant.bind(this);
+    this.selectVariant = this.selectVariant.bind(this);
+    this.selectVariantProp = this.selectVariantProp.bind(this);
+    this.handleVariantPropClick = this.handleVariantPropClick.bind(this);
+    this.handleDiscountChange = this.handleDiscountChange.bind(this);
+    this.handleQuantityChange = this.handleQuantityChange.bind(this);
+    this.handlePriceChange = this.handlePriceChange.bind(this);
+    this.handleBarcodeChange = this.handleBarcodeChange.bind(this);
+    this.addVariantProp = this.addVariantProp.bind(this);
+    this.selectVariantRow = this.selectVariantRow.bind(this);
+    this.removeVariantRow = this.removeVariantRow.bind(this);
   }
 
   onBeforeAdd(chip) {
     return chip.length >= 3;
   }
+
+  setNewVariant(variantData) {
+    this.setState({
+      variants: {
+        ...this.state.variants,
+        ...{
+          [variantData.feature]:
+            variantData.variants.filter(
+              (value, index, self) => self.indexOf(value) === index
+            ),
+        },
+      },
+    });
+  }
+
+  selectVariant(evt, index) {
+    this.setState({ selectedVariant: index });
+  }
+
+  removeVariant() {
+    const { selectedVariant } = this.state;
+    const variants = { ...this.state.variants };
+    delete variants[selectedVariant];
+    this.setState({ variants });
+  }
+
+  removeVariantRow() {
+    const { variantsProps, selectedVariantRow } = this.state;
+    const variantsMap = { ...variantsProps };
+    delete variantsMap[selectedVariantRow];
+
+    this.setState({ variantsProps: variantsMap });
+  }
+
+  selectVariantRow(index) {
+    const { variantsProps } = this.state;
+    const keysArray = Object.keys(variantsProps);
+    this.setState({ selectedVariantRow: keysArray[index - 1] });
+  }
+
+  selectVariantProp(prop) {
+    const key = Object.keys(prop)[0];
+    const prevProps = this.state.selectedProps;
+
+    if (!prevProps[key] || (prevProps[key].label !== prop[key].label)) {
+      this.setState({ selectedProps: { ...prevProps, ...prop } });
+    } else {
+      this.setState({ selectedProps: { ...this.state.selectedProps, ...{ [key]: {} } } });
+    }
+  }
+
+  addVariantProp() {
+    if (this.state.selectedProps) {
+      const { variantsProps, selectedProps, discount, quantity, price, barcode } = this.state;
+      const keys = Object.keys(selectedProps).join('_');
+      const values = Object.values(selectedProps).map((obj) => obj.label).join('_');
+      const key = `${keys}$${values}`;
+      this.setState({
+        variantsProps: {
+          ...variantsProps,
+          ...{
+            [key]: {
+              selectedProps,
+              discount,
+              quantity,
+              price,
+              barcode,
+            },
+          },
+        },
+      });
+    }
+  }
+
+  handleVariantPropClick(event) {
+    event.stopPropagation();
+    const variantProp = event.currentTarget.getAttribute('value').split('_');
+    const variantPropObject = { [variantProp[0]]: { ...{ label: variantProp[1] } } };
+    this.selectVariantProp(variantPropObject);
+  }
+
+// should be changed to avoid uneccessary renders
+  handleDiscountChange(event) {
+    this.setState({ discount: event.target.value });
+  }
+
+  handleQuantityChange(event) {
+    this.setState({ quantity: event.target.value });
+  }
+
+  handlePriceChange(event) {
+    this.setState({ price: event.target.value });
+  }
+
+  handleBarcodeChange(event) {
+    this.setState({ barcode: event.target.value });
+  }
+
+  existsInArray(haystack, needle) {
+    if (haystack && Array.isArray(haystack) && !(haystack.length === 0)) {
+      return haystack.indexOf(needle) >= 0;
+    }
+    return false;
+  }
+
+// //////////
   handleAdd(chip) {
     this.setState({
-      chips: [...this.state.chips, chip]
+      chips: [...this.state.chips, chip],
     });
   }
+
   handleDelete(deletedChip) {
     this.setState({
-      chips: this.state.chips.filter((c) => c !== deletedChip)
+      chips: this.state.chips.filter((c) => c !== deletedChip),
     });
   }
+
   handleDateChange = (date, start) => {
     this.setState({ [start ? 'selectedStartDateTime' : 'selectedEndDateTime']: date });
   }
@@ -112,38 +250,47 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
     this.chipData.splice(chipToDelete, 1);
     this.setState({ chipData: this.chipData });
   };
-  renderChip(data) {
+
+  renderChip(variant) {
+    const selectedProp = this.component.state.selectedProps[this.key];
+    const selected = selectedProp && selectedProp.label === variant;
+    const key = `${this.key}_${variant}`;
     return (
       <Chip
-        key={data.key}
-        style={{ margin: 4 }}
-        onRequestDelete={() => this.handleRequestDelete(data.key)}
+        key={key}
+        style={{ margin: 4, backgroundColor: '#eee', boxShadow: selected ? '0px 2px 20px 1px rgba(0,0,0,0.35)' : 'none' }}
+        value={key}
+        onClick={this.component.handleVariantPropClick}
       >
-        {data.label}
+        {variant}
       </Chip>
     );
   }
-  render() {
-    const { selectedStartDateTime, selectedEndDateTime } = this.state;
 
+
+  render() {
+    const { selectedStartDateTime, selectedEndDateTime, variantsProps, selectedProps, variants } = this.state;
+    const { product, user } = this.props;
     return (
-      <Paper >
+      <Paper>
         <Subheader className={'text-center'}> اعدادات المنتج متعدد الاشكال</Subheader>
         <Table allRowsSelected={false} selectable={false}>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
             <TableRow>
               <TableHeaderColumn>وقت تسجيل المنتج : <DateTimeLabel /></TableHeaderColumn>
               <TableHeaderColumn></TableHeaderColumn>
-              <TableHeaderColumn>اسم الموظف : اكرم محمد عبد الرحمن</TableHeaderColumn>
+              <TableHeaderColumn>اسم الموظف : {user.fullName}</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={false}>
-            <TableRow >
-              <TableHeaderColumn rowSpan={3}>
-                <TableRow ><TableRowColumn>اسم المنتج : نستله نس كافيه</TableRowColumn></TableRow>
-                <TableRow ><TableRowColumn>الخصم الاجمالي : 0.0%</TableRowColumn></TableRow>
-                <TableRow ><TableRowColumn>الكمية : 200</TableRowColumn></TableRow>
-              </TableHeaderColumn>
+            <TableRow>
+              <TableRowColumn rowSpan={3}>
+                <table>
+                  <TableRow><TableRowColumn>اسم المنتج : {product.name}</TableRowColumn></TableRow>
+                  <TableRow><TableRowColumn>الخصم الاجمالي : {product.discount}%</TableRowColumn></TableRow>
+                  <TableRow><TableRowColumn>الكمية : {product.quantity}</TableRowColumn></TableRow>
+                </table>
+              </TableRowColumn>
               <TableRowColumn rowSpan={3}>
                 <GridList
                   cellHeight={120}
@@ -152,10 +299,10 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
                   spacing={2}
                 >
                   <GridTile
-                    title={'نستله نسكافيه'}
-                    subtitle={<span>السعر <b>{'23 ريال'}</b></span>}
+                    title={product.name}
+                    subtitle={<span>السعر <b>{product.price}ريال</b></span>}
                   >
-                    <img src={'https://loremflickr.com/320/240/nestle,nescafe'} role="presentation" />
+                    <img id={'product-img-preview'} src={product.img ? URL.createObjectURL(product.img) : noImage} role="presentation" />
                   </GridTile>
                 </GridList>
               </TableRowColumn>
@@ -164,57 +311,32 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
             <TableRow />
           </TableBody>
         </Table>
-        <Toolbar className={'row m-b-15'}>
-          <ToolbarGroup className={'col-sm-2 col-md-2 col-xs-2 col-lg-2 col-md-2'}>
-            <AutoComplete
-              dataSource={colors}
-              onUpdateInput={this.handleUpdateInput}
-              floatingLabelText="اسم السمة"
-              filter={AutoComplete.fuzzyFilter}
-              fullWidth
-              style={{ textIndent: 3, height: '53px' }}
-
-            />
-          </ToolbarGroup>
-          <ToolbarGroup style={{ marginTop: 17 }} className={'col-sm-8 col-md-8 col-xs-8 col-lg-8 col-md-8'} >
-            <ChipInput
-              blurBehavior={'add'}
-              style={{ width: '75%' }}
-            />
-          </ToolbarGroup>
-
-          <ToolbarGroup className={'col-sm-2 col-md-2 col-xs-2 col-lg-2 col-md-2'} >
-            <RaisedButton
-              label="اضافة سمة جديدة"
-              primary
-              style={styles.button}
-              icon={<FontIcon className="material-icons" >control_point</FontIcon>}
-            />
-
-          </ToolbarGroup>
-
-        </Toolbar>
+        <VariantsInput setNewVariant={this.setNewVariant} removeVariant={this.removeVariant} />
         <Paper>
-          <List fullWidth>
-            <ListItem>
-              <div className={'row'}>
-                <div className={'col-lg-4 col-sm-4 col-md-4 col-xs-4'}>
-                  الحجم
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    height: 'auto',
-                  }}
-                  className={'col-lg-8 col-sm-8 col-md-8 col-xs-8'}
-                >
-                  {this.state.chipData.map(this.renderChip, this)}
-
-                </div>
-              </div>
-            </ListItem>
-          </List>
+          <SelectableList fullWidth onChange={this.selectVariant} defaultValue={1}>
+            {
+              Object.keys(variants).map((key) =>
+                <ListItem value={key}>
+                  <div className={'row'}>
+                    <div className={'col-lg-4 col-sm-4 col-md-4 col-xs-4'}>
+                      {key}
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        height: 'auto',
+                      }}
+                      className={'col-lg-8 col-sm-8 col-md-8 col-xs-8'}
+                    >
+                      <input type={'hidden'} name={'variantsProps'} value={JSON.stringify(variants)} />
+                      {variants[key].map(this.renderChip, { key, component: this })}
+                    </div>
+                  </div>
+                </ListItem>
+              )
+            }
+          </SelectableList>
         </Paper>
         <Divider className={'m-b-15'} />
         <Table
@@ -222,48 +344,184 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
             height: '300px',
           }}
           fixedHeader
+          onRowSelection={this.selectVariantRow}
         >
-          <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} >
-            <TableHeaderColumn className={'text-center'} >المتغيرات</TableHeaderColumn>
+          <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
+            <td
+              style={{
+                paddingRight: '24px',
+                paddingLeft: '24px',
+                height: '48px',
+                textAlign: 'right',
+                fontSize: '13px',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                backgroundColor: 'inherit',
+                width: '24px',
+                cursor: 'inherit',
+              }}
+            ></td>
+            <TableHeaderColumn className={'text-center'}>المتغيرات</TableHeaderColumn>
             <TableHeaderColumn className={'text-center'}>الخصم</TableHeaderColumn>
             <TableHeaderColumn className={'text-center'}>الكمية</TableHeaderColumn>
             <TableHeaderColumn className={'text-center'}>السعر</TableHeaderColumn>
+            <TableHeaderColumn className={'text-center'}>باركود</TableHeaderColumn>
           </TableHeader>
-          <TableBody >
-            <TableRow>
-              <TableHeaderColumn>اساسي</TableHeaderColumn>
-              <TableHeaderColumn>0.0%</TableHeaderColumn>
-              <TableHeaderColumn>32 وحدة</TableHeaderColumn>
-              <TableHeaderColumn>23 ريال</TableHeaderColumn>
+          <TableBody deselectOnClickaway={false}>
+            <TableRow selectable={false}>
+              <TableHeaderColumn className={'text-center'}>اساسي</TableHeaderColumn>
+              <TableHeaderColumn className={'text-center'}>{product.discount || 0}%</TableHeaderColumn>
+              <TableHeaderColumn className={'text-center'}> {product.quantity || 0} وحدة</TableHeaderColumn>
+              <TableHeaderColumn
+                className={'text-center'}
+              >{product.price ? `${product.price}ريال ` : '-'}                                                                                                                                                                                                                                                                                                                                                                                              </TableHeaderColumn>
+              <TableHeaderColumn className={'text-center'}>{product.barcode || '-'}</TableHeaderColumn>
+              <input type={'hidden'} name={'variantsProps'} value={JSON.stringify(variantsProps)} />
+              <input type={'hidden'} name={'variants'} value={JSON.stringify(variants)} />
             </TableRow>
-            <TableRow>
-              <TableRowColumn style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                height: 'auto',
-              }}
-              >
-                {this.state.chipData.map(this.renderChip, this)}
-              </TableRowColumn>
-              <TableHeaderColumn><TextField className={'text-center'} defaultValue={'0.0%'} floatingLabelText={'خصم مخصص'} /></TableHeaderColumn>
-              <TableHeaderColumn><TextField className={'text-center'} defaultValue={'15'} floatingLabelText={'كمية مخصصة'} /></TableHeaderColumn>
-              <TableHeaderColumn><TextField className={'text-center'} defaultValue={'30 ريال'} floatingLabelText={'سعر وحدة مخصص'} /></TableHeaderColumn>
+            {
+              Object.keys(variantsProps).map((key) => (
+                <TableRow key={key}>
 
-            </TableRow>
+                  <TableHeaderColumn>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        height: 'auto',
+                      }}
+                    >
+                      {Object.keys(variantsProps[key].selectedProps).map((prop) =>
+                        this.existsInArray(variants[prop], variantsProps[key].selectedProps[prop].label)
+                          ?
+                            <Chip
+                              key={`${prop}_${variantsProps[key].selectedProps[prop].label}_table`}
+                              style={{ margin: 4, backgroundColor: '#eee' }}
+                              value={`${prop}_${variantsProps[key].selectedProps[prop]}`}
+                            >
+                              {variantsProps[key].selectedProps[prop].label}
+                            </Chip> : ''
+                      )}
+                    </div>
+
+                  </TableHeaderColumn>
+                  <TableHeaderColumn><TextField
+                    className={'text-center'} defaultValue={'0.0'}
+                    floatingLabelText={'خصم مخصص'}
+                    fullWidth
+                    value={variantsProps[key].discount}
+                    type={'number'}
+                    step={0.1}
+                    disabled
+                    onChange={this.handleDiscountChange}
+                  />%</TableHeaderColumn>
+                  <TableHeaderColumn><TextField
+                    className={'text-center'} defaultValue={'0'}
+                    floatingLabelText={'كمية مخصصة'}
+                    fullWidth
+                    value={variantsProps[key].quantity}
+                    type={'number'}
+                    step={1}
+                    disabled
+                    onChange={this.handleQuantityChange}
+                  />وحدة</TableHeaderColumn>
+                  <TableHeaderColumn><TextField
+                    className={'text-center'} defaultValue={'0'}
+                    floatingLabelText={'سعر وحدة مخصص'}
+                    fullWidth
+                    value={variantsProps[key].price}
+                    type={'number'}
+                    step={0.1}
+                    disabled
+                    onChange={this.handlePriceChange}
+                  />ريال</TableHeaderColumn>
+                  <TableHeaderColumn><TextField
+                    className={'text-center '} defaultValue={''}
+                    floatingLabelText={'رمز الباركود'}
+                    fullWidth
+                    value={variantsProps[key].barcode}
+                    type={'number'}
+                    step={1}
+                    disabled
+                    onChange={this.handleBarcodeChange}
+                  /></TableHeaderColumn>
+                </TableRow>
+              ))
+            }
           </TableBody>
           <TableFooter
             adjustForCheckbox={this.state.showCheckboxes}
           >
+            <TableRow>
+              <TableHeaderColumn
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  height: 'auto',
+                }}
+              >
+                {Object.keys(selectedProps).map((key) =>
+                  this.existsInArray(variants[key], selectedProps[key].label)
+                    ?
+                      <Chip
+                        key={`${key}_${selectedProps[key].label}_table`}
+                        style={{ margin: 4, backgroundColor: '#eee' }}
+                        value={`${key}_${selectedProps[key]}`}
+                      >
+                        {selectedProps[key].label}
+                      </Chip> : ''
+                )}
 
+              </TableHeaderColumn>
+              <TableHeaderColumn><TextField
+                className={'text-center'} defaultValue={'0.0'}
+                floatingLabelText={'خصم مخصص'}
+                fullWidth
+                value={this.state.discount}
+                type={'number'}
+                step={0.1}
+                onChange={this.handleDiscountChange}
+              />%</TableHeaderColumn>
+              <TableHeaderColumn><TextField
+                className={'text-center'} defaultValue={'0'}
+                floatingLabelText={'كمية مخصصة'}
+                fullWidth
+                value={this.state.quantity}
+                type={'number'}
+                step={1}
+                onChange={this.handleQuantityChange}
+              />وحدة</TableHeaderColumn>
+              <TableHeaderColumn><TextField
+                className={'text-center'} defaultValue={'0'}
+                floatingLabelText={'سعر وحدة مخصص'}
+                fullWidth
+                value={this.state.price}
+                type={'number'}
+                step={0.1}
+                onChange={this.handlePriceChange}
+              />ريال</TableHeaderColumn>
+              <TableHeaderColumn><TextField
+                className={'text-center '} defaultValue={''}
+                floatingLabelText={'رمز الباركود'}
+                fullWidth
+                value={this.state.barcode}
+                type={'number'}
+                step={1}
+                onChange={this.handleBarcodeChange}
+              /></TableHeaderColumn>
+            </TableRow>
             <TableRow>
               <TableRowColumn colSpan={2}>
                 <RaisedButton
+                  onClick={this.removeVariantRow}
                   style={{ margin: 5 }}
                   backgroundColor={red500}
                   icon={<FontIcon color={fullWhite} className={'material-icons'}>delete_forever</FontIcon>}
 
                 />
                 <RaisedButton
+                  onClick={this.addVariantProp}
                   style={{ margin: 5 }}
                   backgroundColor={green500}
                   icon={<FontIcon color={fullWhite} className={'material-icons'}>add_box</FontIcon>}
@@ -276,13 +534,15 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
             </TableRow>
           </TableFooter>
         </Table>
-      </Paper >
+      </Paper>
     );
   }
 }
 
 MultiVariantForm.propTypes = {
-
+  product: PropTypes.object,
+  user: PropTypes.any,
+  existing: PropTypes.any,
 };
 
 export default MultiVariantForm;

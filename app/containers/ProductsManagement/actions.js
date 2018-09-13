@@ -5,11 +5,34 @@
  */
 
 import {
-  DEFAULT_ACTION,
+  GET_PRODUCT,
+  GET_PRODUCTS,
+  REMOVE_PRODUCT,
+  SET_PRODUCT,
 } from './constants';
 
-export function defaultAction() {
+export function getProducts() {
   return {
-    type: DEFAULT_ACTION,
+    type: GET_PRODUCTS,
+  };
+}
+
+export function getProduct(id) {
+  return {
+    type: GET_PRODUCT,
+    id,
+  };
+}
+
+export function setProduct(product) {
+  return {
+    type: SET_PRODUCT,
+    product,
+  };
+}
+export function removeProduct(product) {
+  return {
+    type: REMOVE_PRODUCT,
+    product,
   };
 }

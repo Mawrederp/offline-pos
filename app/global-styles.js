@@ -593,4 +593,10 @@ injectGlobal`
 .items-tile{
   cursor:pointer;
 }
+
+input[type=number].no-spinners::-webkit-inner-spin-button, 
+input[type=number].no-spinners::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
 `;
