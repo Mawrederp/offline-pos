@@ -12,7 +12,7 @@ import AutoComplete from 'material-ui/AutoComplete';
 import ButtonSet from '../ButtonSet';
 import CartList from '../CartList';
 
-const Cart = ({ data, payment, subHeader }) => {
+const Cart = ({ data, payment, subHeader, removeProduct }) => {
   const styles = {
     clearHeader: {
       fontSize: 16,
@@ -76,21 +76,21 @@ const Cart = ({ data, payment, subHeader }) => {
         id={'cart-search-box'}
 
       />
-      <CartList data={data} />
+      <CartList data={data} removeProduct={removeProduct} />
       <Divider inset />
       <Paper>
         <div className={'row cart-state'} >
           <Subheader style={styles.itemPropHeader} className={'row text-center'}>
-            <span className={'header-item col-xs-3 col-md-3 col-lg-3'}>المجموع</span>
-            <span className={'header-item col-xs-3 col-md-3 col-lg-3'}>الضريبة</span>
-            <span className={'header-item col-xs-3 col-md-3 col-lg-3'}>الخصم</span>
-            <span className={'header-item col-xs-3 col-md-3 col-lg-3'}>المجموع النهائي</span>
+            <span className={'header-item col-xs-4 col-md-4 col-lg-4'}>المجموع</span>
+            {/* <span className={'header-item col-xs-4 col-md-4 col-lg-4'}>الضريبة</span>*/}
+            <span className={'header-item col-xs-4 col-md-4 col-lg-4'}>الخصم</span>
+            <span className={'header-item col-xs-4 col-md-4 col-lg-4'}>المجموع النهائي</span>
           </Subheader>
           <Subheader style={styles.itemPropHeader} className={'row text-center'}>
-            <span className={'header-item col-xs-3 col-md-3 col-lg-3'}>13.0</span>
-            <span className={'header-item col-xs-3 col-md-3 col-lg-3'}>5%</span>
-            <span className={'header-item col-xs-3 col-md-3 col-lg-3'}>0%</span>
-            <span className={'header-item col-xs-3 col-md-3 col-lg-3'}>19.5</span>
+            <span className={'header-item col-xs-4 col-md-4 col-lg-4'}>{data.subTotal}</span>
+            {/* <span className={'header-item col-xs-4 col-md-4 col-lg-4'}>{data.tax}%</span>*/}
+            <span className={'header-item col-xs-4 col-md-4 col-lg-4'}>{data.discount}%</span>
+            <span className={'header-item col-xs-4 col-md-4 col-lg-4'}>{data.total}</span>
           </Subheader>
         </div>
         <div className="buttons">
@@ -121,10 +121,10 @@ const Cart = ({ data, payment, subHeader }) => {
 };
 
 Cart.propTypes = {
-  data: PropTypes.array,
+  data: PropTypes.any,
   payment: PropTypes.func,
   subHeader: PropTypes.any,
-
+  removeProduct: PropTypes.func,
 };
 
 export default Cart;

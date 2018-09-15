@@ -546,7 +546,7 @@ injectGlobal`
   bottom:9px !important;
 }
 .screen.payment:hover{
-  background-color:#eee;
+  background-color:rgba(0, 0, 0, .02) !important;
 }
 
 .text-center{

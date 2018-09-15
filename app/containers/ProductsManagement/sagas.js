@@ -1,13 +1,11 @@
-import { call, put, takeLatest, all } from 'redux-saga/effects';
+import { all,put, takeLatest } from 'redux-saga/effects';
 
 import {
-  GET_PRODUCT,
   GET_PRODUCTS,
+  PRODUCTS_LOADED,
+  GET_PRODUCT,
   REMOVE_PRODUCT,
   SET_PRODUCT,
-  PRODUCTS_LOADED,
-  PRODUCTS_ADDED,
-  PRODUCT_LOADED,
   PRODUCT_MODIFIED,
   PRODUCT_REMOVED,
 } from './constants';

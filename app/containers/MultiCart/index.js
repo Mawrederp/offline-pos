@@ -26,7 +26,7 @@ export class MultiCart extends React.PureComponent { // eslint-disable-line reac
   }
 
   render() {
-    const { products, openPaymentModal } = this.props;
+    const { products, openPaymentModal, removeProduct } = this.props;
     const styles = {
       subheader: {
         fontSize: 24,
@@ -44,6 +44,7 @@ export class MultiCart extends React.PureComponent { // eslint-disable-line reac
       <Cart
         data={products}
         payment={openPaymentModal}
+        removeProduct={removeProduct}
         subHeader={<Subheader
           style={styles.subheader}
         >قائمة المشتريات</Subheader>}
@@ -53,7 +54,8 @@ export class MultiCart extends React.PureComponent { // eslint-disable-line reac
 }
 
 MultiCart.propTypes = {
-  products: PropTypes.array,
+  products: PropTypes.any,
+  removeProduct: PropTypes.func,
   openPaymentModal: PropTypes.func.isRequired,
 };
 

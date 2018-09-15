@@ -24,9 +24,16 @@ import Divider from 'material-ui/Divider';
 import { Print } from 'react-easy-print';
 import { Paper, Subheader } from 'material-ui';
 import DateTimeLabel from '../DateTimeLabel';
-import data from '../../data';
+import { TAX_ID } from '../../config/teller';
 import CartList from '../CartList';
-function InvoiceReport({ items, invoice }) {
+
+function VariantIdToString(variantPropId){
+  const props = variantPropId.split('$');
+  const features = props[0].split('_');
+  const variants = props[1].split('_');
+  return features.map((val, index) => `${val}:${variants[index]}`).join(',')
+}
+function InvoiceReport({ data, user }) {
   return (
     <Print printOnly single name="invoice-report">
 
@@ -34,7 +41,7 @@ function InvoiceReport({ items, invoice }) {
         <Paper className={'col-xs-12 col-md-12 col-lg-12 col-sm-12'}>
           <Subheader className={'text-center'} style={{ fontWeight: 'bolder' }} >فاتورة</Subheader>
           <Subheader className={'text-center'}>اسم المتجر</Subheader>
-          <Subheader className={'text-center'}>الرقم الضريبي : 12312353454351</Subheader>
+          <Subheader className={'text-center'}>الرقم الضريبي : {TAX_ID}</Subheader>
 
           <Table
             style={{ padding: 10 }}
@@ -48,7 +55,7 @@ function InvoiceReport({ items, invoice }) {
               <TableRow>
                 <TableHeaderColumn colSpan={2} className={'text-center'}>وقت تسجيل المنتج : <DateTimeLabel /></TableHeaderColumn>
                 <TableHeaderColumn colSpan={2} className={'text-center'}>رقم الفاتورة : #0100</TableHeaderColumn>
-                <TableHeaderColumn colSpan={2} className={'text-center'}>اسم الموظف : اكرم محمد عبد الرحمن</TableHeaderColumn>
+                <TableHeaderColumn colSpan={2} className={'text-center'}>اسم الموظف : {user.fullName}</TableHeaderColumn>
               </TableRow>
               <TableRow>
                 <TableHeaderColumn colSpan={2}>الاسم</TableHeaderColumn>
@@ -60,22 +67,22 @@ function InvoiceReport({ items, invoice }) {
             </TableHeader>
             <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={false}>
               {
-                data.products.map((item) =>
-                  <TableRow key={item.guid} >
+                data.products.map((item, index) =>
+                  <TableRow key={index} >
                     <TableRowColumn colSpan={2} >
-                      {item.company}
+                      {item.product.name} {item.variantPropId === '$' ? '' : <span style={{ fontSize: '0.8em' }}>({VariantIdToString(item.variantPropId)})</span>}
                     </TableRowColumn>
                     <TableRowColumn>
-                      {item.age}
+                      {item.quantity}
                     </TableRowColumn>
                     <TableRowColumn>
-                      {item.price}
+                      {item.price} <span style={{ fontSize: '0.8em' }}>ريال</span>
                     </TableRowColumn>
                     <TableRowColumn>
-                      {'0.0%'}
+                      {item.discount}%
                     </TableRowColumn>
                     <TableRowColumn>
-                      {'5%'}
+                      {item.tax}%
                     </TableRowColumn>
                   </TableRow>
                 )
@@ -86,7 +93,7 @@ function InvoiceReport({ items, invoice }) {
           </Table>
           <div className={'row'}>
             <div style={{ padding: 12 }} className={'text-center col-md-6 col-xs-6 col-lg-6 col-sm-6'}>
-              <Barcode value="12345 3590 223" />
+              <Barcode value={Math.random() * 99999999999999999999} />
 
             </div>
             <div className={'col-md-6 col-xs-6 col-lg-6 col-sm-6'}>
@@ -105,7 +112,7 @@ function InvoiceReport({ items, invoice }) {
                       <Subheader className={'text-center'}>المجموع(قبل الضريبة)</Subheader>
                     </TableHeaderColumn>
                     <TableRowColumn colSpan={1}>
-                      <Subheader className={'text-center'}>500 ريال</Subheader>
+                      <Subheader className={'text-center'}>{parseFloat(data.subTotal).toFixed(2)} ريال</Subheader>
                     </TableRowColumn>
                   </TableRow>
                   <TableRow >
@@ -113,7 +120,7 @@ function InvoiceReport({ items, invoice }) {
                       <Subheader className={'text-center'}>المجموع(بعد الضريبة)</Subheader>
                     </TableHeaderColumn>
                     <TableRowColumn >
-                      <Subheader className={'text-center'}>500 ريال</Subheader>
+                      <Subheader className={'text-center'}>{parseFloat(data.total).toFixed(2)} ريال</Subheader>
                     </TableRowColumn>
                   </TableRow>
                   <TableRow >
@@ -121,7 +128,7 @@ function InvoiceReport({ items, invoice }) {
                       <Subheader className={'text-center'}>المجموع(بعد الخصم)</Subheader>
                     </TableHeaderColumn>
                     <TableRowColumn >
-                      <Subheader className={'text-center'}>500 ريال</Subheader>
+                      <Subheader className={'text-center'}>{parseFloat(data.total).toFixed(2)} ريال</Subheader>
                     </TableRowColumn>
                   </TableRow>
                 </TableBody>

@@ -40,14 +40,15 @@ export default function createRoutes(store) {
         const importModules = Promise.all([
           import('containers/Checkout/reducer'),
           import('containers/Checkout/sagas'),
+          import('containers/ProductsManagement/sagas'),
           import('containers/Checkout'),
         ]);
 
         const renderRoute = loadModule(cb);
 
-        importModules.then(([reducer, sagas, component]) => {
+        importModules.then(([reducer, sagas,productsagas, component]) => {
           injectReducer('checkout', reducer.default);
-          injectSagas(sagas.default);
+          injectSagas(sagas.default.concat(productsagas.default));
           renderRoute(component);
         });
 

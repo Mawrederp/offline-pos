@@ -6,17 +6,17 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {createStructuredSelector} from 'reselect';
-import {makeSelectGlobal} from '../App/selectors';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import { makeSelectGlobal } from '../App/selectors';
 import * as appActions from '../../containers/App/actions';
 import OpenRegistry from '../../components/OpenRegıstry';
 
 export class RegistryOperator extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
     super(props);
-    console.log(props)
+    console.log(props);
     this.state = {
       isClosing: props.appStore.box.open,
     };

@@ -26,4 +26,5 @@ export default {
   app: initDB('app', true),
   tellers: initDB('tellers'),
   products: initDB(`${tellerId}_products`),
+  transactions: initDB(`${tellerId}_transactions`),
 };

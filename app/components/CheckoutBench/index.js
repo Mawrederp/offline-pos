@@ -1,8 +1,8 @@
 /**
-*
-* CheckoutBench
-*
-*/
+ *
+ * CheckoutBench
+ *
+ */
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -20,6 +20,8 @@ import { cyan600, white } from 'material-ui/styles/colors';
 import typography from 'material-ui/styles/typography';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
+import { FontIcon } from 'material-ui';
+import VariantSelector from '../VariantSelector';
 
 const styles = {
   subheader: {
@@ -52,12 +54,28 @@ const colors = [
   'Black',
   'White',
 ];
-class CheckoutBench extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+const ItemSubTitle = ({ unitPrice, quantity, discount }) => (
+  <div className="row">
+    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>السعر <b>{unitPrice}</b></span>
+    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>الكمية <b>{quantity}</b></span>
+    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>الخصم <b>{discount}</b></span>
+  </div>
+
+);
+
+class CheckoutBench extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
     super(props);
+    this.state = {
+      currentProduct: {},
+      variantsModalOpen: false,
+
+    };
     this.handleUpdateInput = this.handleUpdateInput.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleProductClick = this.handleProductClick.bind(this);
+    this.closeVariantsModal = this.closeVariantsModal.bind(this);
   }
+
   handleUpdateInput = (value) => {
     this.setState({
       dataSource: [
@@ -68,12 +86,36 @@ class CheckoutBench extends React.PureComponent { // eslint-disable-line react/p
     });
   };
 
-  handleClick() {
-    alert('You clicked the Chip.');
+  closeVariantsModal(result) {
+    console.log('result', result);
+    if (result) {
+      this.props.addToCart(result);
+    }
+
+    this.setState({ variantsModalOpen: false, currentProduct: {} });
   }
+
+
+  handleProductClick(event) {
+    event.stopPropagation();
+    const { products } = this.props;
+    const product = products[event.currentTarget.getAttribute('value')];
+    if (Object.keys(product.variants).length) {
+      this.setState({
+        variantsModalOpen: true,
+        currentProduct: products[event.currentTarget.getAttribute('value')],
+      });
+    } else {
+      this.props.addToCart({ product, variantPropId: '$' });
+    }
+  }
+
   render() {
+    const { products } = this.props;
+    const id = 'checkoutbench';
+    console.log(this.state);
     return (
-      <Paper style={styles.container} className="cart">
+      <Paper id={id} style={styles.container} className="cart">
         <Subheader style={styles.subheader}>المنتجات</Subheader>
 
         <AutoComplete
@@ -88,31 +130,47 @@ class CheckoutBench extends React.PureComponent { // eslint-disable-line react/p
           id={'products-search-box'}
         />
         <GridList
-          cellHeight={60}
+          cellHeight={80}
           cols={3}
           style={styles.gridList}
           spacing={2}
         >
-          {this.props.data.map((tile, idx) => (
+          {Object.keys(products).map((key, idx) => (
             <GridTile
-              key={tile.guid}
-              title={tile.company}
-              subtitle={<span>السعر <b>{tile.prıce}</b></span>}
-              actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
+              key={key}
+              value={key}
+              onClick={(e) => this.handleProductClick(e)}
+              title={products[key].name}
+              className={'items-tile'}
+              subtitle={<ItemSubTitle
+                unitPrice={products[key].price} quantity={products[key].quantity}
+                discount={`${products[key].discount}%`}
+              />}
             >
 
-              <img src={`${tile.img}?ver=${idx}`} role="presentation" />
+              <img
+                src={`${products[key].img && products[key].img.size ? URL.createObjectURL(products[key].img) : noImage}`}
+                role="presentation"
+              />
             </GridTile>
           ))}
         </GridList>
+        {
+          this.state.currentProduct.variants ? <VariantSelector
+            product={this.state.currentProduct} open={this.state.variantsModalOpen}
+            handleClose={this.closeVariantsModal}
+            id={id}
+          /> : ''
+        }
+
       </Paper>
     );
   }
 }
 
 CheckoutBench.propTypes = {
-  data: PropTypes.array,
-
+  addToCart: PropTypes.func,
+  products: PropTypes.any,
 };
 
 export default CheckoutBench;
