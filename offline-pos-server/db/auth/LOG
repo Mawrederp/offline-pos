@@ -1,0 +1,11 @@
+2018/09/06-02:27:41.120 edc Recovering log #9
+2018/09/06-02:27:41.155 edc Level-0 table #12: started
+2018/09/06-02:27:41.635 edc Level-0 table #12: 5367 bytes OK
+2018/09/06-02:27:41.983 edc Delete type=0 #9
+2018/09/06-02:27:41.983 edc Delete type=3 #7
+2018/09/06-02:53:46.643 284c Compacting 1@0 + 1@1 files
+2018/09/06-02:53:46.768 284c Generated table #14@0: 41 keys, 4375 bytes
+2018/09/06-02:53:46.768 284c Compacted 1@0 + 1@1 files => 4375 bytes
+2018/09/06-02:53:46.881 284c compacted to: files[ 0 1 0 0 0 0 0 ]
+2018/09/06-02:53:46.882 284c Delete type=2 #10
+2018/09/06-02:53:46.882 284c Delete type=2 #12

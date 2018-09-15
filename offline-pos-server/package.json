@@ -1,0 +1,11 @@
+{
+  "name": "offline-pos-server",
+  "version": "0.0.1",
+  "description": "a couchdb server",
+  "main": "index.js",
+  "scripts": {
+    "start": "pouchdb-server -d ./db"
+  },
+  "author": "akramabdulrahman",
+  "license": "ISC"
+}
