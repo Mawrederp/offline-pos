@@ -73,6 +73,12 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
     const { basicProductInfo } = this.state;
     const basicInfoExists = basicProductInfo !== null;
     if (basicInfoExists) {
+      console.log({
+        ...product,
+        ...Object.keys(basicProductInfo)
+          .filter((key) => this.getValidation(key, basicProductInfo[key]))
+          .reduce((acc, key) => ({ ...acc, [key]: basicProductInfo[key] }), {}),
+      })
       return {
         ...product,
         ...Object.keys(basicProductInfo)

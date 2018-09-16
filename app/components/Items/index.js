@@ -26,6 +26,7 @@ import messages from './messages';
 import PageBase from '../PageBase';
 
 const noImage = require('../../assets/no-image.gif');
+const attachmentKey = '_attachments';
 const styles = {
   subheader: {
     fontSize: 24,
@@ -84,6 +85,7 @@ class Items extends React.PureComponent { // eslint-disable-line react/prefer-st
 
   render() {
     const { openEditModal, products } = this.props;
+    console.log(products);
     return (
       <Paper style={{ width: '100%' }}>
 
@@ -121,7 +123,7 @@ class Items extends React.PureComponent { // eslint-disable-line react/prefer-st
                 }
               >
 
-                <img src={`${products[key].img && products[key].img.size ? URL.createObjectURL(products[key].img) : noImage}`} role="presentation" />
+                <img src={`${products[key][attachmentKey] ? URL.createObjectURL(products[key][attachmentKey].img.data) : noImage}`} role="presentation" />
               </GridTile>
             ))}
           </GridList>

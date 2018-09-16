@@ -302,7 +302,7 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
                     title={product.name}
                     subtitle={<span>السعر <b>{product.price}ريال</b></span>}
                   >
-                    <img id={'product-img-preview'} src={product.img ? URL.createObjectURL(product.img) : noImage} role="presentation" />
+                    <img id={'product-img-preview'} src={product.img ?  URL.createObjectURL(product.img) : noImage} role="presentation" />
                   </GridTile>
                 </GridList>
               </TableRowColumn>

@@ -1,4 +1,4 @@
-import { all,put, takeLatest } from 'redux-saga/effects';
+import { all, put, takeLatest } from 'redux-saga/effects';
 
 import {
   GET_PRODUCTS,
@@ -13,6 +13,7 @@ import ProductsApi from '../../api/ProductsApi';
 
 const revKey = '_rev';
 const idKey = '_id';
+const attachmentsKey = '_attachments';
 
 export function* fetchProducts(action) {
   try {
@@ -40,15 +41,27 @@ export function* setProduct(action) {
   const variants = JSON.parse(action.product.variants);
   const variantsProps = JSON.parse(action.product.variantsProps);
   const product = { ...action.product, ...{ variants, variantsProps } };
+  const productWithAttachment = { img: null };
+
   try {
     const resp = yield ProductsApi.setProduct(product);
+    console.log(resp);
     if (resp.ok) {
+      if (resp[attachmentsKey]) {
+        productWithAttachment[attachmentsKey] = resp[attachmentsKey];
+      }
       yield put({
         type: PRODUCT_MODIFIED,
-        product: { ...{ ...action.product, ...{ variants, variantsProps } }, ...{ [revKey]: resp.rev, [idKey]: resp.id } },
+        product: {
+          ...{
+            ...action.product,
+            ...{ variants, variantsProps },
+            ...productWithAttachment,
+          },
+          ...{ [revKey]: resp.rev, [idKey]: resp.id },
+        },
       });
     }
-    console.log(resp);
   } catch (error) {
     console.log(error);
   }
