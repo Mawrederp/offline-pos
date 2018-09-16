@@ -29,8 +29,8 @@ class ProductUtils {
     finalProduct = {
       ...finalProduct,
       price: (variantProp && variantProp.price) ? variantProp.price : product.price,
-      discount: (variantProp && variantProp.discount) ? variantProp.discount : product.discount,
-      tax: (variantProp && variantProp.tax) ? variantProp.tax : product.tax,
+      discount: (variantProp && variantProp.discount) ? variantProp.discount : product.discount || 0,
+      tax: (variantProp && variantProp.tax) ? variantProp.tax : product.tax || 0,
     };
 
     const finalObject = { product, variantPropId, ...finalProduct };
@@ -45,12 +45,12 @@ class ProductUtils {
     const products = cart.get('products');
     return cart
       .set('subTotal', products.reduce((acc, product) => (acc + (parseFloat(product.price) * parseFloat(product.quantity))), 0))
-      .set('tax', products.map((product) => (product.tax)).toSet().toList())
-      .set('discount', products.map((product) => (product.discount)).toSet().toList())
+      .set('tax', products.map((product) => (product.tax || 0)).toSet().toList())
+      .set('discount', products.map((product) => (product.discount || 0)).toSet().toList())
       .set('total', products.reduce((acc, product) => {
         const total = parseFloat(product.price);
-        const discount = parseFloat(product.discount);
-        const tax = parseFloat(product.tax);
+        const discount = parseFloat(product.discount || 0);
+        const tax = parseFloat(product.tax || 0);
         let newDiscount = 0;
         let newTax = 0;
         if (discount < 1 && discount > 0) {

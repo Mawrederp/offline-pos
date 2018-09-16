@@ -29,7 +29,7 @@ class DashboardPage extends React.Component {
         noWrapContent
         loading={this.state.loading}
       >
-        <div className="row">
+        <div className="row" style={{ marginTop: 50 }}>
 
           <div className="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 ">
             <InfoBox
@@ -37,7 +37,7 @@ class DashboardPage extends React.Component {
               color={cyan600}
               iconColor={cyan500}
               title="عمليات الشراءالناجحة"
-              value="7051"
+              value="0"
             />
           </div>
 
@@ -47,7 +47,7 @@ class DashboardPage extends React.Component {
               color={pink600}
               iconColor={pink500}
               title="الربح الكلي"
-              value="4000k"
+              value="0"
             />
           </div>
 
@@ -57,7 +57,7 @@ class DashboardPage extends React.Component {
               color={orange600}
               iconColor={orange500}
               title="الزبائن الجدد"
-              value="175"
+              value="0"
             />
           </div>
 
@@ -67,7 +67,7 @@ class DashboardPage extends React.Component {
               color={purple600}
               iconColor={purple500}
               title="عدد عمليات البيع"
-              value="852"
+              value="0"
             />
           </div>
 
@@ -84,12 +84,12 @@ class DashboardPage extends React.Component {
         </div>
 
         <div className="row">
-          <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 ">
-            <BrowserUsage data={Data.dashBoardPage.browserUsage} />
-          </div>
-          <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 ">
-            <RecentlyProducts data={Data.dashBoardPage.recentProducts} />
-          </div>
+          {/* <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 ">*/}
+          {/* <BrowserUsage data={Data.dashBoardPage.browserUsage} />*/}
+          {/* </div>*/}
+          {/* <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 ">*/}
+          {/* <RecentlyProducts data={Data.dashBoardPage.recentProducts} />*/}
+          {/* </div>*/}
         </div>
       </PageBase>
     );

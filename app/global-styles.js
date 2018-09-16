@@ -457,7 +457,9 @@ injectGlobal`
   .main-container {
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
   }
-
+  .items-tile{
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+  }
   .header span.material-icons,
   .cart span.material-icons{
     width:100%;

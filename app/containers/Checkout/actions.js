@@ -11,6 +11,7 @@ import {
   SET_ACTIVE_CART,
   SET_TRANSACTION,
   REMOVE_FROM_CART,
+  RESET_ACTIVE_CART,
 } from './constants';
 
 export const getCheckoutProducts = getProducts;
@@ -41,6 +42,12 @@ export function setActiveCart(cartId) {
   return {
     type: SET_ACTIVE_CART,
     cartId,
+  };
+}
+
+export function resetActiveCart() {
+  return {
+    type: RESET_ACTIVE_CART,
   };
 }
 

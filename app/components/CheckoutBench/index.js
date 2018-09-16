@@ -23,6 +23,7 @@ import messages from './messages';
 import { FontIcon } from 'material-ui';
 import VariantSelector from '../VariantSelector';
 
+const noImage = require('../../assets/no-image.gif');
 const styles = {
   subheader: {
     fontSize: 24,

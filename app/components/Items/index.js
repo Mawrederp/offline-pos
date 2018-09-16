@@ -59,8 +59,8 @@ const colors = [
 ];
 const ItemSubTitle = ({ unitPrice, quantity, discount }) => (
   <div className="row">
-    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'} >السعر <b>{unitPrice}</b></span>
-    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>الكمية <b>{quantity}</b></span>
+    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'} >السعر <b>{unitPrice} ريال</b></span>
+    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>الكمية <b>{quantity} وحدة</b></span>
     <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>الخصم <b>{discount}</b></span>
   </div>
 

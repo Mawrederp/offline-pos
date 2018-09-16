@@ -114,13 +114,13 @@ class ProductForm extends React.PureComponent { // eslint-disable-line react/pre
               <TableRow>
                 <TableHeaderColumn>وقت تسجيل المنتج : <DateTimeLabel /></TableHeaderColumn>
                 <TableHeaderColumn></TableHeaderColumn>
-                <TableHeaderColumn>اسم الموظف : اكرم محمد عبد الرحمن</TableHeaderColumn>
+                <TableHeaderColumn>اسم الموظف : {this.props.user.fullName}</TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={false}>
               <TableRow>
                 <TableHeaderColumn><TextField defaultValue={product.name} name={'name'} floatingLabelText={'اسم المنتج'} /></TableHeaderColumn>
-                <TableHeaderColumn><TextField defaultValue={product.price} name={'price'} floatingLabelText={'سعر الوحدة'} type={'number'} /></TableHeaderColumn>
+                <TableHeaderColumn><TextField defaultValue={product.price} name={'price'} floatingLabelText={'سعر الوحدة'} step={0.1} type={'number'} /></TableHeaderColumn>
               </TableRow>
               <TableRow>
                 <TableHeaderColumn>
@@ -140,7 +140,7 @@ class ProductForm extends React.PureComponent { // eslint-disable-line react/pre
               </TableRow>
               <TableRow>
                 <TableHeaderColumn>
-                  <TextField defaultValue={product.tax} name={'tax'} floatingLabelText={'الضريبة'} type={'number'} />
+                  <TextField defaultValue={product.tax} name={'tax'} floatingLabelText={'الضريبة'} step={0.1} type={'number'} />
                   {/* <AutoComplete*/}
                   {/* hintText="يمكنك البحث باستخدام احرف او كلمات"*/}
                   {/* dataSource={colors}*/}
@@ -207,7 +207,14 @@ class ProductForm extends React.PureComponent { // eslint-disable-line react/pre
                 </TableHeaderColumn>
               </TableRow>
               <TableRow>
-
+                <TableRowColumn>
+                  <Toggle
+                    label="ارفاق صورة"
+                    style={{ width: '75%' }}
+                    defaultToggled={!!this.state.imageUpload}
+                    onToggle={this.uploadImageToggle}
+                  />
+                </TableRowColumn>
                 <TableRowColumn>
                   <FlatButton
                     label="Choose an Image"
@@ -222,14 +229,7 @@ class ProductForm extends React.PureComponent { // eslint-disable-line react/pre
                     />
                   </FlatButton>
                 </TableRowColumn>
-                <TableRowColumn>
-                  <Toggle
-                    label="خصم مؤقت"
-                    style={{ width: '75%' }}
-                    defaultToggled={!!this.state.imageUpload}
-                    onToggle={this.uploadImageToggle}
-                  />
-                </TableRowColumn>
+
               </TableRow>
             </TableBody>
           </Table>
@@ -244,6 +244,7 @@ ProductForm.propTypes = {
   id: PropTypes.string,
   setProduct: PropTypes.func,
   product: PropTypes.any,
+  user: PropTypes.any,
 };
 
 export default ProductForm;

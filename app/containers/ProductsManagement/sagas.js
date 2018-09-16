@@ -36,6 +36,7 @@ export function* getProductSaga() {
 }
 
 export function* setProduct(action) {
+  console.log(action);
   const variants = JSON.parse(action.product.variants);
   const variantsProps = JSON.parse(action.product.variantsProps);
   const product = { ...action.product, ...{ variants, variantsProps } };
@@ -47,6 +48,7 @@ export function* setProduct(action) {
         product: { ...{ ...action.product, ...{ variants, variantsProps } }, ...{ [revKey]: resp.rev, [idKey]: resp.id } },
       });
     }
+    console.log(resp);
   } catch (error) {
     console.log(error);
   }

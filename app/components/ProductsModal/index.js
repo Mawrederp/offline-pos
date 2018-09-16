@@ -56,6 +56,7 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
       finished: false,
       stepIndex: 0,
       basicProductInfo: null,
+
     };
     this.handleNext = this.handleNext.bind(this);
     this.handlePrev = this.handlePrev.bind(this);
@@ -64,18 +65,49 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.triggerSubmit = this.triggerSubmit.bind(this);
+    this.getActiveInfo = this.getActiveInfo.bind(this);
+  }
+
+  getActiveInfo() {
+    const { product } = this.props;
+    const { basicProductInfo } = this.state;
+    const basicInfoExists = basicProductInfo !== null;
+    if (basicInfoExists) {
+      return {
+        ...product,
+        ...Object.keys(basicProductInfo)
+          .filter((key) => this.getValidation(key, basicProductInfo[key]))
+          .reduce((acc, key) => ({ ...acc, [key]: basicProductInfo[key] }), {}),
+      };
+    }
+    return product;
+  }
+
+  getValidation(key, value) {
+    const validMap = {
+      discount: (val) => !isNaN(val),
+      name: (val) => !!val,
+      price: (val) => !isNaN(val),
+      quantity: (val) => !isNaN(val),
+      barcode: (val) => !isNaN(val),
+      tax: (val) => !isNaN(val),
+    };
+    return validMap[key] === undefined ? true : validMap[key](value);
   }
 
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
         return (
-          <ProductForm user={this.props.user} product={this.props.product} />
+          <ProductForm user={this.props.user} product={this.getActiveInfo()} />
         );
       case 1:
         return (
           <MuiPickersUtilsProvider utils={MomentUtils}>
-            <MultiVariantForm user={this.props.user} existing={this.props.product} product={this.state.basicProductInfo} />
+            <MultiVariantForm
+              user={this.props.user} existing={this.props.product}
+              product={this.state.basicProductInfo}
+            />
           </MuiPickersUtilsProvider>);
       default:
         this.props.handleClose();
@@ -146,12 +178,12 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
     }
     const dataObj = { validation: {} };
     const validation = {
-      discount: (val) => isNaN(val),
+      discount: (val) => !isNaN(val),
       name: (val) => !!val,
-      price: (val) => isNaN(val),
-      quantity: (val) => isNaN(val),
-      barcode: (val) => isNaN(val),
-      tax: (val) => isNaN(val),
+      price: (val) => !isNaN(val),
+      quantity: (val) => !isNaN(val),
+      barcode: (val) => !isNaN(val),
+      tax: (val) => !isNaN(val),
     };
     let closeObj = {
       finished: false,
@@ -177,10 +209,16 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
         finished: stepIndex >= 1,
         ...closeObj,
       });
-      this.props.setProduct({ ...this.props.product, ...basicProductInfo, ...dataObj });
-    }
-    if (stepIndex >= 1) {
-      this.props.handleClose();
+      if (stepIndex >= 1) {
+        this.props.setProduct({
+          ...{ variants: '{}',
+            variantsProps: '{}',
+          },
+          ...this.props.product,
+          ...basicProductInfo,
+          ...dataObj });
+        this.props.handleClose();
+      }
     }
   }
 

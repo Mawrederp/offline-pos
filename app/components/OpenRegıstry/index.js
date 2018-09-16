@@ -92,14 +92,14 @@ class OpenRegıstry extends React.Component { // eslint-disable-line react/prefe
 
   render() {
     const { stepIndex } = this.state;
-    const { manageRegistry } = this.props;
+    const { manageRegistry ,box } = this.props;
     const contentStyle = { margin: '0 16px' };
-
+    const action = box.open ? 'اغلاق' : 'فتح';
     return (
-      <div style={{ width: '100%', maxWidth: 700, margin: 'auto' }}>
+      <div style={{ width: '100%', maxWidth: 700, margin: 'auto' ,marginTop:100 }}>
         <Stepper activeStep={stepIndex}>
           <Step>
-            <StepLabel>حالة الصندوق</StepLabel>
+            <StepLabel>{action}  الصندوق</StepLabel>
           </Step>
           <Step>
             <StepLabel>طباعة التقرير</StepLabel>

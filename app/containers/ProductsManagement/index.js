@@ -50,6 +50,7 @@ export class ProductsManagement extends React.Component { // eslint-disable-line
 
 
   setProduct(product) {
+    console.log(product);
     this.props.actions.setProduct(product);
   }
   openProductsModal = () => {

@@ -1,8 +1,8 @@
 /**
-*
-* PaymentModal
-*
-*/
+ *
+ * PaymentModal
+ *
+ */
 
 import React, { Fragment } from 'react';
 // import styled from 'styled-components';
@@ -36,7 +36,7 @@ const sideButtons = [
   ['+10'],
   ['+20'],
   ['+50'],
-  [<FontIcon className="material-icons" >backspace</FontIcon>],
+  [<FontIcon className="material-icons">backspace</FontIcon>],
 ];
 const styles = {
   subheader: {
@@ -62,7 +62,7 @@ const styles = {
 
 class PaymentModal extends React.Component {
   static getDerivedStateFromProps(props, state) {
-    if ((state.remainder.value === undefined)) {
+    if ((state.remainder.value === undefined || state.remainder.value > props.data.total)) {
       return { remainder: { ...state.remainder, value: props.data.total } };
     }
     if (!props.open) {
@@ -76,6 +76,7 @@ class PaymentModal extends React.Component {
     }
     return null;
   }
+
   constructor(props) {
     super(props);
 
@@ -99,18 +100,34 @@ class PaymentModal extends React.Component {
     console.log(newPayments);
     const theRest = newPayments.reduce((rem, payment) => rem - payment.value, total);
     console.log('the rest', theRest, parseFloat(remainder.value));
-    this.setState({ payments: newPayments, remainder: { ...remainder, value: theRest } }, (val) => console.log('done mutating', this.state));
+    this.setState({
+      payments: newPayments,
+      remainder: { ...remainder, value: theRest },
+    }, (val) => console.log('done mutating', this.state));
   }
 
   addPaymentRow(type) {
-    this.setState({ payments: [...this.state.payments, { type, currency: this.props.currency, value: this.state.remainder.value }] });
+    console.log(this.state.remainder);
+    if (this.state.remainder.value !== 0) {
+      this.setState({
+        payments: [...this.state.payments, {
+          type,
+          currency: this.props.currency,
+          value: this.state.remainder.value,
+        }],
+        remainder: { ...this.state.remainder, value: 0 },
+      });
+    }
   }
+
   addCashPayment() {
     this.addPaymentRow('cash');
   }
+
   addCardPayment() {
     this.addPaymentRow('card');
   }
+
   render() {
     const { handleClose, open, id, removeProduct, currency } = this.props;
     const actions = [
@@ -134,9 +151,9 @@ class PaymentModal extends React.Component {
       < FlatButton
         label={'انهاء'}
         primary
-        disabled={!!this.state.remainder.value}
+        disabled={!(this.state.remainder.value <= 0)}
         keyboardFocused
-        onClick={() => window.print() && this.props.handleClose(true)}
+        onClick={() => { this.props.handleClose(true);  }}
       />,
     ];
 
@@ -173,9 +190,20 @@ class PaymentModal extends React.Component {
         >
           <div className={'row'}>
             <Paper className={'col-xs-4 col-md-4 col-lg-4'}>
-              <CartList removeProduct={removeProduct} data={this.props.data} style={{ marginTop: '0px', maxHeight: '400px', overflowY: 'auto', overflowX: 'hidden', paddingTop: 0 }} />
+              <CartList
+                removeProduct={removeProduct} data={this.props.data} style={{
+                  marginTop: '0px',
+                  maxHeight: '400px',
+                  overflowY: 'auto',
+                  overflowX: 'hidden',
+                  paddingTop: 0,
+                }}
+              />
             </Paper>
-            <Paper className={'col-xs-8 col-md-8 col-lg-8'} style={{ maxHeight: '400px', overflowY: 'auto', overflowX: 'hidden' }}>
+            <Paper
+              className={'col-xs-8 col-md-8 col-lg-8'}
+              style={{ maxHeight: '400px', overflowY: 'auto', overflowX: 'hidden' }}
+            >
               <Subheader className="screen payment" style={styles.clearHeader}>
                 <div className={'row'}>
                   <div className={'col-lg-2 col-xs-4 col-md-4'}>المبلغ</div>
@@ -183,7 +211,7 @@ class PaymentModal extends React.Component {
                     <div>
                       <TextField
                         id="text-field-controlled"
-                        value={this.props.data.total}
+                        value={parseFloat(this.props.data.total).toFixed(2)}
                         disabled
                         style={styles.paymentValueInput}
                         className={'text-center'}
@@ -215,7 +243,9 @@ class PaymentModal extends React.Component {
                             underlineDisabledStyle
                           />
                         </div>
-                        <div className={'col-lg-4 col-xs-4 col-md-4'}>{currenciesSelectField(this.state.cashPayment.currency)} </div>
+                        <div
+                          className={'col-lg-4 col-xs-4 col-md-4'}
+                        >{currenciesSelectField(this.state.cashPayment.currency)} </div>
 
                       </div>
                     </Subheader>
@@ -232,7 +262,7 @@ class PaymentModal extends React.Component {
                   <div className={'col-lg-5 text-center selected payment-value col-xs-5  col-md-5'}>
                     <TextField
                       id="text-field-controlled"
-                      value={this.state.remainder.value}
+                      value={parseFloat(this.state.remainder.value).toFixed(2)}
                       onChange={this.handleChange}
                       disabled
                       style={styles.paymentValueInput}
@@ -240,7 +270,9 @@ class PaymentModal extends React.Component {
                       underlineDisabledStyle
                     />
                   </div>
-                  <div className={'col-lg-4 col-xs-4 col-md-4'}>{currenciesSelectField(this.state.remainder.currency)} </div>
+                  <div
+                    className={'col-lg-4 col-xs-4 col-md-4'}
+                  >{currenciesSelectField(this.state.remainder.currency)} </div>
 
                 </div>
               </Subheader>
@@ -262,7 +294,7 @@ class PaymentModal extends React.Component {
         </Dialog>
 
         <InvoiceReport data={this.props.data} payments={this.state.payments} user={this.props.user} />
-      </div >
+      </div>
     );
   }
 }

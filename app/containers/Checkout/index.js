@@ -91,6 +91,10 @@ export class Checkout extends React.PureComponent { // eslint-disable-line react
   }
 
   paymentConcluded = (status) => {
+    if (status) {
+      this.props.actions.resetActiveCart();
+      setTimeout(() => window.print(), 500);
+    }
     this.setState({ paymentModalOpen: false });
     if (!status) return 0;
     return true;
@@ -155,19 +159,26 @@ export class Checkout extends React.PureComponent { // eslint-disable-line react
               </Avatar>
             </ToolbarGroup>
             <ToolbarGroup>
-              <Chip>
+              <Chip title={'قيمة ايصالات الدفع البنكي'}>
                 <Avatar
                   style={{ backgroundColor: cyan500 }}
-                  icon={<FontIcon className="material-icons">account_balance</FontIcon>}
+                  icon={<FontIcon className="material-icons">credit_card</FontIcon>}
                 />
-                {global.box.receipts} ريال
+                {Number(global.box.receipts)} ريال
               </Chip>
-              <Chip>
+              <Chip title={'الكاش'}>
                 <Avatar
                   style={{ backgroundColor: green500 }}
                   icon={<FontIcon className="material-icons">money</FontIcon>}
                 />
-                {global.box.cash} ريال
+                {Number(global.box.cash)} ريال
+              </Chip>
+              <Chip title={'المجموع'}>
+                <Avatar
+                  style={{ backgroundColor: green500 }}
+                  icon={<FontIcon className="material-icons">account_balance</FontIcon>}
+                />
+                {Number(Number(global.box.cash) + Number(global.box.receipts))} ريال
               </Chip>
             </ToolbarGroup>
 

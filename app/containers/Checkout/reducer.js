@@ -12,8 +12,9 @@ import {
   REMOVE_FROM_CART,
   SET_TRANSACTION,
   REGISTRY_MODIFIED,
+  RESET_ACTIVE_CART,
 } from './constants';
-import {PRODUCT_MODIFIED, PRODUCT_REMOVED, PRODUCTS_LOADED} from '../ProductsManagement/constants';
+import { PRODUCT_MODIFIED, PRODUCT_REMOVED, PRODUCTS_LOADED } from '../ProductsManagement/constants';
 import ProductUtils from './ProductUtils';
 const initialState = fromJS({
   products: {},
@@ -47,6 +48,15 @@ function checkoutReducer(state = initialState, action) {
       return temp;
     case SET_ACTIVE_CART:
       return state.set('activeCart', action.cartId);
+    case RESET_ACTIVE_CART:
+      return state.setIn(['carts', state.get('activeCart')], fromJS({
+        products: [],
+        customer: null,
+        subTotal: 0,
+        total: 0,
+        tax: 0,
+        discount: 0,
+      }));
     case PRODUCTS_LOADED:
       console.log(state.toJS(), action);
       return state.set('loaded', true).set('products', Map(action.products));

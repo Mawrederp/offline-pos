@@ -17,8 +17,8 @@ class AuthPage extends React.Component { // eslint-disable-line react/prefer-sta
 
     this.state = {
       login: {
-        email: 'demo@test.com', // default values, leave it empty when implementing your logic
-        password: 'demo', // default values, leave it empty when implementing your logic
+        email: '', // default values, leave it empty when implementing your logic
+        password: '', // default values, leave it empty when implementing your logic
         rememberMe: false,
       },
       register: {
