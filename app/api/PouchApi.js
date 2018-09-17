@@ -1,4 +1,7 @@
+import { storage } from '../storage';
+
 class PouchApi {
+
   static createDesignDoc(name, mapFunction) {
     const ddoc = {
       _id: `_design/${name}`,

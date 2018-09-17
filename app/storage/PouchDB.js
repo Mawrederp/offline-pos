@@ -1,8 +1,9 @@
 import PouchDB from 'pouchdb-browser';
 import { TELLER_ID } from '../config/teller';
+import { ENVIRIOMENT } from '../config/';
 
 PouchDB.plugin(require('pouchdb-find').default);
-const url = 'http://52.15.39.17:5984';
+const url = `http://${ENVIRIOMENT === 'dev' ? 'localhost' : '52.15.39.17'}:5984`;
 const Prefix = 'pos_app';
 const syncEvents = ['change', 'paused', 'active', 'denied', 'complete', 'error'];
 const tellerId = `TELLER_${TELLER_ID}`;

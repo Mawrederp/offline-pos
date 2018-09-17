@@ -8,7 +8,7 @@ const idKey = '_id';
 const revKey = '_rev';
 class AuthApi extends PouchApi {
   static async fetchUser({ email, password }) {
-    console.log(email,password)
+    console.log(email, password);
     authDB.createIndex({
       index: { fields: ['email', 'password'] },
     });

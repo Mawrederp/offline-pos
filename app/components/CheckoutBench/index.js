@@ -24,6 +24,8 @@ import { FontIcon } from 'material-ui';
 import VariantSelector from '../VariantSelector';
 
 const noImage = require('../../assets/no-image.gif');
+const attachmentKey = '_attachments';
+
 const styles = {
   subheader: {
     fontSize: 24,
@@ -114,7 +116,7 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
   render() {
     const { products } = this.props;
     const id = 'checkoutbench';
-    console.log(this.state);
+    console.log(products, 'checkout', attachmentKey);
     return (
       <Paper id={id} style={styles.container} className="cart">
         <Subheader style={styles.subheader}>المنتجات</Subheader>
@@ -149,10 +151,8 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
               />}
             >
 
-              <img
-                src={`${products[key].img && products[key].img.size ? URL.createObjectURL(products[key].img) : noImage}`}
-                role="presentation"
-              />
+              <img src={`${products[key][attachmentKey] ? (() => { console.log(URL.createObjectURL(products[key][attachmentKey].img.data)); return URL.createObjectURL(products[key][attachmentKey].img.data); })() : noImage}`} role="presentation" />
+
             </GridTile>
           ))}
         </GridList>
