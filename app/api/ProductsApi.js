@@ -83,7 +83,7 @@ class ProductsApi extends PouchApi {
     }
     try {
       const resp = await productsDB.put({ ...product, ...prodObj });
-      if (resp.ok && product.img.type) {
+      if (resp.ok && product.img && product.img.type) {
         console.log('there is an image');
         let result = {};
         if (product[revKey]) {
