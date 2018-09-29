@@ -453,7 +453,59 @@ injectGlobal`
   .left-drawner.close div {
     display: none;
   }
-
+  html[dir='ltr'] .left-drawner>div {
+    left: 0;
+    right:none;
+  }
+  html[dir='ltr'] div.header{
+      padding-right: 24px !important;
+    padding-left: 250px !important;
+  } 
+  html[dir='ltr'] img.tile-image{
+    transform: translateX(-50%) translateY(-50%) !important;
+    left: 50% !important;
+    right:none;
+    top:50%;
+  }
+  .variants-table  td > div > div > div {
+    margin-left:0px !important;
+    margin-right:0px !important;
+    display:flex !important;
+    z-index:0;
+    pointer-events:none;
+  }
+  html[dir='ltr'] div.main-container{
+    padding :0px 20px 20px 250px !important;
+  } 
+  
+  html[dir='ltr'] .products-add-btn{
+    position: absolute;
+    bottom: 20px; 
+    right: 20px
+    left: auto;
+  }
+   html[dir='ltr'] .modal-dialog-actions{
+    text-align:right !important;
+  }
+  html[dir='ltr'] .left-drawner .material-icons:first-child {
+    left: 0px !important;
+    right:auto !important;
+  }
+ html[dir='ltr'] .cart-list-item div:nth-child(4){
+  left:0px !important;
+ }
+html[dir='ltr'] .cart-list-item  div:nth-child(5){
+  right:0px !important;
+  left: auto !important;
+}
+  .list-item{
+    text-align: center;
+  }
+ .products-add-btn{
+    position: absolute;
+    bottom: 20px; 
+    left: 20px
+  }
   .main-container {
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
   }

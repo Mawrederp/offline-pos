@@ -3,19 +3,32 @@ import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import { injectIntl } from 'react-intl';
 import styles from '../styles';
+import messages from '../messages';
 
 class Register extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+
   render() {
+    const {
+      emailHint,
+      emailText,
+      passwordHint,
+      passwordText,
+      fullNameText,
+      fullNameHint,
+      passwordConfirmHint,
+      passwordConfirmText,
+      registerNewAccount,
+      goBack,
+    } = messages;
+    const { intl } = this.props;
     return (
       <div id="login-form">
         <div style={styles.boxContainer}>
           <Paper style={styles.paper}>
             <div>
-              <div style={styles.title}>
-                مستخدم جديد
-              </div>
-              <div style={styles.logoSmallContainer}>
+              <div style={styles.logoContainer}>
                 <img
                   style={{ width: 295, height: 54 }}
                   src="http://via.placeholder.com/295x54" alt="Offline Point Of Sale"
@@ -34,30 +47,30 @@ class Register extends React.PureComponent { // eslint-disable-line react/prefer
             <hr />
             <form>
               <TextField
-                hintText="الاسم بالكامل"
-                floatingLabelText="الاسم"
+                hintText={intl.formatMessage(fullNameHint)}
+                floatingLabelText={intl.formatMessage(fullNameText)}
                 fullWidth
                 value={this.props.fullName}
                 onChange={this.props.onFullNameChange}
               />
               <TextField
-                hintText="عنوان البريد الالكتروني"
-                floatingLabelText="البريد الالكتروني"
+                hintText={intl.formatMessage(emailHint)}
+                floatingLabelText={intl.formatMessage(emailText)}
                 fullWidth
                 value={this.props.email}
                 onChange={this.props.onEmailChange}
               />
               <TextField
-                hintText="كلمة المرور"
-                floatingLabelText="كلمة المرور"
+                hintText={intl.formatMessage(passwordHint)}
+                floatingLabelText={intl.formatMessage(passwordText)}
                 fullWidth
                 type="password"
                 value={this.props.password}
                 onChange={this.props.onPasswordChange}
               />
               <TextField
-                hintText="تأكيد كلمة المرور"
-                floatingLabelText="تأكيد كلمة المرور"
+                hintText={intl.formatMessage(passwordConfirmHint)}
+                floatingLabelText={intl.formatMessage(passwordConfirmText)}
                 fullWidth
                 type="password"
                 value={this.props.confirmPassword}
@@ -66,13 +79,13 @@ class Register extends React.PureComponent { // eslint-disable-line react/prefer
 
               <div style={styles.buttonsContainer}>
                 <RaisedButton
-                  label="الى الخلف"
+                  label={intl.formatMessage(goBack)}
                   style={styles.goBackBtn}
                   onClick={this.props.onGoBack}
                 />
 
                 <RaisedButton
-                  label="ادخال مستخدم جديد"
+                  label={intl.formatMessage(registerNewAccount)}
                   primary
                   style={styles.boxBtn}
                   onClick={this.props.onRegister}
@@ -101,4 +114,4 @@ Register.propTypes = {
 
 };
 
-export default Register;
+export default injectIntl(Register) ;

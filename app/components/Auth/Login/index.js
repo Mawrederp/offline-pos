@@ -6,10 +6,26 @@ import Checkbox from 'material-ui/Checkbox';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
+import { injectIntl } from 'react-intl';
 import styles from '../styles';
+import messages from '../messages';
 
 class Login extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+
+
   render() {
+    console.log(this.props);
+    const {
+      emailHint,
+      emailText,
+      passwordHint,
+      passwordText,
+      rememberMeText,
+      signInText,
+      forgotPasswordText,
+      newAccountText,
+    } = messages;
+    const { intl } = this.props;
     return (
       <div id="login-form">
         <div style={styles.boxContainer}>
@@ -32,15 +48,15 @@ class Login extends React.PureComponent { // eslint-disable-line react/prefer-st
 
             <form>
               <TextField
-                hintText="عنوان البريد الالكتروني"
-                floatingLabelText="البريد الالكتروني"
+                hintText={intl.formatMessage(emailHint)}
+                floatingLabelText={intl.formatMessage(emailText)}
                 fullWidth
                 value={this.props.email}
                 onChange={this.props.onEmailChange}
               />
               <TextField
-                hintText="كلمة المرور"
-                floatingLabelText="كلمة المرور"
+                hintText={intl.formatMessage(passwordHint)}
+                floatingLabelText={intl.formatMessage(passwordText)}
                 fullWidth
                 type="password"
                 value={this.props.password}
@@ -49,7 +65,7 @@ class Login extends React.PureComponent { // eslint-disable-line react/prefer-st
 
               <div style={styles.buttonsContainer}>
                 <Checkbox
-                  label="تذكرني"
+                  label={intl.formatMessage(rememberMeText)}
                   style={styles.checkRemember.style}
                   labelStyle={styles.checkRemember.labelStyle}
                   iconStyle={styles.checkRemember.iconStyle}
@@ -58,7 +74,7 @@ class Login extends React.PureComponent { // eslint-disable-line react/prefer-st
                 />
 
                 <RaisedButton
-                  label="فتح الصندوق"
+                  label={intl.formatMessage(signInText)}
                   primary
                   style={styles.boxBtn}
                   onClick={this.props.onSignIn}
@@ -70,13 +86,13 @@ class Login extends React.PureComponent { // eslint-disable-line react/prefer-st
 
           <div style={styles.buttonsDiv}>
             <FlatButton
-              label="هل نسيت كلمة المرور؟"
+              label={intl.formatMessage(forgotPasswordText)}
               onClick={this.props.onForgotPassword}
               style={styles.flatButton}
               icon={<FontIcon className="material-icons">help</FontIcon>}
             />
             <FlatButton
-              label="حساب جديد"
+              label={intl.formatMessage(newAccountText)}
               onClick={this.props.onRegister}
               style={styles.flatButton}
               icon={<FontIcon className="material-icons">person_add</FontIcon>}
@@ -99,6 +115,7 @@ Login.propTypes = {
   onForgotPassword: PropTypes.func.isRequired,
   onRegister: PropTypes.func.isRequired,
   errorMessage: PropTypes.string.isRequired,
+  intl: PropTypes.any,
 };
 
-export default Login;
+export default injectIntl(Login);

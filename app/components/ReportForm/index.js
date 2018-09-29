@@ -16,7 +16,7 @@ import FontIcon from 'material-ui/FontIcon';
 
 import ButtonSet from '../ButtonSet';
 
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import messages from './messages';
 
 const styles = {
@@ -60,7 +60,12 @@ class ReportForm extends React.PureComponent { // eslint-disable-line react/pref
 
   render() {
     const { cash, receipts } = this.props.box;
-    const user = this.props.user;
+    const { intl, user } = this.props;
+    const { balance, theCash, theReceipts ,receiptsBalance,cashBalance } = messages;
+    const cashText = intl.formatMessage(cashBalance,
+      { cash: intl.formatMessage(theCash), balance: intl.formatMessage(balance) });
+    const receiptsText = intl.formatMessage(receiptsBalance,
+      { receipts: intl.formatMessage(theReceipts), balance: intl.formatMessage(balance) });
     return (
       <Paper>
 
@@ -75,8 +80,8 @@ class ReportForm extends React.PureComponent { // eslint-disable-line react/pref
           <TextField
             className={'text-center'}
             fullWidth
-            hintText={'اجمالي قيمة الفواتير'}
-            floatingLabelText={'اجمالي قيمة الفواتير'}
+            hintText={cashText}
+            floatingLabelText={cashText}
             autoComplete={'off'}
             defaultValue={receipts || 0}
             onChange={this.props.receiptsChanged}
@@ -89,8 +94,8 @@ class ReportForm extends React.PureComponent { // eslint-disable-line react/pref
             fullWidth
             underlineStyle={styles.underlineStyle}
             autoComplete={'off'}
-            hintText={'اجمالي النقود'}
-            floatingLabelText={'اجمالي النقود'}
+            hintText={receiptsText}
+            floatingLabelText={receiptsText}
             className={'text-center'}
             type={'number'}
             defaultValue={cash || 0}
@@ -122,4 +127,4 @@ ReportForm.propTypes = {
   user: PropTypes.object,
 };
 
-export default ReportForm;
+export default injectIntl(ReportForm);

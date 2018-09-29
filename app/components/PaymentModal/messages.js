@@ -6,8 +6,32 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  header: {
-    id: 'app.components.PaymentModal.header',
-    defaultMessage: 'This is the PaymentModal component !',
+  finish: {
+    id: 'app.components.finish',
+    defaultMessage: 'انهاء',
+  },
+  cancel: {
+    id: 'app.components.cancel',
+    defaultMessage: 'الغاء',
+  },
+  cash: {
+    id: 'app.components.cash',
+    defaultMessage: 'كاش',
+  },
+  card: {
+    id: 'app.components.card',
+    defaultMessage: 'بطاقة',
+  },
+  amount: {
+    id: 'app.components.amount',
+    defaultMessage: 'المبلغ',
+  },
+  remainder: {
+    id: 'app.components.remainder',
+    defaultMessage: 'المبلغ',
+  },
+  currency: {
+    id: 'app.components.amount',
+    defaultMessage: 'العملة',
   },
 });

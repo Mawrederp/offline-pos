@@ -22,8 +22,6 @@ function languageProviderReducer(state = initialState, action) {
   let html = null;
   const storeLocale = (locale) => {
     html = document.getElementsByTagName('html')[0];
-
-
     html.lang = locale;
     html.dir = localesDir[locale];
     return state

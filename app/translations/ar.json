@@ -1,6 +1,36 @@
 {
-  "app.components.Auth.header":"",
+  "app.components.Auth.header":"تسجيل الدخول",
   "boilerplate.containers.NotFoundPage.header": "الصفحة غير متوفرة.",
   "app.components.NotFoundPage.header":"الصفجة غير متوفرة",
-  "app.components.NotFoundPage.description":"المسار الذي تبحث عنه غير موجود لربما تمت ازالته"
+  "app.components.NotFoundPage.description":"المسار الذي تبحث عنه غير موجود لربما تمت ازالته",
+  "app.components.Auth.emailHint" : "عنوان البريد الالكتروني",
+  "app.components.Auth.emailText" : "البريد الالكتروني",
+  "app.components.Auth.passwordHint" : "كلمة المرور",
+  "app.components.Auth.passwordText" : "كلمة المرور",
+  "app.components.Auth.rememberMeText" : "تذكرني",
+  "app.components.Auth.signInText" : "تسجيل الدخول",
+  "app.components.Auth.forgotPasswordText" : "هل نسيت كلمة المرور؟",
+  "app.components.Auth.newAccountText" : "حساب جديد",
+  "app.components.Auth.fullNameText" : "الاسم",
+  "app.components.Auth.fullNameHint" : "الاسم بالكامل",
+  "app.components.Auth.passwordConfirmHint" : "اعد كتابة كلمة المرور",
+  "app.components.Auth.passwordConfirmText" : "تأكيد كلمة المرور",
+  "app.components.goBack" : "الى الخلف",
+  "app.components.Auth.registerNewAccount" : "ادخال حساب جديد",
+  "app.components.open" : "فتح",
+  "app.components.close" : "اغلاق",
+  "app.components.box" : "الصندوق",
+  "app.components.print" : "طباعة",
+  "app.components.report" : "تقرير",
+  "app.components.next" : "التالي",
+  "app.components.OpenRegistry.printAndContinue" : "طباعة و الذهاب الى الصفحة الرئيسية",
+
+  "app.pages.dashboard" : "الرئيسية",
+  "app.pages.checkout" : "تخليص الحسابات",
+  "app.pages.productsManagement" : "ادارة الاصناف",
+  "app.pages.views" : "النوافذ",
+  "app.pages.openViews" : "النوافذ المفتوحة",
+  "app.actions.logout" : "تسجيل الخروج"
+
+
 }

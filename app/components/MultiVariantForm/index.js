@@ -4,12 +4,9 @@
  *
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { fromJS, Map } from 'immutable';
 
-import { DateTimePicker } from 'material-ui-pickers';
-import ChipInput from 'material-ui-chip-input';
 import {
   Table,
   TableBody,
@@ -22,19 +19,16 @@ import {
 import {
   Paper,
   Subheader,
-  FlatButton,
   RaisedButton,
   TextField,
-  AutoComplete,
-  IconButton,
-  ToolbarGroup,
   Chip,
 } from 'material-ui';
 import FontIcon from 'material-ui/FontIcon';
 import { red500, green500, blue300, fullWhite } from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 import { GridList, GridTile } from 'material-ui/GridList';
-import { List, ListItem, makeSelectable } from 'material-ui/List';
+import { ListItem } from 'material-ui/List';
+import { injectIntl } from 'react-intl';
 
 import DateTimeLabel from '../DateTimeLabel';
 // import styled from 'styled-components';
@@ -44,16 +38,7 @@ import VariantsInput from './VariantsInput';
 import SelectableList from './SelectableList';
 
 const noImage = require('../../assets/no-image.gif');
-const colors = [
-  'احمر',
-  'اصفر',
-  'اسود',
-  'اخضر',
-  'Blue',
-  'Purple',
-  'Black',
-  'White',
-];
+
 const styles = {
   uploadButton: {
     verticalAlign: 'middle',
@@ -74,7 +59,12 @@ const styles = {
 };
 
 class MultiVariantForm extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
-
+  static existsInArray(haystack, needle) {
+    if (haystack && Array.isArray(haystack) && !(haystack.length === 0)) {
+      return haystack.indexOf(needle) >= 0;
+    }
+    return false;
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -111,9 +101,6 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
     this.removeVariantRow = this.removeVariantRow.bind(this);
   }
 
-  onBeforeAdd(chip) {
-    return chip.length >= 3;
-  }
 
   setNewVariant(variantData) {
     this.setState({
@@ -212,12 +199,6 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
     this.setState({ barcode: event.target.value });
   }
 
-  existsInArray(haystack, needle) {
-    if (haystack && Array.isArray(haystack) && !(haystack.length === 0)) {
-      return haystack.indexOf(needle) >= 0;
-    }
-    return false;
-  }
 
 // //////////
   handleAdd(chip) {
@@ -234,7 +215,7 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
 
   handleDateChange = (date, start) => {
     this.setState({ [start ? 'selectedStartDateTime' : 'selectedEndDateTime']: date });
-  }
+  };
   handleUpdateInput = (value) => {
     this.setState({
       dataSource: [
@@ -269,26 +250,66 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
 
 
   render() {
-    const { selectedStartDateTime, selectedEndDateTime, variantsProps, selectedProps, variants } = this.state;
-    const { product, user } = this.props;
+    const { variantsProps, selectedProps, variants } = this.state;
+    const { product, user, intl } = this.props;
+    const {
+      time,
+      EmployeeName,
+      name,
+      productName,
+      quantityUnit,
+      price,
+      basic,
+      thePrice,
+      barcode,
+      criteria,
+      discount,
+      quantity,
+      settings,
+      variform,
+      currencySrInitials,
+      custom,
+      overall,
+      productVariformSettings,
+    } = messages;
+    const currencySrLabel = intl.formatMessage(currencySrInitials);
     return (
       <Paper>
-        <Subheader className={'text-center'}> اعدادات المنتج متعدد الاشكال</Subheader>
+        <Subheader className={'text-center'}>
+          {intl.formatMessage(productVariformSettings, {
+            settings: intl.formatMessage(settings),
+            product: intl.formatMessage(messages.product),
+            variform: intl.formatMessage(variform),
+          })}
+        </Subheader>
         <Table allRowsSelected={false} selectable={false}>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
             <TableRow>
-              <TableHeaderColumn>وقت تسجيل المنتج : <DateTimeLabel /></TableHeaderColumn>
-              <TableHeaderColumn></TableHeaderColumn>
-              <TableHeaderColumn>اسم الموظف : {user.fullName}</TableHeaderColumn>
+              <TableHeaderColumn>{intl.formatMessage(time)}: <DateTimeLabel /></TableHeaderColumn>
+              <TableHeaderColumn>{' '}</TableHeaderColumn>
+              <TableHeaderColumn>{intl.formatMessage(EmployeeName)}: {user.fullName}</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={false}>
             <TableRow>
               <TableRowColumn rowSpan={3}>
                 <table>
-                  <TableRow><TableRowColumn>اسم المنتج : {product.name}</TableRowColumn></TableRow>
-                  <TableRow><TableRowColumn>الخصم الاجمالي : {product.discount}%</TableRowColumn></TableRow>
-                  <TableRow><TableRowColumn>الكمية : {product.quantity}</TableRowColumn></TableRow>
+                  <TableRow>
+                    <TableRowColumn>{intl.formatMessage(productName,
+                      {
+                        name: intl.formatMessage(name),
+                        product: intl.formatMessage(messages.product),
+                      })}{': '}{product.name}
+                    </TableRowColumn>
+                  </TableRow>
+                  <TableRow>
+                    <TableRowColumn>{intl.formatMessage(overall,
+                      {
+                        action: intl.formatMessage(discount),
+                      })}{': '}{product.discount}%
+                    </TableRowColumn>
+                  </TableRow>
+                  <TableRow><TableRowColumn>{intl.formatMessage(quantity)}{': '}{product.quantity}</TableRowColumn></TableRow>
                 </table>
               </TableRowColumn>
               <TableRowColumn rowSpan={3}>
@@ -300,9 +321,12 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
                 >
                   <GridTile
                     title={product.name}
-                    subtitle={<span>السعر <b>{product.price}ريال</b></span>}
+                    subtitle={<span>{intl.formatMessage(thePrice)}{': '}<b>{product.price}{' '}{currencySrLabel}</b></span>}
                   >
-                    <img id={'product-img-preview'} src={product.img ?  URL.createObjectURL(product.img) : noImage} role="presentation" />
+                    <img
+                      id={'product-img-preview'} src={product.img ? URL.createObjectURL(product.img) : noImage}
+                      role="presentation"
+                    />
                   </GridTile>
                 </GridList>
               </TableRowColumn>
@@ -311,7 +335,7 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
             <TableRow />
           </TableBody>
         </Table>
-        <VariantsInput setNewVariant={this.setNewVariant} removeVariant={this.removeVariant} />
+        <VariantsInput intl={intl} setNewVariant={this.setNewVariant} removeVariant={this.removeVariant} />
         <Paper>
           <SelectableList fullWidth onChange={this.selectVariant} defaultValue={1}>
             {
@@ -361,21 +385,22 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
                 width: '24px',
                 cursor: 'inherit',
               }}
-            ></td>
-            <TableHeaderColumn className={'text-center'}>المتغيرات</TableHeaderColumn>
-            <TableHeaderColumn className={'text-center'}>الخصم</TableHeaderColumn>
-            <TableHeaderColumn className={'text-center'}>الكمية</TableHeaderColumn>
-            <TableHeaderColumn className={'text-center'}>السعر</TableHeaderColumn>
-            <TableHeaderColumn className={'text-center'}>باركود</TableHeaderColumn>
+            >{' '}</td>
+            <TableHeaderColumn className={'text-center'}>{intl.formatMessage(criteria)}</TableHeaderColumn>
+            <TableHeaderColumn className={'text-center'}>{intl.formatMessage(discount)}</TableHeaderColumn>
+            <TableHeaderColumn className={'text-center'}>{intl.formatMessage(quantity)}</TableHeaderColumn>
+            <TableHeaderColumn className={'text-center'}>{intl.formatMessage(thePrice)}</TableHeaderColumn>
+            <TableHeaderColumn className={'text-center'}>{intl.formatMessage(barcode)}</TableHeaderColumn>
           </TableHeader>
-          <TableBody deselectOnClickaway={false}>
+          <TableBody
+            className={'variants-table'}
+            deselectOnClickaway={false}
+          >
             <TableRow selectable={false}>
-              <TableHeaderColumn className={'text-center'}>اساسي</TableHeaderColumn>
+              <TableHeaderColumn className={'text-center'}>{intl.formatMessage(basic)}</TableHeaderColumn>
               <TableHeaderColumn className={'text-center'}>{product.discount || 0}%</TableHeaderColumn>
-              <TableHeaderColumn className={'text-center'}> {product.quantity || 0} وحدة</TableHeaderColumn>
-              <TableHeaderColumn
-                className={'text-center'}
-              >{product.price ? `${product.price}ريال ` : '-'}                                                                                                                                                                                                                                                                                                                                                                                              </TableHeaderColumn>
+              <TableHeaderColumn className={'text-center'}> {product.quantity || 0} {intl.formatMessage(quantityUnit, { plural: product.quantity > 1 ? 's' : '' })}</TableHeaderColumn>
+              <TableHeaderColumn className={'text-center'}>{product.price ? `${product.price} ${currencySrLabel}` : '-'}</TableHeaderColumn>
               <TableHeaderColumn className={'text-center'}>{product.barcode || '-'}</TableHeaderColumn>
               <input type={'hidden'} name={'variantsProps'} value={JSON.stringify(variantsProps)} />
               <input type={'hidden'} name={'variants'} value={JSON.stringify(variants)} />
@@ -393,7 +418,7 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
                       }}
                     >
                       {Object.keys(variantsProps[key].selectedProps).map((prop) =>
-                        this.existsInArray(variants[prop], variantsProps[key].selectedProps[prop].label)
+                        this.constructor.existsInArray(variants[prop], variantsProps[key].selectedProps[prop].label)
                           ?
                             <Chip
                               key={`${prop}_${variantsProps[key].selectedProps[prop].label}_table`}
@@ -408,7 +433,7 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
                   </TableHeaderColumn>
                   <TableHeaderColumn><TextField
                     className={'text-center'} defaultValue={'0.0'}
-                    floatingLabelText={'خصم مخصص'}
+                    floatingLabelText={intl.formatMessage(custom, { action: intl.formatMessage(discount) })}
                     fullWidth
                     value={variantsProps[key].discount}
                     type={'number'}
@@ -418,27 +443,27 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
                   />%</TableHeaderColumn>
                   <TableHeaderColumn><TextField
                     className={'text-center'} defaultValue={'0'}
-                    floatingLabelText={'كمية مخصصة'}
+                    floatingLabelText={intl.formatMessage(custom, { action: intl.formatMessage(quantity) })}
                     fullWidth
                     value={variantsProps[key].quantity}
                     type={'number'}
                     step={1}
                     disabled
                     onChange={this.handleQuantityChange}
-                  />وحدة</TableHeaderColumn>
+                  />{intl.formatMessage(quantityUnit, { plural: variantsProps[key].quantity > 1 ? 's' : '' })}</TableHeaderColumn>
                   <TableHeaderColumn><TextField
                     className={'text-center'} defaultValue={'0'}
-                    floatingLabelText={'سعر وحدة مخصص'}
+                    floatingLabelText={intl.formatMessage(custom, { action: intl.formatMessage(price) })}
                     fullWidth
                     value={variantsProps[key].price}
                     type={'number'}
                     step={0.1}
                     disabled
                     onChange={this.handlePriceChange}
-                  />ريال</TableHeaderColumn>
+                  />{currencySrLabel}</TableHeaderColumn>
                   <TableHeaderColumn><TextField
                     className={'text-center '} defaultValue={''}
-                    floatingLabelText={'رمز الباركود'}
+                    floatingLabelText={intl.formatMessage(custom, { action: intl.formatMessage(barcode) })}
                     fullWidth
                     value={variantsProps[key].barcode}
                     type={'number'}
@@ -451,7 +476,7 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
             }
           </TableBody>
           <TableFooter
-            adjustForCheckbox={this.state.showCheckboxes}
+            adjustForCheckbox={false}
           >
             <TableRow>
               <TableHeaderColumn
@@ -462,7 +487,7 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
                 }}
               >
                 {Object.keys(selectedProps).map((key) =>
-                  this.existsInArray(variants[key], selectedProps[key].label)
+                  this.constructor.existsInArray(variants[key], selectedProps[key].label)
                     ?
                       <Chip
                         key={`${key}_${selectedProps[key].label}_table`}
@@ -476,7 +501,7 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
               </TableHeaderColumn>
               <TableHeaderColumn><TextField
                 className={'text-center'} defaultValue={'0.0'}
-                floatingLabelText={'خصم مخصص'}
+                floatingLabelText={intl.formatMessage(custom, { action: intl.formatMessage(discount) })}
                 fullWidth
                 value={this.state.discount}
                 type={'number'}
@@ -485,25 +510,25 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
               />%</TableHeaderColumn>
               <TableHeaderColumn><TextField
                 className={'text-center'} defaultValue={'0'}
-                floatingLabelText={'كمية مخصصة'}
+                floatingLabelText={intl.formatMessage(custom, { action: intl.formatMessage(quantity) })}
                 fullWidth
                 value={this.state.quantity}
                 type={'number'}
                 step={1}
                 onChange={this.handleQuantityChange}
-              />وحدة</TableHeaderColumn>
+              />{intl.formatMessage(quantityUnit, { plural: this.state.quantity > 1 ? 's' : '' })}</TableHeaderColumn>
               <TableHeaderColumn><TextField
                 className={'text-center'} defaultValue={'0'}
-                floatingLabelText={'سعر وحدة مخصص'}
+                floatingLabelText={intl.formatMessage(custom, { action: intl.formatMessage(price) })}
                 fullWidth
                 value={this.state.price}
                 type={'number'}
                 step={0.1}
                 onChange={this.handlePriceChange}
-              />ريال</TableHeaderColumn>
+              />{currencySrLabel}</TableHeaderColumn>
               <TableHeaderColumn><TextField
                 className={'text-center '} defaultValue={''}
-                floatingLabelText={'رمز الباركود'}
+                floatingLabelText={intl.formatMessage(custom, { action: intl.formatMessage(barcode) })}
                 fullWidth
                 value={this.state.barcode}
                 type={'number'}
@@ -518,19 +543,17 @@ class MultiVariantForm extends React.PureComponent { // eslint-disable-line reac
                   style={{ margin: 5 }}
                   backgroundColor={red500}
                   icon={<FontIcon color={fullWhite} className={'material-icons'}>delete_forever</FontIcon>}
-
                 />
                 <RaisedButton
                   onClick={this.addVariantProp}
                   style={{ margin: 5 }}
                   backgroundColor={green500}
                   icon={<FontIcon color={fullWhite} className={'material-icons'}>add_box</FontIcon>}
-
                 />
               </TableRowColumn>
-              <TableRowColumn></TableRowColumn>
-              <TableRowColumn></TableRowColumn>
-              <TableRowColumn></TableRowColumn>
+              <TableRowColumn>{' '}</TableRowColumn>
+              <TableRowColumn>{' '}</TableRowColumn>
+              <TableRowColumn>{' '}</TableRowColumn>
             </TableRow>
           </TableFooter>
         </Table>
@@ -543,6 +566,7 @@ MultiVariantForm.propTypes = {
   product: PropTypes.object,
   user: PropTypes.any,
   existing: PropTypes.any,
+  intl: PropTypes.any,
 };
 
-export default MultiVariantForm;
+export default injectIntl(MultiVariantForm);

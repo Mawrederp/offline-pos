@@ -15,12 +15,11 @@ import Checkbox from 'material-ui/Checkbox';
 
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
-import { grey400, cyan600, white, black } from 'material-ui/styles/colors';
+import { grey400 } from 'material-ui/styles/colors';
 
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 import { Subheader } from 'material-ui';
-import { NoPrint } from 'react-easy-print';
+import { injectIntl } from 'react-intl';
+import messages from './messages';
 
 
 const styles = {
@@ -34,7 +33,15 @@ const styles = {
   },
 };
 
-function CartList({ data, style, noScroll, removeProduct }) {
+function CartList({ data, style, noScroll, removeProduct, intl }) {
+  const {
+    thePrice,
+    quantity,
+    discount,
+    tax,
+    remove,
+  } = messages;
+
   const iconButtonElement = (
     <IconButton
       touch
@@ -45,7 +52,7 @@ function CartList({ data, style, noScroll, removeProduct }) {
   );
   const RightIconMenu = (payload) => (
     <IconMenu iconButtonElement={iconButtonElement}>
-      <MenuItem onClick={() => { removeProduct(payload); }}>حذف</MenuItem>
+      <MenuItem onClick={() => { removeProduct(payload); }}>{intl.formatMessage(remove)}</MenuItem>
     </IconMenu>
   );
   return (
@@ -56,7 +63,8 @@ function CartList({ data, style, noScroll, removeProduct }) {
         maxHeight: '246px',
         overflowY: 'auto',
         overflowX: 'hidden',
-        paddingTop: 0, ...style,
+        paddingTop: 0,
+        ...style,
       }}
     >
       {data.products.map((item) =>
@@ -65,15 +73,16 @@ function CartList({ data, style, noScroll, removeProduct }) {
             leftCheckbox={<Checkbox />}
             rightIconButton={RightIconMenu(item)}
             style={{ paddingTop: 19 }}
+            className={'cart-list-item'}
           >
             <Subheader style={{ lineHeight: '12px' }} className={'row text-center'}>
               {item.product.name}
             </Subheader>
             <Subheader style={styles.itemPropHeader} className={'row text-center'}>
-              <span className={'header-item col-xs-3 col-md-3 col-sm-3 col-lg-3'}>الكمية</span>
-              <span className={'header-item col-xs-3 col-md-3 col-sm-3 col-lg-3'}>السعر</span>
-              <span className={'header-item col-xs-3 col-md-3 col-sm-3 col-lg-3'}>الخصم</span>
-              <span className={'header-item col-xs-3 col-md-3 col-sm-3 col-lg-3'}>الضريبة</span>
+              <span className={'header-item col-xs-3 col-md-3 col-sm-3 col-lg-3'}>{intl.formatMessage(quantity)}</span>
+              <span className={'header-item col-xs-3 col-md-3 col-sm-3 col-lg-3'}>{intl.formatMessage(thePrice)}</span>
+              <span className={'header-item col-xs-3 col-md-3 col-sm-3 col-lg-3'}>{intl.formatMessage(discount)}</span>
+              <span className={'header-item col-xs-3 col-md-3 col-sm-3 col-lg-3'}>{intl.formatMessage(tax)}</span>
             </Subheader>
             <Subheader style={styles.itemPropHeader} className={'row text-center'}>
               <span className={'header-item col-xs-3 col-md-3 col-lg-3'}>{item.quantity}</span>
@@ -95,6 +104,7 @@ CartList.propTypes = {
   style: PropTypes.object,
   noScroll: PropTypes.bool,
   removeProduct: PropTypes.func,
+  intl: PropTypes.any,
 };
 
-export default CartList;
+export default injectIntl(CartList);

@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { FormattedMessage } from 'react-intl';
+
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -47,7 +49,7 @@ class Header extends React.Component {
     }
   }
 
-  
+
   render() {
     const { styles, handleChangeRequestNavDrawer, appStore } = this.props;
     const style = Styles(appStore.isBoxedLayout, this.state.currentTheme);
@@ -95,14 +97,14 @@ class Header extends React.Component {
                 color={this.state.currentTheme.appBarMenuButtonColor}
                 iconButtonElement={
                   <IconButton>
-                    <FontIcon color={this.state.currentTheme.appBarMenuButtonColor} className="material-icons">more_vert_icon</FontIcon>
+                    <FontIcon color={this.state.currentTheme.appBarMenuButtonColor} className="material-icons">power_settings_new</FontIcon>
                   </IconButton>
                 }
                 targetOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
               >
                 <MenuItem
-                  primaryText="تسجيل الخروج"
+                  primaryText={<FormattedMessage id={'app.actions.logout'} />}
                   onClick={this.signOut}
                 />
               </IconMenu>

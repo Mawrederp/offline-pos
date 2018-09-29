@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
+import {FormattedMessage} from "react-intl";
+
 import { Link, browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -82,7 +84,7 @@ class Header extends React.Component {
             (menu.id === 'dashboard' ? (
               <Tab
                 key={menu.id}
-                label={menu.text}
+                label={<FormattedMessage {...menu} />}
                 value={index}
                 onClick={(evt) => this.handleClick(menu, evt)}
                 containerElement={
@@ -92,7 +94,7 @@ class Header extends React.Component {
             ) : (
               <Tab
                 key={menu.id}
-                label={menu.text}
+                label={<FormattedMessage {...menu} />}
                 value={index}
                 onClick={(evt) => this.handleClick(menu, evt)}
                 containerElement={

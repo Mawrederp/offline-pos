@@ -7,20 +7,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { GridList, GridTile } from 'material-ui/GridList';
-import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
-import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import AutoComplete from 'material-ui/AutoComplete';
-import Chip from 'material-ui/Chip';
 import Paper from 'material-ui/Paper';
-import Avatar from 'material-ui/Avatar';
-import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 
 import { cyan600, white } from 'material-ui/styles/colors';
 import typography from 'material-ui/styles/typography';
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
-import { FontIcon } from 'material-ui';
+import { injectIntl } from 'react-intl';
+import messages from '../Items/messages';
 import VariantSelector from '../VariantSelector';
 
 const noImage = require('../../assets/no-image.gif');
@@ -57,11 +51,14 @@ const colors = [
   'Black',
   'White',
 ];
-const ItemSubTitle = ({ unitPrice, quantity, discount }) => (
+const ItemSubTitle = ({ unitPrice, quantity, discount, labels, intl }) => (
   <div className="row">
-    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>السعر <b>{unitPrice}</b></span>
-    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>الكمية <b>{quantity}</b></span>
-    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>الخصم <b>{discount}</b></span>
+    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>
+      {labels.price}: <b> {unitPrice} {labels.priceUnit} </b></span>
+    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>
+      {labels.quantity}:<b> {quantity} {intl.formatMessage(labels.quantityUnit, { plural: quantity > 1 ? 's' : '' })}</b></span>
+    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>
+      {labels.discount}:<b> {discount}</b>%</span>
   </div>
 
 );
@@ -114,18 +111,30 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
   }
 
   render() {
-    const { products } = this.props;
+    const { products, intl } = this.props;
     const id = 'checkoutbench';
     console.log(products, 'checkout', attachmentKey);
+    const {
+      theProducts,
+      searchText,
+      searchHint,
+    } = messages;
+    const itemLabels = {
+      price: intl.formatMessage(messages.price),
+      quantity: intl.formatMessage(messages.quantity),
+      discount: intl.formatMessage(messages.discount),
+      priceUnit: intl.formatMessage(messages.currencySrInitials),
+      quantityUnit: messages.quantityUnit,
+    };
     return (
       <Paper id={id} style={styles.container} className="cart">
-        <Subheader style={styles.subheader}>المنتجات</Subheader>
+        <Subheader style={styles.subheader}>{intl.formatMessage(theProducts)}</Subheader>
 
         <AutoComplete
-          hintText="يمكنك البحث باستخدام احرف او كلمات"
+          hintText={intl.formatMessage(searchHint)}
           dataSource={colors}
           onUpdateInput={this.handleUpdateInput}
-          floatingLabelText="البحث "
+          floatingLabelText={intl.formatMessage(searchText)}
           filter={AutoComplete.fuzzyFilter}
           fullWidth
           className={'search-box'}
@@ -138,7 +147,7 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
           style={styles.gridList}
           spacing={2}
         >
-          {Object.keys(products).map((key, idx) => (
+          {Object.keys(products).map((key) => (
             <GridTile
               key={key}
               value={key}
@@ -147,12 +156,16 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
               className={'items-tile'}
               subtitle={<ItemSubTitle
                 unitPrice={products[key].price} quantity={products[key].quantity}
-                discount={`${products[key].discount}%`}
+                discount={`${products[key].discount}`} labels={itemLabels} intl={intl}
               />}
+              subtitleStyle={{ marginRight: '10px' }}
+              titleStyle={{ marginRight: '10px' }}
             >
-
-              <img src={`${products[key][attachmentKey] ? (() => { console.log(URL.createObjectURL(products[key][attachmentKey].img.data)); return URL.createObjectURL(products[key][attachmentKey].img.data); })() : noImage}`} role="presentation" />
-
+              <img
+                className={'tile-image'}
+                src={`${products[key][attachmentKey] ? URL.createObjectURL(products[key][attachmentKey].img.data) : noImage}`}
+                role="presentation"
+              />
             </GridTile>
           ))}
         </GridList>
@@ -174,4 +187,4 @@ CheckoutBench.propTypes = {
   products: PropTypes.any,
 };
 
-export default CheckoutBench;
+export default injectIntl(CheckoutBench);

@@ -45,9 +45,6 @@ export class MultiCart extends React.PureComponent { // eslint-disable-line reac
         data={products}
         payment={openPaymentModal}
         removeProduct={removeProduct}
-        subHeader={<Subheader
-          style={styles.subheader}
-        >قائمة المشتريات</Subheader>}
       />
     );
   }

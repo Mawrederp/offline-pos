@@ -92,7 +92,7 @@ export class ProductsManagement extends React.Component { // eslint-disable-line
             />
           </div>
 
-          <FloatingActionButton onClick={this.openProductsModal} style={{ position: 'absolute', bottom: 20, right: 20 }}>
+          <FloatingActionButton onClick={this.openProductsModal} className={'products-add-btn'} >
             <ContentAdd />
           </FloatingActionButton>
           <ProductsModal

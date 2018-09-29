@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
-import OpenRegistry from '../../components/OpenRegıstry';
+import OpenRegistry from '../../components/OpenRegistry';
 import { makeSelectGlobal } from '../App/selectors';
 import * as posActions from './actions';
 
@@ -48,7 +48,6 @@ export class Registry extends React.PureComponent { // eslint-disable-line react
 Registry.propTypes = {
   actions: PropTypes.any,
   appStore: PropTypes.any,
-  router: PropTypes.any,
 };
 
 const mapStateToProps = createStructuredSelector({

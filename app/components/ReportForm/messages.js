@@ -6,8 +6,24 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  header: {
-    id: 'app.components.ReportForm.header',
-    defaultMessage: 'This is the ReportForm component !',
+  cashBalance: {
+    id: 'app.components.OpenRegistryReport.cashBalance',
+    defaultMessage: '{balance} {cash}',
+  },
+  receiptsBalance: {
+    id: 'app.components.OpenRegistryReport.receiptsBalance',
+    defaultMessage: '{balance} {receipts}',
+  },
+  theReceipts: {
+    id: 'app.components.theReceipts',
+    defaultMessage: 'الايصالات',
+  },
+  theCash: {
+    id: 'app.components.theCash',
+    defaultMessage: 'النقود',
+  },
+  balance: {
+    id: 'app.components.balance',
+    defaultMessage: 'رصيد',
   },
 });

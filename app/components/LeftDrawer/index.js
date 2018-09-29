@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Toolbar, ToolbarGroup, IconButton, FontIcon } from 'material-ui';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+
 import { bindActionCreators } from 'redux';
 import Drawer from 'material-ui/Drawer';
 import { browserHistory } from 'react-router';
@@ -12,9 +15,9 @@ import Theme from '../../config/theme';
 import Styles from './styles';
 import OpenViewsItems from './OpenViewItems';
 import MenuItems from './MenuItems';
+import messages from './messages';
+
 import { findMenuItem, scrollToOpenViewsItem, scrollToMenuItem } from './menuUtils';
-import { Toolbar, ToolbarGroup, IconButton, FontIcon } from 'material-ui';
-import { green700 } from 'material-ui/styles/colors';
 
 const theme = new Theme();
 
@@ -120,10 +123,10 @@ class LeftDrawer extends React.Component {
     const currentTheme = this.state.currentTheme;
     const styles = Styles(currentTheme);
     const { navDrawerOpen } = this.props;
-
+    const isRTL = this.props.appStore.isRtl;
     return (
       <Drawer
-        className={`left-drawner${navDrawerOpen ? ' open' : ' close'}`}
+        className={`left-drawner${navDrawerOpen ? ' open' : ' close'} ${isRTL === 'rtl' ? '' : 'ltr'}`}
         docked
         open={navDrawerOpen}
       >
@@ -150,11 +153,12 @@ class LeftDrawer extends React.Component {
               </FontIcon>
             </IconButton>
           </ToolbarGroup>
-          <ToolbarGroup></ToolbarGroup>
+          <ToolbarGroup>{' '}</ToolbarGroup>
         </Toolbar>
         {
           this.props.appStore.showOpenViews ? (
             <OpenViewsItems
+              label={<FormattedMessage {...messages.openViews} />}
               styles={styles}
               isMobileBrowser={this.props.isMobileBrowser}
               handleClickMenu={this.handleClickOpenView}
@@ -164,11 +168,12 @@ class LeftDrawer extends React.Component {
           ) : null
         }
         <MenuItems
+          label={<FormattedMessage {...messages.views} />}
           styles={styles}
           isMobileBrowser={this.props.isMobileBrowser}
           animateRootMenu={this.animateRootMenu}
           handleClickMenu={this.handleClickMenu}
-        ></MenuItems>
+        />
       </Drawer>
     );
   }
@@ -180,7 +185,6 @@ LeftDrawer.propTypes = {
   appStore: PropTypes.any,
   location: PropTypes.any,
   isMobileBrowser: PropTypes.bool,
-  router: PropTypes.any,
 };
 
 const mapStateToProps = createStructuredSelector({

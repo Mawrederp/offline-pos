@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { FormattedMessage } from 'react-intl';
+
 import { ListItem } from 'material-ui/List';
 import { createStructuredSelector } from 'reselect';
 import FontIcon from 'material-ui/FontIcon';
@@ -70,7 +72,7 @@ class OpenViewItems extends React.Component {
   }
 
   render() {
-    const { styles, isMobileBrowser, animateRootMenu } = this.props;
+    const { styles, isMobileBrowser, animateRootMenu, label } = this.props;
 
     return (
       <SelectableList
@@ -85,7 +87,7 @@ class OpenViewItems extends React.Component {
         <ListItem
           value={-1}
           className="menu-text-color"
-          primaryText="القوائم المفتوحة"
+          primaryText={label}
           style={styles.headerItem}
           open={this.state.openViewsHasItems}
           onNestedListToggle={this.handleOpenViewNestedListToggle}
@@ -98,7 +100,7 @@ class OpenViewItems extends React.Component {
                   ${animateRootMenu({ open: this.state.openViewsHasItems }, menu)}`}
                   value={index}
                   style={this.props.appStore.selectedOpenedMenuIndex === index ? styles.selectedListItem : styles.menuItem}
-                  primaryText={menu.text}
+                  primaryText={<FormattedMessage {...menu} />}
                   leftIcon={menu.icon}
                   onClick={(evt) => this.handleClickOpenViews(menu, evt)}
                   containerElement={
@@ -111,7 +113,7 @@ class OpenViewItems extends React.Component {
                   ${animateRootMenu({ open: this.state.openViewsHasItems }, menu)}`}
                   value={index}
                   style={this.props.appStore.selectedOpenedMenuIndex === index ? styles.selectedListItem : styles.menuItem}
-                  primaryText={menu.text}
+                  primaryText={<FormattedMessage {...menu} />}
                   leftIcon={menu.icon}
                   rightIcon={<FontIcon className="material-icons">close</FontIcon>}
                   onClick={(evt) => this.handleClickOpenViews(menu, evt)}
@@ -134,6 +136,7 @@ OpenViewItems.propTypes = {
   isMobileBrowser: PropTypes.bool,
   handleClickMenu: PropTypes.func,
   animateRootMenu: PropTypes.func,
+  label: PropTypes.any,
 };
 
 const mapStateToProps = createStructuredSelector({

@@ -7,7 +7,7 @@
 import React, { Fragment } from 'react';
 // import styled from 'styled-components';
 import FontIcon from 'material-ui/FontIcon';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -97,17 +97,14 @@ class PaymentModal extends React.Component {
     const { remainder, payments } = this.state;
     const { total } = this.props.data;
     const newPayments = payments.map((v, i) => (i === index) ? { ...v, value: parseFloat(event.target.value) } : v);
-    console.log(newPayments);
     const theRest = newPayments.reduce((rem, payment) => rem - payment.value, total);
-    console.log('the rest', theRest, parseFloat(remainder.value));
     this.setState({
       payments: newPayments,
       remainder: { ...remainder, value: theRest },
-    }, (val) => console.log('done mutating', this.state));
+    });
   }
 
   addPaymentRow(type) {
-    console.log(this.state.remainder);
     if (this.state.remainder.value !== 0) {
       this.setState({
         payments: [...this.state.payments, {
@@ -129,31 +126,39 @@ class PaymentModal extends React.Component {
   }
 
   render() {
-    const { handleClose, open, id, removeProduct, currency } = this.props;
+    const { handleClose, open, id, removeProduct, currency, intl } = this.props;
+    const {
+      finish,
+      cancel,
+      cash,
+      amount,
+      card,
+      remainder,
+    } = messages;
     const actions = [
       <FlatButton
-        label="الغاء"
+        label={intl.formatMessage(cancel)}
         primary
         onClick={() => this.props.handleClose(false)}
       />,
       < FlatButton
-        label="كاش"
+        label={intl.formatMessage(cash)}
         primary
         keyboardFocused
         onClick={this.addCashPayment}
       />,
       < FlatButton
-        label="بطاقة"
+        label={intl.formatMessage(card)}
         primary
         keyboardFocused
         onClick={this.addCardPayment}
       />,
       < FlatButton
-        label={'انهاء'}
+        label={intl.formatMessage(finish)}
         primary
         disabled={!(this.state.remainder.value <= 0)}
         keyboardFocused
-        onClick={() => { this.props.handleClose(true);  }}
+        onClick={() => { this.props.handleClose(true); }}
       />,
     ];
 
@@ -165,11 +170,10 @@ class PaymentModal extends React.Component {
       (<SelectField
         value={value}
         onChange={this.handleChange}
-        floatingLabelText="العملة"
+        floatingLabelText={intl.formatMessage(messages.currency)}
       >
         {currencies}
       </SelectField>);
-    console.log(this.props);
     return (
       <div>
         <Dialog
@@ -206,7 +210,7 @@ class PaymentModal extends React.Component {
             >
               <Subheader className="screen payment" style={styles.clearHeader}>
                 <div className={'row'}>
-                  <div className={'col-lg-2 col-xs-4 col-md-4'}>المبلغ</div>
+                  <div className={'col-lg-2 col-xs-4 col-md-4'}>{intl.formatMessage(amount)}</div>
                   <div className={'col-lg-5 text-center  payment-value col-xs-5  col-md-5'}>
                     <div>
                       <TextField
@@ -258,7 +262,7 @@ class PaymentModal extends React.Component {
               <Divider />
               <Subheader className="screen payment" style={styles.clearHeader}>
                 <div className={'row'}>
-                  <div className={'col-lg-2 col-xs-2 col-md-2'}>الباقي</div>
+                  <div className={'col-lg-2 col-xs-2 col-md-2'}>{intl.formatMessage(remainder)}</div>
                   <div className={'col-lg-5 text-center selected payment-value col-xs-5  col-md-5'}>
                     <TextField
                       id="text-field-controlled"
@@ -307,6 +311,7 @@ PaymentModal.propTypes = {
   data: PropTypes.any,
   removeProduct: PropTypes.func,
   user: PropTypes.any,
+  intl: PropTypes.any,
 };
 
-export default PaymentModal;
+export default injectIntl(PaymentModal);

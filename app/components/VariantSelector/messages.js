@@ -6,8 +6,12 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  header: {
-    id: 'app.components.VariantSelector.header',
-    defaultMessage: 'This is the VariantSelector component !',
+  add: {
+    id: 'app.components.add',
+    defaultMessage: 'اضافة',
+  },
+  cancel: {
+    id: 'app.components.cancel',
+    defaultMessage: 'الغاء',
   },
 });

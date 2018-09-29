@@ -56,9 +56,9 @@ export default function createRoutes(store) {
       },
     }, {
       path: '/open-registry',
-      name: 'openRegıstry',
+      name: 'OpenRegistry',
       getComponent(location, cb) {
-        import('components/OpenRegıstry')
+        import('components/OpenRegistry')
           .then(loadModule(cb))
           .catch(errorLoading);
       },

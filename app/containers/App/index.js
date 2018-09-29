@@ -103,7 +103,7 @@ class App extends React.Component {
 
     const path = this.props.location.pathname;
     const currentRoute = this.props.routes[this.props.routes.length - 1];
-
+    console.log(this.props, styles.container);
     if (currentRoute.type === 'public') {
       return (<div>
         {React.cloneElement(this.props.children, {

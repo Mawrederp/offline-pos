@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { FormattedMessage } from 'react-intl';
+
 import { ListItem } from 'material-ui/List';
 import { createStructuredSelector } from 'reselect';
 import * as appActions from '../../../containers/App/actions';
@@ -94,7 +96,7 @@ class MenuItems extends React.Component {
   }
 
   render() {
-    const { styles, isMobileBrowser, animateRootMenu, handleClickMenu } = this.props;
+    const { styles, isMobileBrowser, animateRootMenu, handleClickMenu, label } = this.props;
 
     return (
       <SelectableList
@@ -110,7 +112,7 @@ class MenuItems extends React.Component {
             <ListItem
               value={-1}
               className="menu-text-color"
-              primaryText="القوائم"
+              primaryText={label}
               style={styles.headerItem}
               open={this.state.menusHasItems}
               onNestedListToggle={this.handleMenusNestedListToggle}
@@ -124,7 +126,7 @@ class MenuItems extends React.Component {
                     className={`list-item${animateRootMenu({ open: this.state.menusHasItems }, menu)}`}
                     value={menu.index}
                     style={this.props.appStore.selectedMenuIndex === menu.index ? styles.selectedMenuListItem : styles.menuItem}
-                    primaryText={menu.text}
+                    primaryText={<FormattedMessage {...menu} />}
                     leftIcon={menu.icon}
                     primaryTogglesNestedList={menu.children && menu.children.length > 0}
                     onClick={() => handleClickMenu(menu)}
@@ -138,7 +140,7 @@ class MenuItems extends React.Component {
                           className={`list-item${this.animateMenu(menu, child)}`}
                           value={child.index}
                           style={this.props.appStore.selectedMenuIndex === child.index ? styles.selectedMenuListItem : styles.menuItem}
-                          primaryText={child.text}
+                          primaryText={<FormattedMessage {...child} />}
                           onClick={() => handleClickMenu(child)}
                           data-id={child.id}
                           data-url={child.url}
@@ -163,6 +165,7 @@ MenuItems.propTypes = {
   isMobileBrowser: PropTypes.bool,
   animateRootMenu: PropTypes.func,
   handleClickMenu: PropTypes.func,
+  label: PropTypes.any,
 };
 
 const mapStateToProps = createStructuredSelector({

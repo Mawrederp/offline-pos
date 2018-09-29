@@ -1,9 +1,9 @@
 // import React from 'react';
 // import { shallow } from 'enzyme';
 
-// import OpenRegıstry from '../index';
+// import OpenRegistry from '../index';
 
-describe('<OpenRegıstry />', () => {
+describe('<OpenRegistry />', () => {
   it('Expect to have unit tests specified', () => {
     expect(true).toEqual(false);
   });

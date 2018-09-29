@@ -9,10 +9,8 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Dialog from 'material-ui/Dialog';
 
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
-import typography from 'material-ui/styles/typography';
-import { black, cyan600, white } from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton/index';
 import { List, ListItem } from 'material-ui/List';
 import { Chip, Paper } from 'material-ui';
@@ -20,8 +18,8 @@ import messages from './messages';
 
 
 class VariantSelector extends React.PureComponent {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       selectedProps: {},
     };
@@ -73,15 +71,19 @@ class VariantSelector extends React.PureComponent {
   }
 
   render() {
-    const { handleClose, open, id, product } = this.props;
+    const { handleClose, open, id, product, intl } = this.props;
+    const {
+      add,
+      cancel,
+    } = messages;
     const actions = [
       <FlatButton
-        label="الغاء"
+        label={intl.formatMessage(cancel)}
         primary
         onClick={() => handleClose()}
       />,
       < FlatButton
-        label="اضافة"
+        label={intl.formatMessage(add)}
         primary
         keyboardFocused
         onClick={this.makeKeyAndReturnToParent}
@@ -131,7 +133,6 @@ class VariantSelector extends React.PureComponent {
             </List>
           </Paper>
         </Dialog>
-        {/* <FormattedMessage {...messages.header} />*/}
       </Fragment>
     );
   }
@@ -143,6 +144,7 @@ VariantSelector.propTypes = {
   open: PropTypes.bool,
   product: PropTypes.any,
   id: PropTypes.string,
+  intl: PropTypes.any,
 };
 
-export default VariantSelector;
+export default injectIntl(VariantSelector);

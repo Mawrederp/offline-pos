@@ -20,12 +20,10 @@ import {
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 // pick utils
 import MomentUtils from 'material-ui-pickers/utils/moment-utils';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import messages from './messages';
-import { Subheader } from 'material-ui';
 import ProductForm from '../ProductForm';
 import MultiVariantForm from '../MultiVariantForm';
-import data from '../../data';
 
 const Fragment = React.Fragment;
 const ProductTypeSelection = ({ handleSelection }) => (
@@ -48,8 +46,15 @@ const ProductTypeSelection = ({ handleSelection }) => (
     </div>
   </div>
 );
+ProductTypeSelection.propTypes = {
+  handleSelection: PropTypes.func,
+};
 
 class ProductsModal extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  static triggerSubmit() {
+    document.getElementById('products-form-submit').click();
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -64,7 +69,6 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
     this.handleSelection = this.handleSelection.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.triggerSubmit = this.triggerSubmit.bind(this);
     this.getActiveInfo = this.getActiveInfo.bind(this);
   }
 
@@ -73,12 +77,6 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
     const { basicProductInfo } = this.state;
     const basicInfoExists = basicProductInfo !== null;
     if (basicInfoExists) {
-      console.log({
-        ...product,
-        ...Object.keys(basicProductInfo)
-          .filter((key) => this.getValidation(key, basicProductInfo[key]))
-          .reduce((acc, key) => ({ ...acc, [key]: basicProductInfo[key] }), {}),
-      })
       return {
         ...product,
         ...Object.keys(basicProductInfo)
@@ -130,14 +128,13 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
     this.props.handleClose();
   }
 
-  handleNext = (initial) => {
+  handleNext = () => {
     const { stepIndex, basicProductInfo } = this.state;
     let closeObj = {
       finished: false,
       stepIndex: 0,
       basicProductInfo: null,
     };
-    const passThrough = 1;
 
     if (!(stepIndex === 1 && basicProductInfo)) {
       closeObj = {};
@@ -149,9 +146,6 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
     });
   };
 
-  triggerSubmit() {
-    document.getElementById('products-form-submit').click();
-  }
 
   handlePrev = () => {
     const { stepIndex } = this.state;
@@ -169,18 +163,20 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
     evt.preventDefault();
     const { basicProductInfo, stepIndex } = this.state;
     const formData = new FormData(document.getElementById('products-form'));
-    const imgInput = document.getElementById('product-image-file');
+    // const imgInput = document.getElementById('product-image-file');
     const img = formData.get('img');
     try {
       if (img.size) {
         const reader = new FileReader();
 
-        reader.onload = function (e) {
+        reader.onload = (e) => {
           document.getElementById('product-img-preview').setAttribute('src', e.target.result);
         };
         reader.readAsDataURL(img);
       }
+// eslint-disable-next-line no-empty
     } catch (e) {
+      // should do a notification thingy here , informing the user that he didn't pick an image
     }
     const dataObj = { validation: {} };
     const validation = {
@@ -217,24 +213,42 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
       });
       if (stepIndex >= 1) {
         this.props.setProduct({
-          ...{ variants: '{}',
+          ...{
+            variants: '{}',
             variantsProps: '{}',
           },
           ...this.props.product,
           ...basicProductInfo,
-          ...dataObj });
+          ...dataObj,
+        });
         this.props.handleClose();
       }
     }
   }
 
   render() {
-    const { open, product } = this.props;
+    const { open, product, intl } = this.props;
     const { stepIndex, handleClose } = this.state;
+    const {
+      edit,
+      add,
+      goBack,
+      next,
+      information,
+      settings,
+      variform,
+      newProduct,
+      theProduct,
+      finish,
+      cancel,
+      theBasicF,
+      productBasicInformation,
+      productVariformSettings,
+    } = messages;
     const actions = [
 
       <FlatButton
-        label="الى الخلف"
+        label={intl.formatMessage(goBack)}
         disabled={stepIndex === 0}
         onClick={this.handlePrev}
         style={{ marginRight: 12 }}
@@ -242,33 +256,34 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
       <Fragment>
         {
           (stepIndex === 1) ? <RaisedButton
-            label={'انهاء'}
+            label={intl.formatMessage(finish)}
             primary
-            onClick={this.triggerSubmit}
+            onClick={this.constructor.triggerSubmit}
           /> :
             <RaisedButton
-              label={'التالي'}
+              label={intl.formatMessage(next)}
               primary
-              onClick={this.triggerSubmit}
+              onClick={this.constructor.triggerSubmit}
             />
         }
       </Fragment>,
       <FlatButton
-        label={'الغاء'}
+        label={intl.formatMessage(cancel)}
         primary
         keyboardFocused
         onClick={this.handleClose}
       />,
     ];
-
     return (
       <Dialog
         actions={actions}
-        title={product ? 'تعديل منتج' : 'انشاء منتج جديد'}
+        title={Object.keys(product).length ? `${intl.formatMessage(edit)} ${intl.formatMessage(theProduct)}` : `${intl.formatMessage(add)} ${intl.formatMessage(newProduct)}`}
         modal={false}
         open={open}
         onRequestClose={handleClose}
         autoScrollBodyContent
+        actionsContainerClassName={'modal-dialog-actions'}
+        className={'modal-dialog-root'}
         style={{ zIndex: 1300 }}
         container={() => document.getElementById(product.name)}
         contentStyle={{ width: '100%', maxWidth: 'none' }}
@@ -277,17 +292,25 @@ class ProductsModal extends React.Component { // eslint-disable-line react/prefe
         <div>
           <Stepper activeStep={stepIndex}>
             <Step>
-              <StepLabel>معلومات المنتج الاساسية</StepLabel>
+              <StepLabel>{intl.formatMessage(productBasicInformation, {
+                information: intl.formatMessage(information),
+                product: intl.formatMessage(messages.product),
+                theBasicF: intl.formatMessage(theBasicF),
+              })}</StepLabel>
             </Step>
             <Step>
-              <StepLabel>اعدادات المنتج متعدد الاشكال</StepLabel>
+              <StepLabel>{intl.formatMessage(productVariformSettings, {
+                settings: intl.formatMessage(settings),
+                product: intl.formatMessage(messages.product),
+                variform: intl.formatMessage(variform),
+              })}</StepLabel>
             </Step>
 
           </Stepper>
           <form
             encType={'multipart/form-data'}
             id={'products-form'} onSubmit={this.handleSubmit}
-            onKeyPress={(e) => e.which === 13 && e.preventDefault()}
+            onKeyPress={(e) => e.key === 'Enter' && e.preventDefault()}
           >
             {this.getStepContent(stepIndex)}
             <button
@@ -307,6 +330,7 @@ ProductsModal.propTypes = {
   setProduct: PropTypes.func,
   product: PropTypes.object,
   user: PropTypes.any,
+  intl: PropTypes.any,
 };
 
-export default ProductsModal;
+export default injectIntl(ProductsModal);

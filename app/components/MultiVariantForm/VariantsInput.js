@@ -4,8 +4,9 @@ import { AutoComplete, RaisedButton, ToolbarGroup, Chip, TextField } from 'mater
 import ChipInput from 'material-ui-chip-input';
 import FontIcon from 'material-ui/FontIcon/index';
 import { Toolbar } from '@material-ui/core';
-import { blue300, fullWhite, red500 } from 'material-ui/styles/colors';
+import { fullWhite } from 'material-ui/styles/colors';
 
+import messages from './messages';
 const styles = {};
 const variantsSuggestions = ['الوزن', 'الاصدار', 'اللون', 'الحجم'];
 
@@ -36,13 +37,20 @@ class VariantsInput extends React.PureComponent { // eslint-disable-line react/p
   }
 
   render() {
+    const { intl } = this.props;
+    const {
+      feature,
+      nameOf,
+      addNewFeature,
+      deleteFeature,
+    } = messages;
     return (
       <Toolbar className={'row m-b-15'}>
         <ToolbarGroup className={'col-sm-2 col-md-2 col-xs-2 col-lg-2'}>
           <AutoComplete
             dataSource={variantsSuggestions}
             onUpdateInput={this.onUpdateInput}
-            floatingLabelText="اسم السمة"
+            floatingLabelText={intl.formatMessage(nameOf, { thing: intl.formatMessage(feature) })}
             filter={AutoComplete.fuzzyFilter}
             fullWidth
             style={{ textIndent: 3, height: '53px' }}
@@ -58,14 +66,14 @@ class VariantsInput extends React.PureComponent { // eslint-disable-line react/p
 
         <ToolbarGroup className={'col-sm-4 col-md-4 col-xs-4 col-lg-4 '}>
           <RaisedButton
-            label="اضافة سمة جديدة"
+            label={intl.formatMessage(addNewFeature)}
             onClick={this.handleNewVariant}
             primary
             style={styles.button}
             icon={<FontIcon className="material-icons">control_point</FontIcon>}
           />
           <RaisedButton
-            label={'حذف سمة'}
+            label={intl.formatMessage(deleteFeature)}
             secondary
             onClick={this.props.removeVariant}
             style={{ margin: 5 }}
@@ -81,5 +89,6 @@ class VariantsInput extends React.PureComponent { // eslint-disable-line react/p
 VariantsInput.propTypes = {
   setNewVariant: PropTypes.func,
   removeVariant: PropTypes.func,
+  intl: PropTypes.any,
 };
 export default VariantsInput;

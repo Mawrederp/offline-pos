@@ -11,7 +11,6 @@ npm-debug.log
 .lock
 yarn.lock
 
-offline-pos-server/log.txt
-offline-pos-server/db/
+offline-pos-server
 
 *.out

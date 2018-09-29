@@ -17,33 +17,39 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import DateTimeLabel from '../DateTimeLabel';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import messages from './messages';
 import { Paper, Subheader } from 'material-ui';
 
-function OpenRegistryReport({ cash, box, receipts, user }) {
-  const action = box.open ? 'اغلاق' : 'فتح';
+function OpenRegistryReport({ cash, box, receipts, user, intl }) {
+  const { open, close, BoxActionTime, EmployeeName,currencySr, cashBalance, receiptsBalance, theCash, theReceipts, BoxReport, balance } = messages;
+  const saudiRiyal = intl.formatMessage(currencySr);
+  const action = box.open ? intl.formatMessage(close) : intl.formatMessage(open);
   return (
     <Paper>
-      <Subheader className={'text-center'}> تقرير {action} الصندوق</Subheader>
+      <Subheader className={'text-center'}>
+        {intl.formatMessage(BoxReport, { action })}
+      </Subheader>
       <Table allRowsSelected={false} selectable={false}>
         <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
           <TableRow>
-            <TableHeaderColumn>وقت {action} الصندوق : <DateTimeLabel /></TableHeaderColumn>
+            <TableHeaderColumn>{intl.formatMessage(BoxActionTime, { action })} : <DateTimeLabel /></TableHeaderColumn>
             <TableHeaderColumn></TableHeaderColumn>
-            <TableHeaderColumn>اسم الموظف : {user.fullName}</TableHeaderColumn>
+            <TableHeaderColumn>{intl.formatMessage(EmployeeName)} : {user.fullName}</TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody displayRowCheckbox={false} deselectOnClickaway={false} showRowHover={false}>
           <TableRow>
-            <TableHeaderColumn>رصيد الصندوق</TableHeaderColumn>
+            <TableHeaderColumn>{intl.formatMessage(cashBalance,
+              { cash: intl.formatMessage(theCash), balance: intl.formatMessage(balance) })}</TableHeaderColumn>
             <TableRowColumn>{cash}</TableRowColumn>
-            <TableRowColumn>ريال سعودي</TableRowColumn>
+            <TableRowColumn>{saudiRiyal}</TableRowColumn>
           </TableRow>
           <TableRow>
-            <TableHeaderColumn>مجموع الفواتير</TableHeaderColumn>
+            <TableHeaderColumn>{intl.formatMessage(receiptsBalance,
+              { receipts: intl.formatMessage(theReceipts), balance: intl.formatMessage(balance) })}</TableHeaderColumn>
             <TableRowColumn>{receipts}</TableRowColumn>
-            <TableRowColumn>ريال سعودي</TableRowColumn>
+            <TableRowColumn>{saudiRiyal}</TableRowColumn>
           </TableRow>
 
         </TableBody>
@@ -60,4 +66,4 @@ OpenRegistryReport.propTypes = {
   receipts: PropTypes.any,
 };
 
-export default OpenRegistryReport;
+export default injectIntl(OpenRegistryReport);

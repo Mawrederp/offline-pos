@@ -1,6 +1,6 @@
 /**
  *
- * OpenRegıstry
+ * OpenRegistry
  *
  */
 
@@ -15,12 +15,12 @@ import PropTypes from 'prop-types';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import messages from './messages';
 import ReportForm from '../ReportForm';
 import OpenRegistryReport from '../OpenRegistryReport';
 
-class OpenRegıstry extends React.Component { // eslint-disable-line react/prefer-stateless-function
+class OpenRegistry extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
     super(props);
     console.log(props);
@@ -40,6 +40,7 @@ class OpenRegıstry extends React.Component { // eslint-disable-line react/prefe
   }
 
   getStepContent(stepIndex) {
+    console.log(this.props);
     switch (stepIndex) {
       case 0:
         return (<ReportForm
@@ -91,18 +92,28 @@ class OpenRegıstry extends React.Component { // eslint-disable-line react/prefe
   };
 
   render() {
+    const {
+      open,
+      close,
+      print,
+      report,
+      goBack,
+      next,
+      printAndContinue,
+    } = messages;
     const { stepIndex } = this.state;
-    const { manageRegistry ,box } = this.props;
+    const { intl, box } = this.props;
     const contentStyle = { margin: '0 16px' };
-    const action = box.open ? 'اغلاق' : 'فتح';
+    const action = box.open ? intl.formatMessage(close) : intl.formatMessage(open);
+
     return (
-      <div style={{ width: '100%', maxWidth: 700, margin: 'auto' ,marginTop:100 }}>
+      <div style={{ width: '100%', maxWidth: 700, margin: 'auto', marginTop: 100 }}>
         <Stepper activeStep={stepIndex}>
           <Step>
-            <StepLabel>{action}  الصندوق</StepLabel>
+            <StepLabel> {`${action} ${intl.formatMessage(messages.box)}`}</StepLabel>
           </Step>
           <Step>
-            <StepLabel>طباعة التقرير</StepLabel>
+            <StepLabel>{`${intl.formatMessage(print)} ${intl.formatMessage(report)}`}</StepLabel>
           </Step>
 
         </Stepper>
@@ -112,13 +123,13 @@ class OpenRegıstry extends React.Component { // eslint-disable-line react/prefe
               <div>{this.getStepContent(stepIndex)}</div>
               <div style={{ marginTop: 12 }}>
                 <FlatButton
-                  label="الى الخلف"
+                  label={intl.formatMessage(goBack)}
                   disabled={stepIndex === 0}
                   onClick={this.handlePrev}
                   style={{ marginRight: 12 }}
                 />
                 <RaisedButton
-                  label={stepIndex === 1 ? 'طباعة و الذهاب الى الصفحة الرئيسية' : 'التالي'}
+                  label={stepIndex === 1 ? intl.formatMessage(printAndContinue) : intl.formatMessage(next)}
                   primary
                   onClick={stepIndex === 1 ? this.handleForm : this.handleNext}
                 />
@@ -132,10 +143,11 @@ class OpenRegıstry extends React.Component { // eslint-disable-line react/prefe
 
 }
 
-OpenRegıstry.propTypes = {
+OpenRegistry.propTypes = {
   manageRegistry: PropTypes.func,
   box: PropTypes.any,
   user: PropTypes.object,
+  intl: PropTypes.any,
 };
 
-export default OpenRegıstry;
+export default injectIntl(OpenRegistry);

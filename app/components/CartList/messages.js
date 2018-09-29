@@ -6,8 +6,24 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  header: {
-    id: 'app.components.CartList.header',
-    defaultMessage: 'This is the CartList component !',
+  discount: {
+    id: 'app.components.discount',
+    defaultMessage: 'الخصم',
+  },
+  quantity: {
+    id: 'app.components.quantity',
+    defaultMessage: 'الكمية',
+  },
+  tax: {
+    id: 'app.components.tax',
+    defaultMessage: 'الضريبة',
+  },
+  thePrice: {
+    id: 'app.components.thePrice',
+    defaultMessage: 'السعر',
+  },
+  remove: {
+    id: 'app.components.remove',
+    defaultMessage: 'حذف',
   },
 });
