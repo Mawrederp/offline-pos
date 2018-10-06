@@ -117,6 +117,7 @@ class App extends React.Component {
             className={this.props.appStore.currentTheme + (this.props.appStore.isBoxedLayout ? ' layout-boxed' : ' layout-fluid')}
           >
             <Header
+              className={this.state.navDrawerOpen ? 'open' : 'closed'}
               styles={styles.header}
               handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer}
             />
@@ -127,6 +128,7 @@ class App extends React.Component {
         className={this.props.appStore.currentTheme + (this.props.appStore.isBoxedLayout ? ' layout-boxed' : ' layout-fluid')}
       >
         <Header
+          className={this.state.navDrawerOpen ? 'open' : 'closed'}
           styles={styles.header}
           handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer}
         />
@@ -138,7 +140,7 @@ class App extends React.Component {
           currentRoute={currentRoute}
         />
 
-        <div className="main-container" style={styles.container}>
+        <div className={`main-container ${this.state.navDrawerOpen ? 'open' : 'closed'}`} style={styles.container}>
           <ReactCSSTransitionGroup
             transitionName="transition-animation"
             transitionAppear

@@ -108,10 +108,10 @@ class VariantSelector extends React.PureComponent {
           }}
         >
           <Paper>
-            <List fullWidth>
+            <List >
               {
                 Object.keys(product.variants).map((key) =>
-                  <ListItem value={key}>
+                  <ListItem key={key} value={key}>
                     <div className={'row'}>
                       <div className={'col-lg-4 col-sm-4 col-md-4 col-xs-4'}>
                         {key}

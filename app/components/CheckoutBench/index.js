@@ -16,6 +16,7 @@ import typography from 'material-ui/styles/typography';
 import { injectIntl } from 'react-intl';
 import messages from '../Items/messages';
 import VariantSelector from '../VariantSelector';
+import { TextField } from 'material-ui';
 
 const noImage = require('../../assets/no-image.gif');
 const attachmentKey = '_attachments';
@@ -69,21 +70,15 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
     this.state = {
       currentProduct: {},
       variantsModalOpen: false,
-
+      query: '',
     };
-    this.handleUpdateInput = this.handleUpdateInput.bind(this);
+    this.handleSearchInput = this.handleSearchInput.bind(this);
     this.handleProductClick = this.handleProductClick.bind(this);
     this.closeVariantsModal = this.closeVariantsModal.bind(this);
   }
 
-  handleUpdateInput = (value) => {
-    this.setState({
-      dataSource: [
-        value,
-        value + value,
-        value + value + value,
-      ],
-    });
+  handleSearchInput = (event, query) => {
+    this.setState({ query });
   };
 
   closeVariantsModal(result) {
@@ -126,19 +121,31 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
       priceUnit: intl.formatMessage(messages.currencySrInitials),
       quantityUnit: messages.quantityUnit,
     };
+
+    let filteredProducts = { ...products };
+    if (this.state.query) {
+      filteredProducts = Object.keys(products).reduce(
+        (acc, key) => {
+          if (AutoComplete.fuzzyFilter(this.state.query, products[key].name)) {
+            // eslint-disable-next-line no-param-reassign
+            acc[key] = products[key];
+          }
+          return acc;
+        }
+        , {});
+    }
     return (
       <Paper id={id} style={styles.container} className="cart">
         <Subheader style={styles.subheader}>{intl.formatMessage(theProducts)}</Subheader>
 
-        <AutoComplete
+        <TextField
           hintText={intl.formatMessage(searchHint)}
-          dataSource={colors}
-          onUpdateInput={this.handleUpdateInput}
+          onChange={this.handleSearchInput}
           floatingLabelText={intl.formatMessage(searchText)}
-          filter={AutoComplete.fuzzyFilter}
           fullWidth
-          className={'search-box'}
+          value={this.state.query}
           style={{ textIndent: 3 }}
+          autoComplete={'off'}
           id={'products-search-box'}
         />
         <GridList
@@ -147,23 +154,23 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
           style={styles.gridList}
           spacing={2}
         >
-          {Object.keys(products).map((key) => (
+          {Object.keys(filteredProducts).map((key) => (
             <GridTile
               key={key}
               value={key}
               onClick={(e) => this.handleProductClick(e)}
-              title={products[key].name}
+              title={filteredProducts[key].name}
               className={'items-tile'}
               subtitle={<ItemSubTitle
-                unitPrice={products[key].price} quantity={products[key].quantity}
-                discount={`${products[key].discount}`} labels={itemLabels} intl={intl}
+                unitPrice={filteredProducts[key].price} quantity={filteredProducts[key].quantity}
+                discount={`${filteredProducts[key].discount}`} labels={itemLabels} intl={intl}
               />}
               subtitleStyle={{ marginRight: '10px' }}
               titleStyle={{ marginRight: '10px' }}
             >
               <img
                 className={'tile-image'}
-                src={`${products[key][attachmentKey] ? URL.createObjectURL(products[key][attachmentKey].img.data) : noImage}`}
+                src={`${filteredProducts[key][attachmentKey] ? URL.createObjectURL(filteredProducts[key][attachmentKey].img.data) : noImage}`}
                 role="presentation"
               />
             </GridTile>

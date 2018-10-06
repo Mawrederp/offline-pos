@@ -9,14 +9,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Barcode from 'react-barcode';
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 import {
   Table,
   TableBody,
   TableHeader,
   TableHeaderColumn,
   TableRow,
-  TableFooter,
   TableRowColumn,
 } from 'material-ui/Table';
 import Divider from 'material-ui/Divider';
@@ -25,15 +23,16 @@ import { Print } from 'react-easy-print';
 import { Paper, Subheader } from 'material-ui';
 import DateTimeLabel from '../DateTimeLabel';
 import { TAX_ID } from '../../config/teller';
-import CartList from '../CartList';
+import messages from './messages';
 
-function VariantIdToString(variantPropId){
+function VariantIdToString(variantPropId) {
   const props = variantPropId.split('$');
   const features = props[0].split('_');
   const variants = props[1].split('_');
-  return features.map((val, index) => `${val}:${variants[index]}`).join(',')
+  return features.map((val, index) => `${val}:${variants[index]}`).join(',');
 }
-function InvoiceReport({ data, user }) {
+function InvoiceReport({ data, user, payments, endResult }) {
+  console.log({data,user,payments, endResult})
   return (
     <Print printOnly single name="invoice-report">
 
@@ -93,7 +92,7 @@ function InvoiceReport({ data, user }) {
           </Table>
           <div className={'row'}>
             <div style={{ padding: 12 }} className={'text-center col-md-6 col-xs-6 col-lg-6 col-sm-6'}>
-              <Barcode value={Math.random() * 99999999999999999999} />
+              <Barcode value={`${Math.random() * 99999999999999999999}`} />
 
             </div>
             <div className={'col-md-6 col-xs-6 col-lg-6 col-sm-6'}>
@@ -148,7 +147,10 @@ function InvoiceReport({ data, user }) {
 }
 
 InvoiceReport.propTypes = {
-  items: PropTypes.array,
+  data: PropTypes.object,
+  user: PropTypes.object,
+  payments: PropTypes.array,
+  endResult: PropTypes.object,
 };
 
 export default InvoiceReport;

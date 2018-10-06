@@ -10,15 +10,15 @@ import PropTypes from 'prop-types';
 import { GridList, GridTile } from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
-import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 
 
 import { cyan600, white } from 'material-ui/styles/colors';
 import typography from 'material-ui/styles/typography';
-import { FontIcon } from 'material-ui';
+import { FontIcon, TextField } from 'material-ui';
 import { injectIntl } from 'react-intl';
 import messages from './messages';
+import AutoComplete from 'material-ui/AutoComplete';
 
 
 const noImage = require('../../assets/no-image.gif');
@@ -69,17 +69,14 @@ const ItemSubTitle = ({ unitPrice, quantity, discount, labels, intl }) => (
 class Items extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
     super(props);
-    this.handleUpdateInput = this.handleUpdateInput.bind(this);
+    this.state = {
+      query: '',
+    };
+    this.handleSearchInput = this.handleSearchInput.bind(this);
   }
 
-  handleUpdateInput = (value) => {
-    this.setState({
-      dataSource: [
-        value,
-        value + value,
-        value + value + value,
-      ],
-    });
+  handleSearchInput = (event, query) => {
+    this.setState({ query });
   };
 
   render() {
@@ -96,19 +93,31 @@ class Items extends React.PureComponent { // eslint-disable-line react/prefer-st
       priceUnit: intl.formatMessage(messages.currencySrInitials),
       quantityUnit: messages.quantityUnit,
     };
+    let filteredProducts = { ...products };
+    if (this.state.query) {
+      filteredProducts = Object.keys(products).reduce(
+        (acc, key) => {
+          if (AutoComplete.fuzzyFilter(this.state.query, products[key].name)) {
+            // eslint-disable-next-line no-param-reassign
+            acc[key] = products[key];
+          }
+          return acc;
+        }
+        , {});
+    }
+
     return (
       <Paper style={{ width: '100%' }}>
 
         <Subheader style={styles.subheader}>{intl.formatMessage(theProducts)}</Subheader>
-        <AutoComplete
+        <TextField
           hintText={intl.formatMessage(searchHint)}
-          dataSource={colors}
-          onUpdateInput={this.handleUpdateInput}
+          onChange={this.handleSearchInput}
           floatingLabelText={intl.formatMessage(searchText)}
-          filter={AutoComplete.fuzzyFilter}
           fullWidth
-          className={'search-box'}
+          value={this.state.query}
           style={{ textIndent: 3 }}
+          autoComplete={'off'}
           id={'products-search-box'}
         />
         <div className={'row'}>
@@ -119,23 +128,23 @@ class Items extends React.PureComponent { // eslint-disable-line react/prefer-st
             cols={Object.keys(products).length > 4 ? 7 : undefined}
             spacing={2}
           >
-            {Object.keys(products).map((key) => (
+            {Object.keys(filteredProducts).map((key) => (
               <GridTile
                 key={key}
-                title={products[key].name}
+                title={filteredProducts[key].name}
                 className={'items-tile'}
                 subtitle={<ItemSubTitle
-                  unitPrice={products[key].price} quantity={products[key].quantity}
-                  discount={`${products[key].discount}`} labels={itemLabels} intl={intl}
+                  unitPrice={filteredProducts[key].price} quantity={filteredProducts[key].quantity}
+                  discount={`${filteredProducts[key].discount}`} labels={itemLabels} intl={intl}
                 />}
                 subtitleStyle={{ marginRight: '10px' }}
                 titleStyle={{ marginRight: '10px' }}
                 actionIcon={
                   <div>
-                    <IconButton onClick={(event) => openEditModal(products[key], event)}><FontIcon
+                    <IconButton onClick={(event) => openEditModal(filteredProducts[key], event)}><FontIcon
                       className={'material-icons'} color={white}
                     >edit</FontIcon></IconButton>
-                    <IconButton onClick={() => this.props.removeProduct(products[key])}><FontIcon
+                    <IconButton onClick={() => this.props.removeProduct(filteredProducts[key])}><FontIcon
                       className={'material-icons'} color={white}
                     >delete</FontIcon></IconButton>
                   </div>
@@ -144,7 +153,7 @@ class Items extends React.PureComponent { // eslint-disable-line react/prefer-st
 
                 <img
                   className={'tile-image'}
-                  src={`${products[key][attachmentKey] ? URL.createObjectURL(products[key][attachmentKey].img.data) : noImage}`}
+                  src={`${filteredProducts[key][attachmentKey] ? URL.createObjectURL(filteredProducts[key][attachmentKey].img.data) : noImage}`}
                   role="presentation"
                 />
               </GridTile>

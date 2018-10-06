@@ -51,12 +51,12 @@ class Header extends React.Component {
 
 
   render() {
-    const { styles, handleChangeRequestNavDrawer, appStore } = this.props;
+    const { styles, handleChangeRequestNavDrawer, appStore, className } = this.props;
     const style = Styles(appStore.isBoxedLayout, this.state.currentTheme);
     return (
       <div>
         <AppBar
-          className="header"
+          className={`header ${className}`}
           style={{ ...styles, ...style.appBar }}
           title={
             <div>
@@ -121,6 +121,7 @@ Header.propTypes = {
   handleChangeRequestNavDrawer: PropTypes.func,
   actions: PropTypes.any,
   appStore: PropTypes.any,
+  className: PropTypes.string,
 };
 
 const mapStateToProps = createStructuredSelector({

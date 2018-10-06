@@ -457,8 +457,8 @@ injectGlobal`
     left: 0;
     right:none;
   }
-  html[dir='ltr'] div.header{
-      padding-right: 24px !important;
+  html[dir='ltr'] div.header.open{
+    padding-right: 24px !important;
     padding-left: 250px !important;
   } 
   html[dir='ltr'] img.tile-image{
@@ -474,7 +474,7 @@ injectGlobal`
     z-index:0;
     pointer-events:none;
   }
-  html[dir='ltr'] div.main-container{
+  html[dir='ltr'] div.main-container.open{
     padding :0px 20px 20px 250px !important;
   } 
   

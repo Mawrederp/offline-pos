@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import {FormattedMessage} from "react-intl";
-
+import { FormattedMessage } from 'react-intl';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { Link, browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Tabs, Tab } from 'material-ui/Tabs';
+import { Tabs, Tab } from '@material-ui/core';
 import { createStructuredSelector } from 'reselect';
+import { getCurrentTheme } from '../../../containers/App/appUtils';
 import * as appActions from '../../../containers/App/actions';
 import { makeSelectGlobal } from '../../../containers/App/selectors';
 import { scrollToMenuItemAndOpenViews } from '../../LeftDrawer/menuUtils';
@@ -47,7 +48,7 @@ class Header extends React.Component {
     const y = event.pageY - event.currentTarget.offsetTop;
     const id = event.currentTarget.getAttribute('data-id');
 
-    if (x > 180 && y > 17 && y < 30 && id && id !== 'dashboard') {
+    if (x > 180 && y > 17 && y < 30 && id && id !== 'app.pages.dashboard') {
       const rootMenuItem = this.props.appStore.menus[0];
       this.navigateUrl(rootMenuItem);
 
@@ -69,45 +70,31 @@ class Header extends React.Component {
 
   render() {
     const { style, appStore } = this.props;
-
+    const theme = getCurrentTheme(appStore.currentTheme, appStore.isRtl);
     return (
       <Tabs
+        TabIndicatorProps={{ style: { backgroundColor: theme.inkBar.backgroundColor } }}
         id="header-close-tabs"
         style={style.tabsScrollbars}
-        tabItemContainerStyle={this.getTabsWidth()}
-        value={appStore.selectedOpenedMenuIndex}
-        ref={(tabs) => { this.tabs = tabs; }}
+        value={appStore.selectedMenuItem ? appStore.selectedMenuItem.id : 0}
+        ref={(tabs) => {
+          this.tabs = tabs;
+        }}
       >
         {
-          appStore.openViews.length > 0 ?
-          appStore.openViews.map((menu, index) =>
-            (menu.id === 'dashboard' ? (
-              <Tab
-                key={menu.id}
-                label={<FormattedMessage {...menu} />}
-                value={index}
-                onClick={(evt) => this.handleClick(menu, evt)}
-                containerElement={
-                  <Link to={menu.url}>``</Link>
-                }
-              />
-            ) : (
-              <Tab
-                key={menu.id}
-                label={<FormattedMessage {...menu} />}
-                value={index}
-                onClick={(evt) => this.handleClick(menu, evt)}
-                containerElement={
-                  <Link to={menu.url}>``</Link>
-                }
-   //             containerElement={<div className="close-tab" />}
-                data-id={menu.id}
-                data-url={menu.url}
-              />
-            ))
-          ) : null
-        }
+            appStore.openViews.length > 0 ?
+              appStore.openViews.map((menu) => (
+                <Tab
+                  key={menu.id}
+                  label={<FormattedMessage {...menu} />}
+                  value={menu.id}
+                  onClick={(evt) => this.handleClick(menu, evt)}
+                />
+                )
+              ) : null
+          }
       </Tabs>
+
     );
   }
 }

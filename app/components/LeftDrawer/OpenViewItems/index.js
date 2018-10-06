@@ -58,13 +58,13 @@ class OpenViewItems extends React.Component {
     let maxX = 215;
     const minY = 16;
     const maxY = 31;
-
+    console.log(menuItem, event);
     if (this.props.appStore.isBoxedLayout) {
       minX = 541;
       maxX = 567;
     }
 
-    if (x > minX && x < maxX && y > minY && y < maxY && id && id !== 'dashboard') {
+    if (x > minX && x < maxX && y > minY && y < maxY && id && id !== 'app.pages.dashboard') {
       this.props.actions.closeView(id);
     } else {
       this.props.handleClickMenu(menuItem);
@@ -115,7 +115,6 @@ class OpenViewItems extends React.Component {
                   style={this.props.appStore.selectedOpenedMenuIndex === index ? styles.selectedListItem : styles.menuItem}
                   primaryText={<FormattedMessage {...menu} />}
                   leftIcon={menu.icon}
-                  rightIcon={<FontIcon className="material-icons">close</FontIcon>}
                   onClick={(evt) => this.handleClickOpenViews(menu, evt)}
                   containerElement={<div className="close-tab" />}
                   data-id={menu.id}

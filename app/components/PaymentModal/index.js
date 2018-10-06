@@ -127,6 +127,8 @@ class PaymentModal extends React.Component {
 
   render() {
     const { handleClose, open, id, removeProduct, currency, intl } = this.props;
+    const { total, cashPayment, cardPayment } = this.state;
+    const endResult = { total, cashPayment, cardPayment, remainder: this.state.remainder };
     const {
       finish,
       cancel,
@@ -158,7 +160,9 @@ class PaymentModal extends React.Component {
         primary
         disabled={!(this.state.remainder.value <= 0)}
         keyboardFocused
-        onClick={() => { this.props.handleClose(true); }}
+        onClick={() => {
+          this.props.handleClose(true);
+        }}
       />,
     ];
 
@@ -244,7 +248,7 @@ class PaymentModal extends React.Component {
                             type={'number'}
                             step={0.1}
                             style={styles.paymentValueInput}
-                            underlineDisabledStyle
+                            underlineDisabledStyle={{}}
                           />
                         </div>
                         <div
@@ -253,7 +257,7 @@ class PaymentModal extends React.Component {
 
                       </div>
                     </Subheader>
-                    <Divider offset />
+                    <Divider offset={'true'} />
 
                   </Fragment>
                 ))
@@ -271,7 +275,7 @@ class PaymentModal extends React.Component {
                       disabled
                       style={styles.paymentValueInput}
                       className={'text-center'}
-                      underlineDisabledStyle
+                      underlineDisabledStyle={{}}
                     />
                   </div>
                   <div
@@ -297,7 +301,10 @@ class PaymentModal extends React.Component {
           </div>
         </Dialog>
 
-        <InvoiceReport data={this.props.data} payments={this.state.payments} user={this.props.user} />
+        <InvoiceReport
+          data={this.props.data} endResult={endResult} payments={this.state.payments}
+          user={this.props.user}
+        />
       </div>
     );
   }
