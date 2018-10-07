@@ -4,7 +4,49 @@
 
 this system is a point of sale system that is built to work both online and offline . the front end made with _**react.js**_  and packed with _**webpack.js**_ . written in _**es6**_ utilizing _**react-boilerplate**_ for the frontend file structure and basic configurations and _**material-ui**_ as its basic ui components . alongside a local store that is based on _**redux**_ with a _**redux-saga**_ as its asynchronouse actions layer , which uses _**pouchdb.js**_ as a local database that can be synced on demand.
 
+# The Routes
+>the routes apearing on the `leftDrawer` menu, are stated in the `/data.js` file . 
+## creating a new Route
+  `npm run generate route` or `yarn run generate route` , follow the instructions afterward .
+  >more informations can be found in
+   [`react-boilerplate/react-boilerplate`](https://github.com/react-boilerplate/react-boilerplate/blob/master/docs/general/commands.md)
+##pos Routes
+  the `routes.js` file has the navigation and dependencies injection necessary for each route.
+  go read it to know more about what routes are available for you to enable in the `data.js` file.
+### notes to take when adding a new route
+1. if they are not in `data.js` they wont apear in the `leftDrawer` menu.
+  
+2. the menu id should follow `app.pages.{routename}` convention, -*you should observe the previous routes*- . and thats because you will need to add a translation using that id in the `translations` folder locales (en.json, ar.json). for that route name to be modified in multiple languages .
+3. the reason why the routes are stated in the `data.js` file . is because later on the allowed routes for users may vary . and that information will have to be moved to its own storage . either in the user object you get after login or some other place.  
 
+# Bussiness logic 
+>here i'll segment the bussiness logic relative to app interfaces 
+  ## login
+    user should login if he has an account ... pretty straight forward right ? nope. atleast in its final form . the point of sale should verify if the user is authorized to login from that tenant or not . 
+  ## register
+    this interface should be seperated into two new main interfaces 
+    1. crud for users (the actual employees)
+    2. crud for the customers (the customers)
+    >both of these interfaces have pretty common features . your job to make it as dry(dont repeat yourself) as possible.
+  ## dashboard
+    you should revise with the project manager aka abu fares on what should apear in this interface . 
+  ## checkout
+    ### 1. `checkoutBench/index.js`
+       no desc provided revise the code.
+    ### 2. `paymentModal/index.js`
+    no desc provided revise the code.
+    ### 3. `invoiceReport/index.js`
+    no desc provided revise the code.
+  ## Products management 
+    `productsManagement/index.js` this is the container that has the two previously mentioned components . what you need to understand is . any action that affects the global state of the app should be made as a function here . then passed to the corresponding component of the child components . ooh 
+    and go read the file to know exactly how it propagates actions . 
+   ### 1. `items/index.js`
+      > 1. now this component will include barcode into its search as soon as it gets implemented to the system . 
+      > 2. this component is redundunt (has a lot of shared code with the component `checkoutBench/index.js` . work your way into making it dry . > 3. if the products size is less than 7 . it will display them in 2 columns rather than 7 . (can you make it responsive friendly pls?)
+      > 4.there is no paging whatsoever . if you have 1000 products they will be rendered . after making the generic component shared between `items.js` and `checkoutBench.js` go for making the products lazy load  . 
+    
+  ### 2. `productsModal/index.js`
+    it has forms . to create/edit the product . your role is to comeup with a mechanism to validate those forms .   
 # Install Requirements
 
 to run this project you need to have your package manager of choice out of _**npm/yarn**_ while yarn is the one used during the early development of this project . thats it.
@@ -99,7 +141,6 @@ see [react-boilerplate/react-boilerplate](https://github.com/react-boilerplate/r
 ## base page
 ### how its working 
 ### how it should work
-
 
 
 
