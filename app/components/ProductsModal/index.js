@@ -17,9 +17,9 @@ import {
   Stepper,
   StepLabel,
 } from 'material-ui/Stepper';
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 // pick utils
-import MomentUtils from 'material-ui-pickers/utils/moment-utils';
+import MomentUtils from '@date-io/moment';
 import { injectIntl } from 'react-intl';
 import messages from './messages';
 import ProductForm from '../ProductForm';

@@ -1,6 +1,6 @@
 import PouchApi from './PouchApi';
 import { storage } from '../storage';
-import { TELLER_ID } from '../config/teller';
+// import { TELLER_ID } from '../config/teller';
 
 const productsDB = storage.products.db;
 const idKey = '_id';

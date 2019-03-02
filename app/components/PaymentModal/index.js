@@ -57,12 +57,14 @@ const styles = {
   paymentValueInput: {
     fontSize: '2.4em',
   },
-
 };
 
 class PaymentModal extends React.Component {
   static getDerivedStateFromProps(props, state) {
-    if ((state.remainder.value === undefined || state.remainder.value > props.data.total)) {
+    if (
+      state.remainder.value === undefined ||
+      state.remainder.value > props.data.total
+    ) {
       return { remainder: { ...state.remainder, value: props.data.total } };
     }
     if (!props.open) {
@@ -91,13 +93,19 @@ class PaymentModal extends React.Component {
     this.addCardPayment = this.addCardPayment.bind(this);
     this.addPaymentRow = this.addPaymentRow.bind(this);
     this.handlePaymentValueChange = this.handlePaymentValueChange.bind(this);
+    this.concludePayment = this.concludePayment.bind(this);
   }
 
   handlePaymentValueChange(event, index) {
     const { remainder, payments } = this.state;
     const { total } = this.props.data;
-    const newPayments = payments.map((v, i) => (i === index) ? { ...v, value: parseFloat(event.target.value) } : v);
-    const theRest = newPayments.reduce((rem, payment) => rem - payment.value, total);
+    const newPayments = payments.map((v, i) =>
+      i === index ? { ...v, value: parseFloat(event.target.value) } : v
+    );
+    const theRest = newPayments.reduce(
+      (rem, payment) => rem - payment.value,
+      total
+    );
     this.setState({
       payments: newPayments,
       remainder: { ...remainder, value: theRest },
@@ -107,11 +115,14 @@ class PaymentModal extends React.Component {
   addPaymentRow(type) {
     if (this.state.remainder.value !== 0) {
       this.setState({
-        payments: [...this.state.payments, {
-          type,
-          currency: this.props.currency,
-          value: this.state.remainder.value,
-        }],
+        payments: [
+          ...this.state.payments,
+          {
+            type,
+            currency: this.props.currency,
+            value: this.state.remainder.value,
+          },
+        ],
         remainder: { ...this.state.remainder, value: 0 },
       });
     }
@@ -124,60 +135,79 @@ class PaymentModal extends React.Component {
   addCardPayment() {
     this.addPaymentRow('card');
   }
+  concludePayment(status) {
+    const { total, cashPayment, cardPayment, payments } = this.state;
+    const endResult = {
+      total,
+      cashPayment,
+      cardPayment,
+      remainder: this.state.remainder,
+    };
 
+    this.props.handleClose(
+      status,
+      status
+        ? {
+          endResult,
+          payments,
+          cart: this.props.data,
+          user: this.props.user,
+        }
+        : null
+    );
+  }
   render() {
     const { handleClose, open, id, removeProduct, currency, intl } = this.props;
     const { total, cashPayment, cardPayment } = this.state;
-    const endResult = { total, cashPayment, cardPayment, remainder: this.state.remainder };
-    const {
-      finish,
-      cancel,
-      cash,
-      amount,
-      card,
-      remainder,
-    } = messages;
+    const endResult = {
+      total,
+      cashPayment,
+      cardPayment,
+      remainder: this.state.remainder,
+    };
+    const { finish, cancel, cash, amount, card, remainder } = messages;
     const actions = [
       <FlatButton
         label={intl.formatMessage(cancel)}
         primary
-        onClick={() => this.props.handleClose(false)}
+        onClick={() => this.concludePayment(false)}
       />,
-      < FlatButton
+      <FlatButton
         label={intl.formatMessage(cash)}
         primary
         keyboardFocused
         onClick={this.addCashPayment}
       />,
-      < FlatButton
+      <FlatButton
         label={intl.formatMessage(card)}
         primary
         keyboardFocused
         onClick={this.addCardPayment}
       />,
-      < FlatButton
+      <FlatButton
         label={intl.formatMessage(finish)}
         primary
         disabled={!(this.state.remainder.value <= 0)}
         keyboardFocused
         onClick={() => {
-          this.props.handleClose(true);
+          this.concludePayment(true);
         }}
       />,
     ];
 
-    const currencies = data.currencies.map((curr, index) =>
+    const currencies = data.currencies.map((curr, index) => (
       <MenuItem key={index} value={curr} primaryText={curr} />
-    );
+    ));
 
-    const currenciesSelectField = (value) =>
-      (<SelectField
+    const currenciesSelectField = (value) => (
+      <SelectField
         value={value}
         onChange={this.handleChange}
         floatingLabelText={intl.formatMessage(messages.currency)}
       >
         {currencies}
-      </SelectField>);
+      </SelectField>
+    );
     return (
       <div>
         <Dialog
@@ -199,7 +229,9 @@ class PaymentModal extends React.Component {
           <div className={'row'}>
             <Paper className={'col-xs-4 col-md-4 col-lg-4'}>
               <CartList
-                removeProduct={removeProduct} data={this.props.data} style={{
+                removeProduct={removeProduct}
+                data={this.props.data}
+                style={{
                   marginTop: '0px',
                   maxHeight: '400px',
                   overflowY: 'auto',
@@ -210,12 +242,22 @@ class PaymentModal extends React.Component {
             </Paper>
             <Paper
               className={'col-xs-8 col-md-8 col-lg-8'}
-              style={{ maxHeight: '400px', overflowY: 'auto', overflowX: 'hidden' }}
+              style={{
+                maxHeight: '400px',
+                overflowY: 'auto',
+                overflowX: 'hidden',
+              }}
             >
               <Subheader className="screen payment" style={styles.clearHeader}>
                 <div className={'row'}>
-                  <div className={'col-lg-2 col-xs-4 col-md-4'}>{intl.formatMessage(amount)}</div>
-                  <div className={'col-lg-5 text-center  payment-value col-xs-5  col-md-5'}>
+                  <div className={'col-lg-2 col-xs-4 col-md-4'}>
+                    {intl.formatMessage(amount)}
+                  </div>
+                  <div
+                    className={
+                      'col-lg-5 text-center  payment-value col-xs-5  col-md-5'
+                    }
+                  >
                     <div>
                       <TextField
                         id="text-field-controlled"
@@ -229,45 +271,55 @@ class PaymentModal extends React.Component {
                   <div className={'col-lg-4 col-xs-4 col-md-4'}>
                     {currenciesSelectField(currency)}
                   </div>
-
                 </div>
               </Subheader>
               <Divider />
-              {
-                this.state.payments.map((payment, index) => (
-                  <Fragment key={`${index}_${payment.type}`}>
-                    <Subheader className="screen payment " style={styles.clearHeader}>
-                      <div className={'row'}>
-                        <div className={'col-lg-2 col-xs-2 col-md-2'}>{payment.type === 'cash' ? 'كاش' : 'بطاقة'}</div>
-                        <div className={'col-lg-5 text-center selected payment-value col-xs-5  col-md-5'}>
-                          <TextField
-                            id="text-field-controlled"
-                            defaultValue={payment.value}
-                            onBlur={(e) => this.handlePaymentValueChange(e, index)}
-                            className={'text-center'}
-                            type={'number'}
-                            step={0.1}
-                            style={styles.paymentValueInput}
-                            underlineDisabledStyle={{}}
-                          />
-                        </div>
-                        <div
-                          className={'col-lg-4 col-xs-4 col-md-4'}
-                        >{currenciesSelectField(this.state.cashPayment.currency)} </div>
-
+              {this.state.payments.map((payment, index) => (
+                <Fragment key={`${index}_${payment.type}`}>
+                  <Subheader
+                    className="screen payment "
+                    style={styles.clearHeader}
+                  >
+                    <div className={'row'}>
+                      <div className={'col-lg-2 col-xs-2 col-md-2'}>
+                        {payment.type === 'cash' ? 'كاش' : 'بطاقة'}
                       </div>
-                    </Subheader>
-                    <Divider offset={'true'} />
-
-                  </Fragment>
-                ))
-              }
+                      <div
+                        className={
+                          'col-lg-5 text-center selected payment-value col-xs-5  col-md-5'
+                        }
+                      >
+                        <TextField
+                          id="text-field-controlled"
+                          defaultValue={payment.value}
+                          onBlur={(e) => this.handlePaymentValueChange(e, index)}
+                          className={'text-center'}
+                          type={'number'}
+                          step={0.1}
+                          style={styles.paymentValueInput}
+                          underlineDisabledStyle={{}}
+                        />
+                      </div>
+                      <div className={'col-lg-4 col-xs-4 col-md-4'}>
+                        {currenciesSelectField(this.state.cashPayment.currency)}{' '}
+                      </div>
+                    </div>
+                  </Subheader>
+                  <Divider offset={'true'} />
+                </Fragment>
+              ))}
 
               <Divider />
               <Subheader className="screen payment" style={styles.clearHeader}>
                 <div className={'row'}>
-                  <div className={'col-lg-2 col-xs-2 col-md-2'}>{intl.formatMessage(remainder)}</div>
-                  <div className={'col-lg-5 text-center selected payment-value col-xs-5  col-md-5'}>
+                  <div className={'col-lg-2 col-xs-2 col-md-2'}>
+                    {intl.formatMessage(remainder)}
+                  </div>
+                  <div
+                    className={
+                      'col-lg-5 text-center selected payment-value col-xs-5  col-md-5'
+                    }
+                  >
                     <TextField
                       id="text-field-controlled"
                       value={parseFloat(this.state.remainder.value).toFixed(2)}
@@ -278,10 +330,9 @@ class PaymentModal extends React.Component {
                       underlineDisabledStyle={{}}
                     />
                   </div>
-                  <div
-                    className={'col-lg-4 col-xs-4 col-md-4'}
-                  >{currenciesSelectField(this.state.remainder.currency)} </div>
-
+                  <div className={'col-lg-4 col-xs-4 col-md-4'}>
+                    {currenciesSelectField(this.state.remainder.currency)}{' '}
+                  </div>
                 </div>
               </Subheader>
             </Paper>
@@ -296,13 +347,14 @@ class PaymentModal extends React.Component {
                 pressHandler={(label) => this.buttonPressHandler(label)}
                 className="mainButtonMatrix"
               />
-
             </div>
           </div>
         </Dialog>
 
         <InvoiceReport
-          data={this.props.data} endResult={endResult} payments={this.state.payments}
+          data={this.props.data}
+          endResult={endResult}
+          payments={this.state.payments}
           user={this.props.user}
         />
       </div>

@@ -10,13 +10,13 @@ import { GridList, GridTile } from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
+import { TextField } from 'material-ui';
 
 import { cyan600, white } from 'material-ui/styles/colors';
 import typography from 'material-ui/styles/typography';
 import { injectIntl } from 'react-intl';
 import messages from '../Items/messages';
 import VariantSelector from '../VariantSelector';
-import { TextField } from 'material-ui';
 
 const noImage = require('../../assets/no-image.gif');
 const attachmentKey = '_attachments';
@@ -28,7 +28,6 @@ const styles = {
     backgroundColor: cyan600,
     color: white,
     lineHeight: '34px',
-
   },
   root: {
     display: 'flex',
@@ -42,29 +41,48 @@ const styles = {
   },
 };
 
-const colors = [
-  'احمر',
-  'اصفر',
-  'اسود',
-  'اخضر',
-  'Blue',
-  'Purple',
-  'Black',
-  'White',
-];
+
 const ItemSubTitle = ({ unitPrice, quantity, discount, labels, intl }) => (
   <div className="row">
-    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>
-      {labels.price}: <b> {unitPrice} {labels.priceUnit} </b></span>
-    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>
-      {labels.quantity}:<b> {quantity} {intl.formatMessage(labels.quantityUnit, { plural: quantity > 1 ? 's' : '' })}</b></span>
-    <span className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}>
-      {labels.discount}:<b> {discount}</b>%</span>
+    <span
+      className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}
+    >
+      {labels.price}:{' '}
+      <b>
+        {' '}
+        {unitPrice} {labels.priceUnit}{' '}
+      </b>
+    </span>
+    <span
+      className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}
+    >
+      {labels.quantity}:
+      <b>
+        {' '}
+        {quantity}{' '}
+        {intl.formatMessage(labels.quantityUnit, {
+          plural: quantity > 1 ? 's' : '',
+        })}
+      </b>
+    </span>
+    <span
+      className={'col-md-12 col-lg-12 col-sm-12 col-xs-12 items-tile-title'}
+    >
+      {labels.discount}:<b> {discount}</b>%
+    </span>
   </div>
-
 );
 
-class CheckoutBench extends React.Component { // eslint-disable-line react/prefer-stateless-function
+ItemSubTitle.propTypes = {
+  unitPrice: PropTypes.string,
+  quantity: PropTypes.string,
+  discount: PropTypes.string,
+  labels: PropTypes.any,
+  intl: PropTypes.any,
+};
+
+class CheckoutBench extends React.Component {
+  // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
     super(props);
     this.state = {
@@ -90,7 +108,6 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
     this.setState({ variantsModalOpen: false, currentProduct: {} });
   }
 
-
   handleProductClick(event) {
     event.stopPropagation();
     const { products } = this.props;
@@ -109,11 +126,7 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
     const { products, intl } = this.props;
     const id = 'checkoutbench';
     console.log(products, 'checkout', attachmentKey);
-    const {
-      theProducts,
-      searchText,
-      searchHint,
-    } = messages;
+    const { theProducts, searchText, searchHint } = messages;
     const itemLabels = {
       price: intl.formatMessage(messages.price),
       quantity: intl.formatMessage(messages.quantity),
@@ -124,19 +137,19 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
 
     let filteredProducts = { ...products };
     if (this.state.query) {
-      filteredProducts = Object.keys(products).reduce(
-        (acc, key) => {
-          if (AutoComplete.fuzzyFilter(this.state.query, products[key].name)) {
-            // eslint-disable-next-line no-param-reassign
-            acc[key] = products[key];
-          }
-          return acc;
+      filteredProducts = Object.keys(products).reduce((acc, key) => {
+        if (AutoComplete.fuzzyFilter(this.state.query, products[key].name)) {
+          // eslint-disable-next-line no-param-reassign
+          acc[key] = products[key];
         }
-        , {});
+        return acc;
+      }, {});
     }
     return (
       <Paper id={id} style={styles.container} className="cart">
-        <Subheader style={styles.subheader}>{intl.formatMessage(theProducts)}</Subheader>
+        <Subheader style={styles.subheader}>
+          {intl.formatMessage(theProducts)}
+        </Subheader>
 
         <TextField
           hintText={intl.formatMessage(searchHint)}
@@ -148,12 +161,7 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
           autoComplete={'off'}
           id={'products-search-box'}
         />
-        <GridList
-          cellHeight={80}
-          cols={3}
-          style={styles.gridList}
-          spacing={2}
-        >
+        <GridList cellHeight={80} cols={3} style={styles.gridList} spacing={2}>
           {Object.keys(filteredProducts).map((key) => (
             <GridTile
               key={key}
@@ -161,29 +169,42 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
               onClick={(e) => this.handleProductClick(e)}
               title={filteredProducts[key].name}
               className={'items-tile'}
-              subtitle={<ItemSubTitle
-                unitPrice={filteredProducts[key].price} quantity={filteredProducts[key].quantity}
-                discount={`${filteredProducts[key].discount}`} labels={itemLabels} intl={intl}
-              />}
+              subtitle={
+                <ItemSubTitle
+                  unitPrice={filteredProducts[key].price}
+                  quantity={filteredProducts[key].quantity}
+                  discount={`${filteredProducts[key].discount}`}
+                  labels={itemLabels}
+                  intl={intl}
+                />
+              }
               subtitleStyle={{ marginRight: '10px' }}
               titleStyle={{ marginRight: '10px' }}
             >
               <img
                 className={'tile-image'}
-                src={`${filteredProducts[key][attachmentKey] ? URL.createObjectURL(filteredProducts[key][attachmentKey].img.data) : noImage}`}
+                src={`${
+                  filteredProducts[key][attachmentKey]
+                    ? URL.createObjectURL(
+                        filteredProducts[key][attachmentKey].img.data
+                      )
+                    : noImage
+                }`}
                 role="presentation"
               />
             </GridTile>
           ))}
         </GridList>
-        {
-          this.state.currentProduct.variants ? <VariantSelector
-            product={this.state.currentProduct} open={this.state.variantsModalOpen}
+        {this.state.currentProduct.variants ? (
+          <VariantSelector
+            product={this.state.currentProduct}
+            open={this.state.variantsModalOpen}
             handleClose={this.closeVariantsModal}
             id={id}
-          /> : ''
-        }
-
+          />
+        ) : (
+          ''
+        )}
       </Paper>
     );
   }
@@ -192,6 +213,7 @@ class CheckoutBench extends React.Component { // eslint-disable-line react/prefe
 CheckoutBench.propTypes = {
   addToCart: PropTypes.func,
   products: PropTypes.any,
+  intl: PropTypes.any,
 };
 
 export default injectIntl(CheckoutBench);

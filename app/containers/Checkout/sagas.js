@@ -1,22 +1,17 @@
-// import { put, takeLatest } from 'redux-saga/effects';
-// import {
-//   ADD_TO_CART
-// } from './constants';
-// // import ProductsApi from '../../api/ProductsApi';
-// export function* addProductToCartSaga(action) {
-//   try {
-//     const products = yield put({type:});
-//     yield put({ type: PRODUCTS_LOADED, products });
-//   } catch (e) {
-//     console.log('in sagas', e);
-//   }
-// }
-// //
-// export function* addProductToCart() {
-//   yield takeLatest(ADD_TO_CART, addProductToCartSaga);
-// }
+import { put, takeLatest } from 'redux-saga/effects';
+import { SET_TRANSACTION } from './constants';
+import TransactionsApi from '../../api/TransactionsApi';
+export function* setTransactionSaga(action) {
+  console.log('what i got in sagas is ', action, 'and this is from checkout');
+  try {
+    console.log(put(TransactionsApi.setTransaction(action.cart)));
+  } catch (e) {
+    console.log('in sagas', e);
+  }
+}
+export function* setTransaction() {
+  yield takeLatest(SET_TRANSACTION, setTransactionSaga);
+}
 //
 // All sagas to be loaded
-export default [
- // addProductToCart
-];
+export default [setTransaction];

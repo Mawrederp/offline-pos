@@ -34,7 +34,8 @@ import PageBase from '../../components/PageBase';
 import PaymentModal from '../../components/PaymentModal';
 import * as checkoutActions from './actions';
 
-export class Checkout extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+export class Checkout extends React.PureComponent {
+  // eslint-disable-line react/prefer-stateless-function
   static getDerivedStateFromProps(props) {
     if (!props.store.loaded) {
       props.actions.getCheckoutProducts();
@@ -61,18 +62,21 @@ export class Checkout extends React.PureComponent { // eslint-disable-line react
   }
 
   openPaymentModal = () => {
-    this.setState({
-      paymentModalOpen: true,
-    }, () => console.log(this.state));
-  }
+    this.setState(
+      {
+        paymentModalOpen: true,
+      },
+      () => console.log(this.state)
+    );
+  };
   openCartsMenu = () => {
     this.setState({ cartsMenuOpen: true });
-  }
+  };
   handleCartChange = (open, reason) => {
     if (reason === 'clickAway' || reason === 'itemTap') {
       this.setState({ cartsMenuOpen: false });
     }
-  }
+  };
 
   addToCart({ product, variantPropId }) {
     this.props.actions.addToCart({ product, variantPropId });
@@ -90,49 +94,49 @@ export class Checkout extends React.PureComponent { // eslint-disable-line react
     this.props.actions.removeFromCart({ product, variantPropId });
   }
 
-  paymentConcluded = (status) => {
+  paymentConcluded = (status, cart) => {
+    console.log('start of the chain', cart);
     if (status) {
-      this.props.actions.resetActiveCart();
-      setTimeout(() => window.print(), 500);
+      this.props.actions.setTransaction(cart);
+      // this.props.actions.resetActiveCart();
+      // setTimeout(() => window.print(), 500);
     }
     this.setState({ paymentModalOpen: false });
     if (!status) return 0;
     return true;
-  }
+  };
 
   render() {
     const { store, global } = this.props;
     console.log(global);
     return (
-      <PageBase
-        navigation=""
-        noWrapContent
-        loading={!store.loaded}
-      >
+      <PageBase navigation="" noWrapContent loading={!store.loaded}>
         <Helmet
           title="Checkout"
-          meta={[
-            { name: 'description', content: 'Description of Checkout' },
-          ]}
+          meta={[{ name: 'description', content: 'Description of Checkout' }]}
         />
 
-
         <div className="row" id={this.state.id}>
-          <Toolbar style={{ height: '6vh' }} className="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-5">
+          <Toolbar
+            style={{ height: '6vh' }}
+            className="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-5"
+          >
             <ToolbarGroup firstChild>
               <IconMenu
-                iconButtonElement={<Fragment></Fragment>}
+                iconButtonElement={<Fragment />}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'middle' }}
                 targetOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 open={this.state.cartsMenuOpen}
                 onRequestChange={this.handleCartChange}
                 onItemClick={this.chooseCart}
               >
-                {
-                  Object.keys(store.carts).map((key) => (
-                    <MenuItem key={`menu_guest_${key}`} value={key} primaryText={`guest ${key}`} />
-                  ))
-                }
+                {Object.keys(store.carts).map(key => (
+                  <MenuItem
+                    key={`menu_guest_${key}`}
+                    value={key}
+                    primaryText={`guest ${key}`}
+                  />
+                ))}
               </IconMenu>
               <Chip onClick={this.openCartsMenu}>
                 {/* <Avatar src="http://i.pravatar.cc/100" />*/}
@@ -144,8 +148,9 @@ export class Checkout extends React.PureComponent { // eslint-disable-line react
                     padding: 0,
                     verticalAlign: 'middle',
                     right: '-4px',
-
-                  }} tooltip="bottom-right" tooltipPosition="bottom-right"
+                  }}
+                  tooltip="bottom-right"
+                  tooltipPosition="bottom-right"
                 >
                   <FontIcon className={'material-icons'}>expand_more</FontIcon>
                 </IconButton>
@@ -162,7 +167,9 @@ export class Checkout extends React.PureComponent { // eslint-disable-line react
               <Chip title={'قيمة ايصالات الدفع البنكي'}>
                 <Avatar
                   style={{ backgroundColor: cyan500 }}
-                  icon={<FontIcon className="material-icons">credit_card</FontIcon>}
+                  icon={
+                    <FontIcon className="material-icons">credit_card</FontIcon>
+                  }
                 />
                 {Number(global.box.receipts)} ريال
               </Chip>
@@ -176,39 +183,61 @@ export class Checkout extends React.PureComponent { // eslint-disable-line react
               <Chip title={'المجموع'}>
                 <Avatar
                   style={{ backgroundColor: green500 }}
-                  icon={<FontIcon className="material-icons">account_balance</FontIcon>}
+                  icon={
+                    <FontIcon className="material-icons">
+                      account_balance
+                    </FontIcon>
+                  }
                 />
-                {Number(Number(global.box.cash) + Number(global.box.receipts))} ريال
+                {Number(Number(global.box.cash) + Number(global.box.receipts))}{' '}
+                ريال
               </Chip>
             </ToolbarGroup>
 
             <ToolbarGroup lastChild>
               <Chip>
-                <Avatar style={{ backgroundColor: cyan500 }} size={32}>$</Avatar>
+                <Avatar style={{ backgroundColor: cyan500 }} size={32}>
+                  $
+                </Avatar>
                 3.65
               </Chip>
               <Chip>
-                <Avatar style={{ backgroundColor: green500 }} size={32}>€</Avatar>
+                <Avatar style={{ backgroundColor: green500 }} size={32}>
+                  €
+                </Avatar>
                 3.65
               </Chip>
               <Chip>
-                <Avatar style={{ backgroundColor: red300 }} size={32}>£</Avatar>
+                <Avatar style={{ backgroundColor: red300 }} size={32}>
+                  £
+                </Avatar>
                 3.65
               </Chip>
             </ToolbarGroup>
-
           </Toolbar>
           <div className="col-xs-5 col-sm-5 col-md-5 col-lg-5 m-b-15 ">
-            <MultiCart removeProduct={this.removeFromCart} products={store.carts[store.activeCart]} openPaymentModal={this.openPaymentModal} />
+            <MultiCart
+              removeProduct={this.removeFromCart}
+              products={store.carts[store.activeCart]}
+              openPaymentModal={this.openPaymentModal}
+            />
           </div>
           <div className="col-xs-7 col-sm-7 col-md-7 col-lg-7 m-b-15 ">
-            <CheckoutBench products={store.products} addToCart={this.addToCart} />
+            <CheckoutBench
+              products={store.products}
+              addToCart={this.addToCart}
+            />
           </div>
         </div>
 
         <PaymentModal
-          open={this.state.paymentModalOpen} handleClose={this.paymentConcluded} container={this.state.id}
-          currency={'ريال'} data={store.carts[store.activeCart]} removeProduct={this.removeFromCart} user={this.props.global.user}
+          open={this.state.paymentModalOpen}
+          handleClose={this.paymentConcluded}
+          container={this.state.id}
+          currency={'ريال'}
+          data={store.carts[store.activeCart]}
+          removeProduct={this.removeFromCart}
+          user={this.props.global.user}
         />
       </PageBase>
     );
@@ -232,4 +261,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Checkout);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Checkout);

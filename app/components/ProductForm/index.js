@@ -9,9 +9,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Paper, Subheader, FlatButton, TextField, Toggle } from 'material-ui';
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+import { MuiPickersUtilsProvider, DateTimePicker } from 'material-ui-pickers';
 // pick utils
-import MomentUtils from 'material-ui-pickers/utils/moment-utils';
+import MomentUtils from '@date-io/moment';
 import {
   Table,
   TableBody,
@@ -21,7 +21,6 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import { injectIntl } from 'react-intl';
-import { DateTimePicker } from 'material-ui-pickers';
 import DateTimeLabel from '../DateTimeLabel';
 import messages from './messages';
 

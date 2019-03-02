@@ -11,10 +11,10 @@ import Helmet from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import { bindActionCreators } from 'redux';
 // pick utils
-import MomentUtils from 'material-ui-pickers/utils/moment-utils';
+import MomentUtils from '@date-io/moment';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import PageBase from '../../components/PageBase';
 import Data from '../../data';

@@ -1,14 +1,15 @@
 /**
-*
-* DateTimeLabel
-*
-*/
+ *
+ * DateTimeLabel
+ *
+ */
 
 import React from 'react';
 // import styled from 'styled-components';
+let interval = null;
 
-
-class DateTimeLabel extends React.Component { // eslint-disable-line react/prefer-stateless-function
+class DateTimeLabel extends React.Component {
+  // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
     super(props);
     this.state = {
@@ -18,24 +19,20 @@ class DateTimeLabel extends React.Component { // eslint-disable-line react/prefe
   }
 
   componentDidMount() {
-    setInterval(this.tick, 1000);
+    interval = setInterval(this.tick, 1000);
   }
-
+  componentWillUnmount() {
+    clearInterval(interval);
+  }
   tick() {
     this.setState({ dateString: new Date().toLocaleString() });
   }
 
   render() {
-    return (
-      <span {...this.props}>
-        {this.state.dateString}
-      </span>
-    );
+    return <span {...this.props}>{this.state.dateString}</span>;
   }
 }
 
-DateTimeLabel.propTypes = {
-
-};
+DateTimeLabel.propTypes = {};
 
 export default DateTimeLabel;
