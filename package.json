@@ -1,6 +1,9 @@
 {
   "name": "react-boilerplate",
   "version": "3.4.0",
+    "private": true,
+ "homepage": "./",
+  "main": "./app/electron-starter.js",
   "description": "A highly scalable, offline-first foundation with the best DX and a focus on performance and best practices",
   "repository": {
     "type": "git",
@@ -13,6 +16,8 @@
   "author": "Max Stoiber",
   "license": "MIT",
   "scripts": {
+      "dev": "nf start -p 3000",
+
     "analyze:clean": "rimraf stats.json",
     "preanalyze": "npm run analyze:clean",
     "analyze": "node ./internals/scripts/analyze.js",
@@ -27,6 +32,7 @@
     "start": "cross-env NODE_ENV=development node server",
     "start:tunnel": "cross-env NODE_ENV=development ENABLE_TUNNEL=true node server",
     "start:production": "npm run test && npm run build && npm run start:prod",
+    "start:product": "npm run build && npm run start:prod",
     "start:prod": "cross-env NODE_ENV=production node server",
     "presetup": "npm i chalk shelljs",
     "setup": "node ./internals/scripts/setup.js",
@@ -257,6 +263,10 @@
     "whatwg-fetch": "2.0.1"
   },
   "devDependencies": {
+      "electron": "^1.4.14",
+	      "foreman": "^3.0.1",
+    "electron-builder": "^20.15.1",
+
     "babel-cli": "6.18.0",
     "babel-core": "6.21.0",
     "babel-eslint": "7.1.1",
@@ -310,5 +320,28 @@
     "webpack": "^2.5.1",
     "webpack-dev-middleware": "1.9.0",
     "webpack-hot-middleware": "2.15.0"
-  }
+  },
+  "build": {
+    "extends": null,
+    "appId": "oneoften",
+        "files": [
+        "./build/**/*",
+        "./src/electron-starter.js"
+    ],
+        "dmg": {
+        "contents": [
+            {
+                "x": 110,
+                "y": 150
+            },
+            {
+                "x": 240,
+                "y": 150,
+                "type": "link",
+                "path": "/Applications"
+            }
+        ]
+    }
+
+}
 }

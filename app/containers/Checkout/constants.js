@@ -1,6 +1,7 @@
 /**  Checkout constants **/
 // SAGAS ACTIONS
 export const SET_TRANSACTION = 'app/Checkout/SET_TRANSACTION';
+export const TRANSACTION_CONCLUDED = 'app/Checkout/TRANSACTION_CONCLUDED';
 
 // REDUCERS ACTIONS
 export const CART_ADDED = 'app/Checkout/CART_ADDED';

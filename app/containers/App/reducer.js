@@ -53,6 +53,7 @@ function setBodyBackground(currentTheme) {
 }
 
 function appReducer(state = initialState, action) {
+  console.log(action)
   const revKey = '_rev';
   switch (action.type) {
     case ActionTypes.CHANGE_LAYOUT: {

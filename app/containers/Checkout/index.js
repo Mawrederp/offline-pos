@@ -40,6 +40,7 @@ export class Checkout extends React.PureComponent {
     if (!props.store.loaded) {
       props.actions.getCheckoutProducts();
     }
+
     console.log(props);
     return null;
   }
@@ -60,7 +61,13 @@ export class Checkout extends React.PureComponent {
     this.addToCart = this.addToCart.bind(this);
     this.removeFromCart = this.removeFromCart.bind(this);
   }
-
+  componentDidUpdate() {
+    const { store } = this.props;
+    if (store.carts[store.activeCart].id) {
+      window.print();
+      this.props.actions.resetActiveCart();
+    }
+  }
   openPaymentModal = () => {
     this.setState(
       {
@@ -98,8 +105,6 @@ export class Checkout extends React.PureComponent {
     console.log('start of the chain', cart);
     if (status) {
       this.props.actions.setTransaction(cart);
-      // this.props.actions.resetActiveCart();
-      // setTimeout(() => window.print(), 500);
     }
     this.setState({ paymentModalOpen: false });
     if (!status) return 0;
@@ -108,7 +113,8 @@ export class Checkout extends React.PureComponent {
 
   render() {
     const { store, global } = this.props;
-    console.log(global);
+
+    console.log(global, store, 'global and store who knows ');
     return (
       <PageBase navigation="" noWrapContent loading={!store.loaded}>
         <Helmet

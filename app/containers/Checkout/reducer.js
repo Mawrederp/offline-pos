@@ -10,7 +10,7 @@ import {
   ADD_TO_CART,
   SET_ACTIVE_CART,
   REMOVE_FROM_CART,
-  SET_TRANSACTION,
+  TRANSACTION_CONCLUDED,
   RESET_ACTIVE_CART,
 } from './constants';
 import {
@@ -30,6 +30,7 @@ const initialState = fromJS({
       total: 0,
       tax: 0,
       discount: 0,
+      id: null,
     },
   },
   activeCart: '0',
@@ -97,6 +98,8 @@ function checkoutReducer(state = initialState, action) {
       });
     case PRODUCT_REMOVED:
       return state.deleteIn(['products', action.product[idKey]]);
+    case TRANSACTION_CONCLUDED:
+      return state.setIn(['carts', activeCart, 'id'], action.id);
     default:
       return state;
   }
