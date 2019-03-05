@@ -1,6 +1,6 @@
 import PouchApi from './PouchApi';
 import { storage } from '../storage';
-import { TELLER_ID } from '../config/teller';
+// import { TELLER_ID } from '../config/teller';
 
 const transactionsDB = storage.transactions.db;
 const idKey = '_id';
@@ -11,11 +11,9 @@ class TransactionsApi extends PouchApi {
     try {
       const docs = await transactionsDB.allDocs({
         include_docs: true,
-        binary: true,
-        attachments: true,
       });
       return docs.rows
-        .map(transaction => transaction.doc)
+        .map((transaction) => transaction.doc)
         .reduce(
           (acc, transaction) => ({
             ...acc,
@@ -30,13 +28,37 @@ class TransactionsApi extends PouchApi {
       throw error;
     }
   }
+  static async getBoxBrief() {
+    const transactions = await TransactionsApi.getAllTransactions();
+    const overallTellerWorth = Object.keys(transactions).reduce(
+      (acc, transactionKey) => {
+        const boxWorth = acc;
+        const transaction = transactions[transactionKey];
+        const transactionValue = transaction.payments.reduce(
+          (transactionVal, payment) => {
+            const transactionOutput = transactionVal;
+            if (payment.type === 'card') {
+              transactionOutput.receipts += payment.value;
+            } else transactionOutput.cash = transactionVal.cash + payment.value;
+            return transactionOutput;
+          },
+          {
+            receipts: 0,
+            cash: 0,
+          }
+        );
+        boxWorth.receipts += transactionValue.receipts;
+        boxWorth.cash += transactionValue.cash;
+        return boxWorth;
+      },
+      {
+        receipts: 0,
+        cash: 0,
+      }
+    );
+    return overallTellerWorth;
+  }
   static async setTransaction({ cart, endResult, payments, user }) {
-    console.log('in transaction and this is what i got ', {
-      user,
-      payments,
-      endResult,
-      cart,
-    });
     const transaction = {
       [idKey]: `TRANSACTION_${Date.now()}`,
       createdAt: Date.now(),
@@ -45,10 +67,8 @@ class TransactionsApi extends PouchApi {
       endResult,
       cart,
     };
-    console.log(transaction);
     try {
       const resp = await transactionsDB.put(transaction);
-      console.log(resp);
       return resp;
     } catch (error) {
       if (error.name === 'conflict') {
@@ -58,7 +78,6 @@ class TransactionsApi extends PouchApi {
         };
         throw exp;
       }
-      console.log(error, transaction);
 
       return null;
     }

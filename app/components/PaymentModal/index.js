@@ -83,9 +83,9 @@ class PaymentModal extends React.Component {
     super(props);
 
     this.state = {
-      total: { currency: props.currency, value: '18.0' },
-      cashPayment: { currency: props.currency, value: '10.0' },
-      cardPayment: { currency: props.currency, value: '8.0' },
+      total: { currency: props.currency, value: '0.0' },
+      cashPayment: { currency: props.currency, value: '0.0' },
+      cardPayment: { currency: props.currency, value: '0.0' },
       payments: [], // has value type currency
       remainder: { currency: props.currency, value: undefined },
     };
@@ -148,11 +148,11 @@ class PaymentModal extends React.Component {
       status,
       status
         ? {
-            endResult,
-            payments,
-            cart: this.props.data,
-            user: this.props.user,
-          }
+          endResult,
+          payments,
+          cart: this.props.data,
+          user: this.props.user,
+        }
         : null
     );
   }
@@ -199,7 +199,7 @@ class PaymentModal extends React.Component {
       <MenuItem key={index} value={curr} primaryText={curr} />
     ));
 
-    const currenciesSelectField = value => (
+    const currenciesSelectField = (value) => (
       <SelectField
         value={value}
         onChange={this.handleChange}
@@ -292,7 +292,7 @@ class PaymentModal extends React.Component {
                         <TextField
                           id="text-field-controlled"
                           defaultValue={payment.value}
-                          onBlur={e => this.handlePaymentValueChange(e, index)}
+                          onBlur={(e) => this.handlePaymentValueChange(e, index)}
                           className={'text-center'}
                           type={'number'}
                           step={0.1}
@@ -339,12 +339,12 @@ class PaymentModal extends React.Component {
             <div className="buttons">
               <ButtonSet
                 buttons={sideButtons}
-                pressHandler={label => this.buttonPressHandler(label)}
+                pressHandler={(label) => this.buttonPressHandler(label)}
                 className="sideButtonMatrix"
               />
               <ButtonSet
                 buttons={mainButtons}
-                pressHandler={label => this.buttonPressHandler(label)}
+                pressHandler={(label) => this.buttonPressHandler(label)}
                 className="mainButtonMatrix"
               />
             </div>

@@ -1,7 +1,6 @@
 import { fromJS } from 'immutable';
 import * as ActionTypes from './constants';
 import { localesDir } from '../../config/localization';
-import {REGISTRY_STATE_MODIFIED} from "./constants";
 
 const initialState = fromJS({
   user: {
@@ -53,7 +52,7 @@ function setBodyBackground(currentTheme) {
 }
 
 function appReducer(state = initialState, action) {
-  console.log(action)
+  console.log(action);
   const revKey = '_rev';
   switch (action.type) {
     case ActionTypes.CHANGE_LAYOUT: {
@@ -72,7 +71,6 @@ function appReducer(state = initialState, action) {
     case ActionTypes.CHANGE_SHOW_OPEN_VIEWS:
       return state.set('showOpenViews', action.value);
     case ActionTypes.CHANGE_LOCALE:
-
       return state.set('isRtl', localesDir[action.locale]);
     case ActionTypes.SET_LOCALE:
       return state.set('isRtl', localesDir[action.locale]);
@@ -84,7 +82,8 @@ function appReducer(state = initialState, action) {
       const menuItem = menus[0];
       const openedMenuItem = openViews[0];
 
-      return state.set('userIsAuthenticated', true)
+      return state
+        .set('userIsAuthenticated', true)
         .set('user', action.user)
         .set('authenticationErrorMessage', '')
         .set('selectedMenuIndex', 0)
@@ -93,12 +92,14 @@ function appReducer(state = initialState, action) {
         .set('selectedOpenedMenuItem', openedMenuItem);
     }
     case ActionTypes.ALTER_USER:
-      return state
-        .set('user', { ...state.get('user'), ...{ _rev: action.user[revKey] } });
-    case ActionTypes.GET_REGISTRY_LOADED :
+      return state.set('user', {
+        ...state.get('user'),
+        ...{ _rev: action.user[revKey] },
+      });
+    case ActionTypes.GET_REGISTRY_LOADED:
       return state.set('box', action.payload);
     case ActionTypes.REGISTRY_STATE_MODIFIED:
-      return state.set('box', action.payload);
+      return state.set('box', { ...state.get('box'), ...action.payload });
     case ActionTypes.AUTHENTICATION_FAILED: {
       return state.set('authenticationErrorMessage', action.message);
     }
@@ -109,7 +110,8 @@ function appReducer(state = initialState, action) {
       return state.set('registrationErrorMessage', action.message);
     }
     case ActionTypes.SIGN_OUT:
-      return state.set('userIsAuthenticated', false)
+      return state
+        .set('userIsAuthenticated', false)
         .set('user', {})
         .set('authenticationErrorMessage', '');
     // End of Authentication process
@@ -118,7 +120,8 @@ function appReducer(state = initialState, action) {
     case ActionTypes.LOAD_MENU_SUCCESS: {
       const data = action.data;
 
-      return state.set('menus', data.menus)
+      return state
+        .set('menus', data.menus)
         .set('openViews', data.openViews)
         .set('selectedMenuItem', data.selectedMenuItem)
         .set('selectedOpenedMenuItem', data.selectedOpenedMenuItem);
@@ -136,8 +139,7 @@ function appReducer(state = initialState, action) {
       const menus = state.get('menus');
       const openViews = Object.assign([], state.get('openViews'));
 
-      let itemFound = openViews.find((item) =>
-        item.id === action.id);
+      let itemFound = openViews.find((item) => item.id === action.id);
 
       const indexToBeRemoved = openViews.indexOf(itemFound);
       let openedIndex = 0;
@@ -166,7 +168,8 @@ function appReducer(state = initialState, action) {
 
       openViews.splice(indexToBeRemoved, 1);
 
-      return state.set('openViews', openViews)
+      return state
+        .set('openViews', openViews)
         .set('selectedMenuIndex', menuIndex)
         .set('selectedMenuItem', itemFound)
         .set('selectedOpenedMenuIndex', openedIndex)
@@ -195,8 +198,7 @@ function appReducer(state = initialState, action) {
         }
       });
 
-      let itemOpenedFound = openViews.find((item) =>
-        item.id === itemFound.id);
+      let itemOpenedFound = openViews.find((item) => item.id === itemFound.id);
 
       let openedIndex = 0;
 
@@ -225,14 +227,22 @@ function appReducer(state = initialState, action) {
 
         if (item.children && item.children.length > 0) {
           if (item.id === action.menuId) {
-            newItem = { ...item, animating: true, willCloseMenu: action.willCloseMenu };
+            newItem = {
+              ...item,
+              animating: true,
+              willCloseMenu: action.willCloseMenu,
+            };
           } else {
             newItem = { ...item, animating: false };
           }
 
           newItem.children = newItem.children.map((child) => {
             let newChild = child;
-            newChild = { ...child, animating: newItem.animating, willCloseMenu: newItem.willCloseMenu };
+            newChild = {
+              ...child,
+              animating: newItem.animating,
+              willCloseMenu: newItem.willCloseMenu,
+            };
             return newChild;
           });
         }
@@ -267,7 +277,11 @@ function appReducer(state = initialState, action) {
       menus = menus.map((item) => {
         let newItem = item;
 
-        newItem = { ...item, animatingRootMenu: true, willCloseRootMenu: action.willCloseMenu };
+        newItem = {
+          ...item,
+          animatingRootMenu: true,
+          willCloseRootMenu: action.willCloseMenu,
+        };
 
         return newItem;
       });

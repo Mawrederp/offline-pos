@@ -12,27 +12,22 @@ import { bindActionCreators } from 'redux';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 
-import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
-import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
-import ActionGrade from 'material-ui/svg-icons/action/grade';
 import { cyan500, green500, red300, white } from 'material-ui/styles/colors';
 import Chip from 'material-ui/Chip';
 import Avatar from 'material-ui/Avatar';
 import FontIcon from 'material-ui/FontIcon';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 import makeSelectCheckout, { makeSelectGlobal } from './selectors';
-import messages from './messages';
-import Data from '../../data';
 import MultiCart from '../MultiCart';
 import CheckoutBench from '../../components/CheckoutBench';
 import PageBase from '../../components/PageBase';
 import PaymentModal from '../../components/PaymentModal';
 import * as checkoutActions from './actions';
+import * as posActions from '../Registry/actions';
 
 export class Checkout extends React.PureComponent {
   // eslint-disable-line react/prefer-stateless-function
@@ -40,7 +35,6 @@ export class Checkout extends React.PureComponent {
     if (!props.store.loaded) {
       props.actions.getCheckoutProducts();
     }
-
     console.log(props);
     return null;
   }
@@ -136,7 +130,7 @@ export class Checkout extends React.PureComponent {
                 onRequestChange={this.handleCartChange}
                 onItemClick={this.chooseCart}
               >
-                {Object.keys(store.carts).map(key => (
+                {Object.keys(store.carts).map((key) => (
                   <MenuItem
                     key={`menu_guest_${key}`}
                     value={key}
@@ -177,14 +171,14 @@ export class Checkout extends React.PureComponent {
                     <FontIcon className="material-icons">credit_card</FontIcon>
                   }
                 />
-                {Number(global.box.receipts)} ريال
+                {Number.parseFloat(global.box.receipts).toFixed(2)} ريال
               </Chip>
               <Chip title={'الكاش'}>
                 <Avatar
                   style={{ backgroundColor: green500 }}
                   icon={<FontIcon className="material-icons">money</FontIcon>}
                 />
-                {Number(global.box.cash)} ريال
+                {Number.parseFloat(global.box.cash).toFixed(2)} ريال
               </Chip>
               <Chip title={'المجموع'}>
                 <Avatar
@@ -195,7 +189,9 @@ export class Checkout extends React.PureComponent {
                     </FontIcon>
                   }
                 />
-                {Number(Number(global.box.cash) + Number(global.box.receipts))}{' '}
+                {Number.parseFloat(
+                  Number(global.box.cash) + Number(global.box.receipts)
+                ).toFixed(2)}{' '}
                 ريال
               </Chip>
             </ToolbarGroup>
@@ -254,6 +250,7 @@ Checkout.propTypes = {
   store: PropTypes.any,
   actions: PropTypes.any,
   global: PropTypes.any,
+  id: PropTypes.any,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -263,7 +260,10 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(checkoutActions, dispatch),
+    actions: bindActionCreators(
+      { ...checkoutActions, ...posActions },
+      dispatch
+    ),
   };
 }
 
