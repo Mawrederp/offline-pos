@@ -16,6 +16,8 @@ import Paper from 'material-ui/Paper';
 import Subheader from 'material-ui/Subheader';
 import { cyan600, white, black } from 'material-ui/styles/colors';
 import typography from 'material-ui/styles/typography';
+import { Print } from 'react-easy-print';
+
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
@@ -292,7 +294,9 @@ class PaymentModal extends React.Component {
                         <TextField
                           id="text-field-controlled"
                           defaultValue={payment.value}
-                          onBlur={(e) => this.handlePaymentValueChange(e, index)}
+                          onBlur={(e) =>
+                            this.handlePaymentValueChange(e, index)
+                          }
                           className={'text-center'}
                           type={'number'}
                           step={0.1}
@@ -350,13 +354,15 @@ class PaymentModal extends React.Component {
             </div>
           </div>
         </Dialog>
-
-        <InvoiceReport
-          data={this.props.data}
-          endResult={endResult}
-          payments={this.state.payments}
-          user={this.props.user}
-        />
+        <Print printOnly single name="invoice-report">
+          <InvoiceReport
+            data={this.props.data}
+            endResult={endResult}
+            payments={this.state.payments}
+            user={this.props.user}
+            printOnly
+          />
+        </Print>
       </div>
     );
   }

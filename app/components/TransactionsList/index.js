@@ -17,8 +17,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import moment from 'moment';
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
+// import { FormattedMessage } from 'react-intl';
+// import messages from './messages';
 
 const styles = (theme) => ({
   root: {
@@ -93,6 +93,12 @@ class TransactionsList extends React.Component {
       expanded: expanded ? panel : false,
     });
   };
+  componentDidUpdate() {
+    if (this.props.activeTransaction !== '') {
+      window.print();
+      this.props.setActiveTransaction('');
+    }
+  }
   render() {
     const { classes, transactions, isRTL } = this.props;
     const idKey = '_id';
@@ -178,11 +184,17 @@ class TransactionsList extends React.Component {
             <Divider />
             <ExpansionPanelActions>
               <Button size="small">Cancel</Button>
-              <Button size="small" color="secondary">
+              <Button
+                size="small"
+                color="secondary"
+                onClick={() =>
+                  this.props.setActiveTransaction(transactionValue[idKey])
+                }
+              >
                 Print
               </Button>
               <Button size="small" color="primary">
-                Save
+                Edit
               </Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
@@ -196,6 +208,8 @@ TransactionsList.propTypes = {
   classes: PropTypes.object.isRequired,
   isRTL: PropTypes.bool,
   transactions: PropTypes.any,
+  setActiveTransaction: PropTypes.func,
+  activeTransaction: PropTypes.string,
 };
 
 export default withStyles(styles)(TransactionsList);

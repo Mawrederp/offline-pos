@@ -54,7 +54,11 @@ class ProductUtils {
         'subTotal',
         products.reduce(
           (acc, product) =>
-            acc + parseFloat(product.price) * parseFloat(product.quantity),
+            acc +
+            ((price, quantity) => parseFloat(price) * parseFloat(quantity))(
+              product.price,
+              product.quantity
+            ),
           0
         )
       )

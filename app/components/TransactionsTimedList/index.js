@@ -101,7 +101,14 @@ class TransactionsTimedList extends React.Component {
   };
 
   render() {
-    const { classes, transactions, transactionTimeIndex, isRTL } = this.props;
+    const {
+      classes,
+      transactions,
+      transactionTimeIndex,
+      isRTL,
+
+      activeTransaction,
+    } = this.props;
     const timeIndexKeys = Object.keys(transactionTimeIndex);
     const { expanded } = this.state;
     return (
@@ -115,9 +122,9 @@ class TransactionsTimedList extends React.Component {
           overflowX: 'hidden',
         }}
       >
-        {timeIndexKeys.map((transactionKey) => (
+        {timeIndexKeys.map((transactionKey, index) => (
           <ExpansionPanel
-            expanded={expanded === transactionKey}
+            expanded={expanded === transactionKey || index === 0}
             onChange={this.handleChange(transactionKey)}
           >
             <ExpansionPanelSummary
@@ -176,6 +183,8 @@ class TransactionsTimedList extends React.Component {
 
               <TransactionsList
                 isRTL={isRTL}
+                setActiveTransaction={this.props.setActiveTransaction}
+                activeTransaction={activeTransaction}
                 transactions={Object.keys(transactions)
                   .filter((key) => {
                     const timeIndexSubKeys = Object.keys(
@@ -210,7 +219,6 @@ class TransactionsTimedList extends React.Component {
                   .map((key) => this.props.transactions[key])}
               />
             </ExpansionPanelDetails>
-
           </ExpansionPanel>
         ))}
       </div>
@@ -223,6 +231,8 @@ TransactionsTimedList.propTypes = {
   isRTL: PropTypes.bool,
   transactions: PropTypes.any,
   transactionTimeIndex: PropTypes.any,
+  setActiveTransaction: PropTypes.func,
+  activeTransaction: PropTypes.string,
 };
 
 export default withStyles(styles)(TransactionsTimedList);
