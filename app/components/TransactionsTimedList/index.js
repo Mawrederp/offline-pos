@@ -135,7 +135,7 @@ class TransactionsTimedList extends React.Component {
             >
               <div className={classes.column}>
                 <Typography className={classes.heading}>
-                  {transactionKey.replace('_', ' - ')}
+                  {transactionKey ? transactionKey.replace('_', ' - ') : ''}
                 </Typography>
               </div>
 
