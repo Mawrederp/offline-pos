@@ -9,6 +9,7 @@ import { LOCATION_CHANGE } from 'react-router-redux';
 
 import appReducer from 'containers/App/reducer';
 import checkoutReducer from 'containers/Checkout/reducer';
+import historyManagerReducer from 'containers/HistoryManager/reducer';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
 
 /*
@@ -48,6 +49,7 @@ export default function createReducer(asyncReducers) {
     global: appReducer,
     language: languageProviderReducer,
     checkout: checkoutReducer,
+    historyManager: historyManagerReducer,
     ...asyncReducers,
   });
 }

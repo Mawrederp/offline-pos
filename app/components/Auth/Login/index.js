@@ -9,10 +9,9 @@ import FontIcon from 'material-ui/FontIcon';
 import { injectIntl } from 'react-intl';
 import styles from '../styles';
 import messages from '../messages';
-
-class Login extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
-
-
+const logo = require('../../../assets/logo.svg');
+// eslint-disable-next-line react/prefer-stateless-function
+class Login extends React.PureComponent {
   render() {
     console.log(this.props);
     const {
@@ -32,19 +31,16 @@ class Login extends React.PureComponent { // eslint-disable-line react/prefer-st
           <Paper style={styles.paper}>
             <div style={styles.logoContainer}>
               <img
-                style={{ width: 295, height: 54 }}
-                src="http://via.placeholder.com/295x54" alt="Offline Point Of Sale"
+                style={{ width: 297, height: 93 }}
+                src={logo}
+                alt="Offline Point Of Sale"
               />
             </div>
-            {
-              this.props.errorMessage ? (
-                <div>
-                  <p style={styles.errorMessage}>
-                    * {this.props.errorMessage}
-                  </p>
-                </div>
-              ) : null
-            }
+            {this.props.errorMessage ? (
+              <div>
+                <p style={styles.errorMessage}>* {this.props.errorMessage}</p>
+              </div>
+            ) : null}
 
             <form>
               <TextField
@@ -79,7 +75,6 @@ class Login extends React.PureComponent { // eslint-disable-line react/prefer-st
                   style={styles.boxBtn}
                   onClick={this.props.onSignIn}
                 />
-
               </div>
             </form>
           </Paper>
@@ -97,6 +92,33 @@ class Login extends React.PureComponent { // eslint-disable-line react/prefer-st
               style={styles.flatButton}
               icon={<FontIcon className="material-icons">person_add</FontIcon>}
             />
+          </div>
+        </div>
+        <div
+          style={{
+            bottom: 20,
+            position: 'fixed',
+            right: '30%',
+            textAlign: 'center',
+            width: '40%',
+          }}
+        >
+          <div style={{ textTransform: 'capitalize', margin: 'auto' }}>
+            all rights reserved for
+          </div>
+          <a href="http://www.mawrederp.com">www.mawrederp.com ©</a>
+          <div style={{ textTransform: 'capitalize' }}>
+            contact us on{' '}
+            <FlatButton
+              onClick={(event) => {
+                event.target.select();
+                document.execCommand('copy');
+              }}
+              icon={<FontIcon className="material-icons">call</FontIcon>}
+              label="5642 562 54 966+"
+            />{' '}
+            or Email us on{' '}
+            <a href="mailto:sales@mawrederp.com">sales@mawrederp.com</a>
           </div>
         </div>
       </div>

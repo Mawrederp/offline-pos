@@ -7,34 +7,43 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import Helmet from 'react-helmet';
 import Paper from 'material-ui/Paper';
-import Avatar from 'material-ui/Avatar';
-import { List, ListItem } from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
-import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import { grey400, cyan600, white } from 'material-ui/styles/colors';
-import typography from 'material-ui/styles/typography';
 import AutoComplete from 'material-ui/AutoComplete';
-import Chip from 'material-ui/Chip';
+// import { FormattedMessage } from 'react-intl';
 
-import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
-import makeSelectHistoryManager from './selectors';
-import messages from './messages';
 import PageBase from '../../components/PageBase';
 import MultiCart from '../MultiCart';
-import Data from '../../data';
-import PaymentModal from '../../components/PaymentModal';
+// import PaymentModal from '../../components/PaymentModal';
+import TransactionsTimedList from '../../components/TransactionsTimedList';
+import makeSelectCheckout, { makeSelectGlobal } from '../Checkout/selectors';
+import makeSelectHistoryManager from './selectors';
+import * as transactionActions from './actions';
+import * as checkoutActions from '../Checkout/actions';
 
+import * as posActions from '../Registry/actions';
 
-export class HistoryManager extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+// import messages from './messages';
+export class HistoryManager extends React.PureComponent {
+  // eslint-disable-line react/prefer-stateless-function
+  static getDerivedStateFromProps(props) {
+    console.log(props, 'the props i got in history');
+    if (!props.store.loaded) {
+      props.actions.getCheckoutProducts();
+    }
+    if (!props.historyManager.loaded) {
+      console.log(props.actions.getAllTransactions(), 'transactions action');
+    }
+    console.log(props);
+    return null;
+  }
   constructor(props) {
     super(props);
+    console.log(props, 'i am history');
     this.state = {
       loading: true,
       paymentModalOpen: false,
@@ -44,41 +53,27 @@ export class HistoryManager extends React.PureComponent { // eslint-disable-line
     this.paymentConcluded = this.paymentConcluded.bind(this);
     this.openPaymentModal = this.openPaymentModal.bind(this);
   }
-  componentWillMount() {
-    this.setState({
-      loading: false,
-    });
-  }
+
   handleUpdateInput = (value) => {
     this.setState({
-      dataSource: [
-        value,
-        value + value,
-        value + value + value,
-      ],
+      dataSource: [value, value + value, value + value + value],
     });
   };
   openPaymentModal = () => {
     this.setState({
       paymentModalOpen: true,
     });
-  }
+  };
 
   paymentConcluded = (status) => {
     this.setState({ paymentModalOpen: false });
     if (!status) return 0;
     return true;
-  }
+  };
   render() {
-    const styles = {
-      subheader: {
-        fontSize: 24,
-        fontWeight: typography.fontWeightLight,
-        backgroundColor: cyan600,
-        color: white,
-        lineHeight: '34px',
+    const { store, historyManager, global } = this.props;
 
-      },
+    const styles = {
       root: {
         display: 'flex',
         flexWrap: 'wrap',
@@ -90,35 +85,12 @@ export class HistoryManager extends React.PureComponent { // eslint-disable-line
         overflowY: 'auto',
       },
     };
-    const colors = [
-      'احمر',
-      'اصفر',
-      'اسود',
-      'اخضر',
-      'Blue',
-      'Purple',
-      'Black',
-      'White',
-    ];
-    const iconButtonElement = (
-      <IconButton
-        touch
-        tooltipPosition="bottom-left"
-      >
-        <FontIcon color={grey400} className="material-icons">more_vert_icon</FontIcon>
-      </IconButton>
-    );
 
-    const rightIconMenu = (
-      <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem>View</MenuItem>
-      </IconMenu>
-    );
     return (
       <PageBase
         navigation=""
         noWrapContent
-        loading={this.state.loading}
+        loading={!!(!store.loaded && !historyManager.loaded)}
       >
         <Helmet
           title="HistoryManager"
@@ -128,11 +100,16 @@ export class HistoryManager extends React.PureComponent { // eslint-disable-line
         />
         <div className={'row'}>
           <div className={'col-md-6 col-lg-6 col-xs-6 col-sm-6'}>
-            <Paper style={{ height: '90%' }}>
+            <Paper
+              style={{
+                height: 600,
+                maxHeigh: 600,
+              }}
+            >
               <Subheader style={styles.subheader}>المبيعات</Subheader>
               <AutoComplete
                 hintText="يمكنك البحث باستخدام احرف او كلمات"
-                dataSource={colors}
+                dataSource={[]}
                 onUpdateInput={this.handleUpdateInput}
                 floatingLabelText="البحث "
                 filter={AutoComplete.fuzzyFilter}
@@ -141,66 +118,49 @@ export class HistoryManager extends React.PureComponent { // eslint-disable-line
                 style={{ textIndent: 3 }}
                 id={'products-search-box'}
               />
-              <List>
-                <div >
-                  <ListItem
 
-                    primaryText={
-                      <Chip onClick={() => { }}>
-                        <Avatar src="http://i.pravatar.cc/100" />
-                        محمد سليم
-
-                      </Chip>}
-                    secondaryText={'رقم الفاتورة : 0021   | قيمة الفاتورة:249 ريال  | الخصم:5%'}
-                    rightIconButton={rightIconMenu}
-                  />
-                  <Divider inset />
-                  <ListItem
-
-                    primaryText={
-                      <Chip onClick={() => { }}>
-                        <Avatar src="" >
-                          <FontIcon className={'material-icons'} style={{ color: white }}>avatar</FontIcon>
-                        </Avatar>
-                        زبون مجهول
-                      </Chip>}
-                    secondaryText={'رقم الفاتورة : 0021   | قيمة الفاتورة:249 ريال  | الخصم:5%'}
-                    rightIconButton={rightIconMenu}
-                  />
-                  <Divider inset />
-                </div>
-
-              </List>
+              <TransactionsTimedList
+                {...historyManager}
+                isRTL={global.isRtl === 'rtl'}
+              />
             </Paper>
-
           </div>
           <div className={'col-md-6 col-lg-6 col-xs-6 col-sm-6'}>
             <MultiCart
-              products={Data.dashBoardPage.recentProducts}
+              products={{ products: [] }}
               openPaymentModal={this.openPaymentModal}
             />
-
           </div>
         </div>
-        <PaymentModal open={this.state.paymentModalOpen} handleClose={this.paymentConcluded} container={this.state.id} currency={'ريال'} data={Data.dashBoardPage.recentProducts} />
-
+        {/* <PaymentModal open={this.state.paymentModalOpen} handleClose={this.paymentConcluded} container={this.state.id} currency={'ريال'} data={{}} /> */}
       </PageBase>
     );
   }
 }
 
 HistoryManager.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  store: PropTypes.any,
+  global: PropTypes.any,
+  historyManager: PropTypes.any,
+  id: PropTypes.any,
 };
 
 const mapStateToProps = createStructuredSelector({
-  HistoryManager: makeSelectHistoryManager(),
+  store: makeSelectCheckout(),
+  global: makeSelectGlobal(),
+  historyManager: makeSelectHistoryManager(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    actions: bindActionCreators(
+      { ...transactionActions, ...posActions, ...checkoutActions },
+      dispatch
+    ),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HistoryManager);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HistoryManager);

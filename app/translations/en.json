@@ -52,6 +52,8 @@
   "app.pages.dashboard": "Dashboard",
   "app.pages.checkout": "Checkout Bench",
   "app.pages.productsManagement": "Products Management",
+  "app.pages.historyManager": "History Management",
+
   "app.pages.views": "Views",
   "app.pages.openViews": "Open Views",
   "app.actions.logout": "Sign Out",

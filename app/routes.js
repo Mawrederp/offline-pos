@@ -33,7 +33,8 @@ export default function createRoutes(store) {
 
         importModules.catch(errorLoading);
       },
-    }, {
+    },
+    {
       path: '/checkout',
       name: 'checkout',
       getComponent(nextState, cb) {
@@ -41,20 +42,28 @@ export default function createRoutes(store) {
           import('containers/Checkout/reducer'),
           import('containers/Checkout/sagas'),
           import('containers/ProductsManagement/sagas'),
+          import('containers/HistoryManager/sagas'),
           import('containers/Checkout'),
         ]);
 
         const renderRoute = loadModule(cb);
 
-        importModules.then(([reducer, sagas,productsagas, component]) => {
-          injectReducer('checkout', reducer.default);
-          injectSagas(sagas.default.concat(productsagas.default));
-          renderRoute(component);
-        });
+        importModules.then(
+          ([reducer, sagas, productsagas, transactionSagas, component]) => {
+            injectReducer('checkout', reducer.default);
+            injectSagas(
+              sagas.default
+                .concat(productsagas.default)
+                .concat(transactionSagas.default)
+            );
+            renderRoute(component);
+          }
+        );
 
         importModules.catch(errorLoading);
       },
-    }, {
+    },
+    {
       path: '/open-registry',
       name: 'OpenRegistry',
       getComponent(location, cb) {
@@ -62,7 +71,8 @@ export default function createRoutes(store) {
           .then(loadModule(cb))
           .catch(errorLoading);
       },
-    }, {
+    },
+    {
       path: '/close-registry',
       name: 'closeRegistry',
       getComponent(location, cb) {
@@ -70,7 +80,8 @@ export default function createRoutes(store) {
           .then(loadModule(cb))
           .catch(errorLoading);
       },
-    }, {
+    },
+    {
       path: 'products-management',
       name: 'productsStore',
       getComponent(nextState, cb) {
@@ -90,7 +101,8 @@ export default function createRoutes(store) {
 
         importModules.catch(errorLoading);
       },
-    }, {
+    },
+    {
       path: 'invoice-report',
       name: 'invoiceReport',
       getComponent(location, cb) {
@@ -98,27 +110,30 @@ export default function createRoutes(store) {
           .then(loadModule(cb))
           .catch(errorLoading);
       },
-    }, {
+    },
+    {
       path: 'history-manager',
       name: 'historyManager',
       getComponent(nextState, cb) {
         const importModules = Promise.all([
           import('containers/HistoryManager/reducer'),
           import('containers/HistoryManager/sagas'),
+          import('containers/ProductsManagement/sagas'),
           import('containers/HistoryManager'),
         ]);
 
         const renderRoute = loadModule(cb);
 
-        importModules.then(([reducer, sagas, component]) => {
+        importModules.then(([reducer, sagas, productsagas, component]) => {
           injectReducer('historyManager', reducer.default);
-          injectSagas(sagas.default);
+          injectSagas(sagas.default.concat(productsagas.default));
           renderRoute(component);
         });
 
         importModules.catch(errorLoading);
       },
-    }, {
+    },
+    {
       path: '/close-registry',
       name: 'registry',
       getComponent(location, cb) {
@@ -126,7 +141,8 @@ export default function createRoutes(store) {
           .then(loadModule(cb))
           .catch(errorLoading);
       },
-    }, {
+    },
+    {
       path: '*',
       name: 'notfound',
       getComponent(nextState, cb) {

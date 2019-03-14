@@ -45,16 +45,20 @@ export function* fetchAuthState() {
     const authState = yield AuthApi.getAuthState();
     const user = yield AuthApi.fetchUserById(authState.user);
     if (authState.value && user) {
-      const effects = [put({
-        type: AUTHENTICATED,
-        user,
-      })];
+      const effects = [
+        put({
+          type: AUTHENTICATED,
+          user,
+        }),
+      ];
 
       if (user.locale) {
-        effects.push(put({
-          type: SET_LOCALE,
-          locale: user.locale,
-        }));
+        effects.push(
+          put({
+            type: SET_LOCALE,
+            locale: user.locale,
+          })
+        );
       }
       yield all(effects);
     }
@@ -187,13 +191,15 @@ export function* setLocalSaga(action) {
   const { user, locale } = action.locale.toJS();
   const response = yield AuthApi.setUserLocale(user, locale);
 
-  yield put({ type: ALTER_USER, user: { ...user, ...{ _rev: response.rev } } });
+  yield put({
+    type: ALTER_USER,
+    user: { ...user, locale, ...{ _rev: response.rev } },
+  });
 }
 
 export function* changeLocal() {
   yield takeLatest(CHANGE_LOCALE, setLocalSaga);
 }
-
 
 // All sagas to be loaded
 export default [

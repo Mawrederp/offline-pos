@@ -1,11 +1,20 @@
-// import { take, call, put, select } from 'redux-saga/effects';
+import { put, takeLatest } from 'redux-saga/effects';
+import { GET_ALL_TRANASCTIONS, TRANASCTIONS_LOADED } from './constants';
 
 // Individual exports for testing
-export function* defaultSaga() {
-  // See example in containers/HomePage/sagas.js
+import TransactionsApi from '../../api/TransactionsApi';
+
+export function* getAllTransactionsSaga() {
+  try {
+    const resp = yield TransactionsApi.getAllTransactions();
+    yield put({ type: TRANASCTIONS_LOADED, transactions: resp });
+  } catch (e) {
+    console.log('in sagas', e);
+  }
+}
+export function* getAllTransactions() {
+  yield takeLatest(GET_ALL_TRANASCTIONS, getAllTransactionsSaga);
 }
 
 // All sagas to be loaded
-export default [
-  defaultSaga,
-];
+export default [getAllTransactions];

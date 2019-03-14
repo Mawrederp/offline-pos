@@ -6,7 +6,6 @@ import { FormattedMessage } from 'react-intl';
 
 import { ListItem } from 'material-ui/List';
 import { createStructuredSelector } from 'reselect';
-import FontIcon from 'material-ui/FontIcon';
 import { Link } from 'react-router';
 import SelectableList from '../../SelectableList';
 import * as appActions from '../../../containers/App/actions';

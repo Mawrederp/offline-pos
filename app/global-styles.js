@@ -13,7 +13,7 @@ injectGlobal`
   input[type="number"],input.num-input{
     direction: ltr !important;
   }
-  
+
   body{
   }
   html[dir="rtl"] .material-icons {
@@ -99,7 +99,7 @@ injectGlobal`
   .list-item > div > div {
     margin-left: 0px !important;
     padding: 16px 16px 16px 50px !important;
-    
+
   }
 
   .open-views.list-item span:nth-last-child(2) {
@@ -444,7 +444,7 @@ injectGlobal`
   .left-drawner  .material-icons:first-child{
     right:-20px !important;
   }
-  
+
   .left-drawner .drawer-toolbar .material-icons{
     right:0px !important;
     width:100%;
@@ -460,7 +460,7 @@ injectGlobal`
   html[dir='ltr'] div.header.open{
     padding-right: 24px !important;
     padding-left: 250px !important;
-  } 
+  }
   html[dir='ltr'] img.tile-image{
     transform: translateX(-50%) translateY(-50%) !important;
     left: 50% !important;
@@ -476,11 +476,11 @@ injectGlobal`
   }
   html[dir='ltr'] div.main-container.open{
     padding :0px 20px 20px 250px !important;
-  } 
-  
+  }
+
   html[dir='ltr'] .products-add-btn{
     position: absolute;
-    bottom: 20px; 
+    bottom: 20px;
     right: 20px
     left: auto;
   }
@@ -503,7 +503,7 @@ html[dir='ltr'] .cart-list-item  div:nth-child(5){
   }
  .products-add-btn{
     position: absolute;
-    bottom: 20px; 
+    bottom: 20px;
     left: 20px
   }
   .main-container {
@@ -515,7 +515,7 @@ html[dir='ltr'] .cart-list-item  div:nth-child(5){
   .header span.material-icons,
   .cart span.material-icons{
     width:100%;
-  
+
   }
   .left-drawer *:not(.drawer-toolbar) span.material-icons{
     right:-24px;
@@ -555,7 +555,7 @@ html[dir='ltr'] .cart-list-item  div:nth-child(5){
     width: 100%;
     display: flex;
 }
-    
+
 .buttonRow .material-icons{
   margin-right: -13px
 }
@@ -648,9 +648,14 @@ html[dir='ltr'] .cart-list-item  div:nth-child(5){
   cursor:pointer;
 }
 
-input[type=number].no-spinners::-webkit-inner-spin-button, 
-input[type=number].no-spinners::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+input[type=number].no-spinners::-webkit-inner-spin-button,
+input[type=number].no-spinners::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
+html[dir="rtl"] *[class^="MuiExpansionPanelSummary-expandIcon"]{
+left:8px !important;
+right:auto !important;
+}
+
 `;

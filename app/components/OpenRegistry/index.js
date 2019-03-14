@@ -6,11 +6,7 @@
 
 // import styled from 'styled-components';
 import React from 'react';
-import {
-  Step,
-  Stepper,
-  StepLabel,
-} from 'material-ui/Stepper';
+import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import PropTypes from 'prop-types';
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -20,7 +16,8 @@ import messages from './messages';
 import ReportForm from '../ReportForm';
 import OpenRegistryReport from '../OpenRegistryReport';
 
-class OpenRegistry extends React.Component { // eslint-disable-line react/prefer-stateless-function
+class OpenRegistry extends React.Component {
+  // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
     super(props);
     console.log(props);
@@ -43,21 +40,25 @@ class OpenRegistry extends React.Component { // eslint-disable-line react/prefer
     console.log(this.props);
     switch (stepIndex) {
       case 0:
-        return (<ReportForm
-          box={this.props.box}
-          receiptsChanged={this.receiptsChanged}
-          cashChanged={this.cashChanged}
-          user={this.props.user}
-        />);
+        return (
+          <ReportForm
+            box={this.props.box}
+            receiptsChanged={this.receiptsChanged}
+            cashChanged={this.cashChanged}
+            user={this.props.user}
+          />
+        );
       case 1:
-        return (<OpenRegistryReport
-          box={this.props.box}
-          user={this.props.user}
-          cash={this.state.cash}
-          receipts={this.state.receipts}
-        />);
+        return (
+          <OpenRegistryReport
+            box={this.props.box}
+            user={this.props.user}
+            cash={this.state.cash}
+            receipts={this.state.receipts}
+          />
+        );
       default:
-        return 'You\'re a long way from home sonny jim!';
+        return "You're a long way from home sonny jim!";
     }
   }
 
@@ -72,8 +73,13 @@ class OpenRegistry extends React.Component { // eslint-disable-line react/prefer
     this.setState({ cash: newValue });
   }
 
-  handleForm(e) {
-    this.props.manageRegistry({ receipts: this.state.receipts, cash: this.state.cash, open: !this.props.box.open });
+  handleForm() {
+    this.props.manageRegistry({
+      receipts: this.state.receipts,
+      cash: this.state.cash,
+      open: !this.props.box.open,
+    });
+    window.print();
   }
 
   handleNext = () => {
@@ -104,21 +110,29 @@ class OpenRegistry extends React.Component { // eslint-disable-line react/prefer
     const { stepIndex } = this.state;
     const { intl, box } = this.props;
     const contentStyle = { margin: '0 16px' };
-    const action = box.open ? intl.formatMessage(close) : intl.formatMessage(open);
+    const action = box.open
+      ? intl.formatMessage(close)
+      : intl.formatMessage(open);
 
     return (
-      <div style={{ width: '100%', maxWidth: 700, margin: 'auto', marginTop: 100 }}>
+      <div
+        style={{ width: '100%', maxWidth: 700, margin: 'auto', marginTop: 100 }}
+      >
         <Stepper activeStep={stepIndex}>
           <Step>
-            <StepLabel> {`${action} ${intl.formatMessage(messages.box)}`}</StepLabel>
+            <StepLabel>
+              {' '}
+              {`${action} ${intl.formatMessage(messages.box)}`}
+            </StepLabel>
           </Step>
           <Step>
-            <StepLabel>{`${intl.formatMessage(print)} ${intl.formatMessage(report)}`}</StepLabel>
+            <StepLabel>{`${intl.formatMessage(print)} ${intl.formatMessage(
+              report
+            )}`}</StepLabel>
           </Step>
-
         </Stepper>
         <div style={contentStyle}>
-          {(
+          {
             <div>
               <div>{this.getStepContent(stepIndex)}</div>
               <div style={{ marginTop: 12 }}>
@@ -129,18 +143,21 @@ class OpenRegistry extends React.Component { // eslint-disable-line react/prefer
                   style={{ marginRight: 12 }}
                 />
                 <RaisedButton
-                  label={stepIndex === 1 ? intl.formatMessage(printAndContinue) : intl.formatMessage(next)}
+                  label={
+                    stepIndex === 1
+                      ? intl.formatMessage(printAndContinue)
+                      : intl.formatMessage(next)
+                  }
                   primary
                   onClick={stepIndex === 1 ? this.handleForm : this.handleNext}
                 />
               </div>
             </div>
-          )}
+          }
         </div>
       </div>
     );
   }
-
 }
 
 OpenRegistry.propTypes = {

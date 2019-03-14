@@ -1,7 +1,7 @@
 import { fromJS } from 'immutable';
 import * as ActionTypes from './constants';
 import { localesDir } from '../../config/localization';
-
+import { CHANGE_LOCALE } from '../LanguageProvider/constants';
 const initialState = fromJS({
   user: {
     name: 'اكرم عبد الرحمن',
@@ -92,7 +92,7 @@ function appReducer(state = initialState, action) {
         .set('selectedOpenedMenuItem', openedMenuItem);
     }
     case ActionTypes.ALTER_USER:
-      return state.set('user', {
+      return state.set('isRtl', localesDir[action.user.locale]).set('user', {
         ...state.get('user'),
         ...{ _rev: action.user[revKey] },
       });
@@ -301,6 +301,9 @@ function appReducer(state = initialState, action) {
 
       return state.set(action.rootMenuName, menus);
     }
+    case CHANGE_LOCALE:
+      console.log('in app reducer');
+      return state;
     default:
       return state;
   }

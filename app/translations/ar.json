@@ -28,6 +28,8 @@
   "app.pages.dashboard": "الرئيسية",
   "app.pages.checkout": "تخليص الحسابات",
   "app.pages.productsManagement": "ادارة الاصناف",
+  "app.pages.historyManager": "ادارة السجلات",
+
   "app.pages.views": "النوافذ",
   "app.pages.openViews": "النوافذ المفتوحة",
   "app.actions.logout": "تسجيل الخروج",

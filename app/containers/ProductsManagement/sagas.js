@@ -1,4 +1,4 @@
-import { all, put, takeLatest } from 'redux-saga/effects';
+import { put, takeLatest } from 'redux-saga/effects';
 
 import {
   GET_PRODUCTS,
@@ -15,7 +15,7 @@ const revKey = '_rev';
 const idKey = '_id';
 const attachmentsKey = '_attachments';
 
-export function* fetchProducts(action) {
+export function* fetchProducts() {
   try {
     const products = yield ProductsApi.getAllProducts();
     yield put({ type: PRODUCTS_LOADED, products });
@@ -25,6 +25,7 @@ export function* fetchProducts(action) {
 }
 
 export function* getProductsSaga() {
+  console.log('we got to sagas');
   yield takeLatest(GET_PRODUCTS, fetchProducts);
 }
 

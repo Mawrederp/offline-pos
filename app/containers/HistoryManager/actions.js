@@ -4,12 +4,10 @@
  *
  */
 
-import {
-  DEFAULT_ACTION,
-} from './constants';
+import { GET_ALL_TRANASCTIONS } from './constants';
 
-export function defaultAction() {
+export function getAllTransactions() {
   return {
-    type: DEFAULT_ACTION,
+    type: GET_ALL_TRANASCTIONS,
   };
 }

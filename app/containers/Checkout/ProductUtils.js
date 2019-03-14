@@ -8,13 +8,15 @@ class ProductUtils {
 
     if (products.size) {
       const exists = products.filter((value, index) => {
-        if (value.product.name === product.name && value.variantPropId === variantPropId) {
+        if (
+          value.product.name === product.name &&
+          value.variantPropId === variantPropId
+        ) {
           indexIfExists = index;
           return true;
         }
         return false;
-      }
-      );
+      });
       console.log(exists);
       if (exists.size) {
         console.log('quantity is ', exists.get(0).quantity);
@@ -28,9 +30,13 @@ class ProductUtils {
 
     finalProduct = {
       ...finalProduct,
-      price: (variantProp && variantProp.price) ? variantProp.price : product.price,
-      discount: (variantProp && variantProp.discount) ? variantProp.discount : product.discount || 0,
-      tax: (variantProp && variantProp.tax) ? variantProp.tax : product.tax || 0,
+      price:
+        variantProp && variantProp.price ? variantProp.price : product.price,
+      discount:
+        variantProp && variantProp.discount
+          ? variantProp.discount
+          : product.discount || 0,
+      tax: variantProp && variantProp.tax ? variantProp.tax : product.tax || 0,
     };
 
     const finalObject = { product, variantPropId, ...finalProduct };
@@ -44,31 +50,55 @@ class ProductUtils {
   static evaluate(cart) {
     const products = cart.get('products');
     return cart
-      .set('subTotal', products.reduce((acc, product) => (acc + (parseFloat(product.price) * parseFloat(product.quantity))), 0))
-      .set('tax', products.map((product) => (product.tax || 0)).toSet().toList())
-      .set('discount', products.map((product) => (product.discount || 0)).toSet().toList())
-      .set('total', products.reduce((acc, product) => {
-        const total = parseFloat(product.price);
-        const discount = parseFloat(product.discount || 0);
-        const tax = parseFloat(product.tax || 0);
-        let newDiscount = 0;
-        let newTax = 0;
-        if (discount < 1 && discount > 0) {
-          newDiscount = total * discount;
-        } else {
-          newDiscount = total * (discount / 100);
-        }
+      .set(
+        'subTotal',
+        products.reduce(
+          (acc, product) =>
+            acc + parseFloat(product.price) * parseFloat(product.quantity),
+          0
+        )
+      )
+      .set(
+        'tax',
+        products
+          .map((product) => product.tax || 0)
+          .toSet()
+          .toList()
+      )
+      .set(
+        'discount',
+        products
+          .map((product) => product.discount || 0)
+          .toSet()
+          .toList()
+      )
+      .set(
+        'total',
+        products.reduce((acc, product) => {
+          const total = parseFloat(product.price);
+          const discount = parseFloat(product.discount || 0);
+          const tax = parseFloat(product.tax || 0);
+          let newDiscount = 0;
+          let newTax = 0;
+          if (discount < 1 && discount > 0) {
+            newDiscount = total * discount;
+          } else {
+            newDiscount = total * (discount / 100);
+          }
 
-        if (tax < 1 && tax > 0) {
-          newTax = total * tax;
-        } else {
-          newTax = total * (tax / 100);
-        }
+          if (tax < 1 && tax > 0) {
+            newTax = total * tax;
+          } else {
+            newTax = total * (tax / 100);
+          }
+          const priceForOne = total - newDiscount;
+          const priceForOnePlusTax = priceForOne + newTax;
+          const wholePrice = priceForOnePlusTax * parseFloat(product.quantity);
 
-        return (acc + ((total - newDiscount) + newTax));
-      }, 0));
+          return acc + wholePrice;
+        }, 0)
+      );
   }
 }
-
 
 export default ProductUtils;

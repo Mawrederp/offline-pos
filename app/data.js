@@ -9,7 +9,7 @@ const data = {
     // { id: 'OpenRegistry', text: 'فتح الصندوق', icon: <FontIcon className="material-icons">assessment</FontIcon>, url: '/open-registry', index: 0 },
     // { id: 'closeRegistry', text: 'اغلاق الصندوق', icon: <FontIcon className="material-icons">assessment</FontIcon>, url: '/close-registry', index: 0 },
     { id: 'app.pages.productsManagement', text: 'ادارة الاصناف', icon: <FontIcon className="material-icons">store</FontIcon>, url: '/products-management', index: 0 },
-    // { id: 'historyManager', text: 'التاريخ', icon: <FontIcon className="material-icons">history</FontIcon>, url: '/history-manager', index: 0 },
+     { id: 'app.pages.historyManager', text: 'ادارة التاريخ', icon: <FontIcon className="material-icons">history</FontIcon>, url: '/history-manager', index: 0 },
   ],
   dashBoardPage: {
     recentProducts: [
