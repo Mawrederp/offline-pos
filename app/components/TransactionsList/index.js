@@ -120,7 +120,9 @@ class TransactionsList extends React.Component {
               <div className={classes.column}>
                 <Typography className={classes.heading}>
                   رقم الفاتورة:{' '}
-                  {transactionValue[idKey].replace('TRANSACTION_', '')}
+                  {transactionValue[idKey]
+                    ? transactionValue[idKey].replace('TRANSACTION_', '')
+                    : ''}
                 </Typography>
                 <Typography className={classes.heading}>
                   قيمة الفاتورة: {transactionValue.cart.total}
@@ -128,7 +130,10 @@ class TransactionsList extends React.Component {
               </div>
               <div className={classes.column}>
                 <Typography className={classes.secondaryHeading}>
-                  اسم الموظف :{transactionValue.user.replace('USER_', '')}
+                  اسم الموظف :
+                  {transactionValue.user
+                    ? transactionValue.user.replace('USER_', '')
+                    : ''}
                 </Typography>
                 <Typography className={classes.secondaryHeading}>
                   الوقت :{' '}
