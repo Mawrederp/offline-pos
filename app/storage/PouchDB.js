@@ -27,7 +27,7 @@ function initDB(path, isLocal = false, live = true) {
 }
 
 export default {
-  auth: initDB('auth', false, false),
+  auth: initDB('auth', true),
   app: initDB('app', true),
   tellers: initDB('tellers'),
   products: initDB(`${tellerId}_products`),
