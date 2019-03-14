@@ -96,7 +96,7 @@ class Login extends React.PureComponent {
         </div>
         <div
           style={{
-            bottom: 20,
+            bottom: 10,
             position: 'fixed',
             right: '30%',
             textAlign: 'center',

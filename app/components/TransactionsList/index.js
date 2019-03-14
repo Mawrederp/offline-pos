@@ -88,17 +88,17 @@ class TransactionsList extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
   }
-  handleChange = (panel) => (event, expanded) => {
-    this.setState({
-      expanded: expanded ? panel : false,
-    });
-  };
   componentDidUpdate() {
     if (this.props.activeTransaction !== '') {
       window.print();
       this.props.setActiveTransaction('');
     }
   }
+  handleChange = (panel) => (event, expanded) => {
+    this.setState({
+      expanded: expanded ? panel : false,
+    });
+  };
   render() {
     const { classes, transactions, isRTL } = this.props;
     const idKey = '_id';
